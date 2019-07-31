@@ -1,3 +1,9 @@
 from django.contrib import admin
 
-# Register your models here.
+from .models import Category
+from .models import Coin
+from .models import ImgCoin
+
+admin.site.register(Category)
+admin.site.register(Coin)
+admin.site.register(ImgCoin)
