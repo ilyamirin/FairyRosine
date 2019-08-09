@@ -2,22 +2,21 @@ import os
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-print(BASE_DIR)
-
 SECRET_KEY = 'icllmxuu1j(tf1oybj9alm100im6whyg$_fz2e4xjqt=i-s4dg'
 
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 INSTALLED_APPS = [
+    'channels',
+    'coinCatalog',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'coinCatalog',
 ]
 
 MIDDLEWARE = [
@@ -48,7 +47,8 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'vef.wsgi.application'
+# WSGI_APPLICATION = 'vef.wsgi.application'
+ASGI_APPLICATION = 'vef.routing.application'
 
 DATABASES = {
     'default': {

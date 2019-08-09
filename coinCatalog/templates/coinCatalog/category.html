@@ -24,20 +24,7 @@
 
   <div class="container">
     <div class="row">
-      {% for cat in categories %}
-      <div class="col-md-4" style="margin-bottom: 10px; padding: 10px;">
-        <a href="{% url 'category' id=cat.id %}" class="category-a">
-          <div style="border: 1px solid rgba(0,0,0,.125); border-radius: 0.25rem; ">
-            <div class="card-header">
-              <h4 class="my-0 font-weight-normal" style="font-size: 1.3rem">{{ cat.name }}</h4>
-            </div>
-            <div class="card-body" style="padding: 0">
-              <img src="{% static '/coinCatalog/' %}{{ cat.href }}" style="width: 100%;">
-            </div>
-          </div>
-        </a>
-      </div>
-      {% endfor %}
+      
     </div>
   </div>
   <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
