@@ -25,6 +25,10 @@ class StreamConsumer(AsyncWebsocketConsumer):
         print('connection successful!!')
         await self.accept()
 
+    async def faces_ready(self, message):
+        await self.send(json.dumps(message))
+        print(f'{message}')
+
     async def receive(self, text_data=None, bytes_data=None):
         try:
             print(f"process {len(text_data) if text_data else 0} len bytes={len(bytes_data) if bytes_data else 0}")

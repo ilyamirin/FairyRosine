@@ -12,6 +12,7 @@ import copy
 from PIL import Image
 from channels.consumer import SyncConsumer, AsyncConsumer
 from channels import routing
+from asgiref.sync import async_to_sync
 
 
 class FaceRecognitionConsumer(SyncConsumer):
@@ -54,23 +55,31 @@ class FaceRecognitionConsumer(SyncConsumer):
         try:
             event_text = json.loads(text_data["text_data"])
             timestamp = float(event_text['timestamp']) / 1000
-            # assert time.time() - timestamp < 1 / 2, 'pass frame - ' + str(time.time() - timestamp)
+            if time.time() - timestamp >= 1 / 2:
+                print('pass frame - ' + str(time.time() - timestamp))
+                return
             img_data = base64.b64decode(event_text["img"].split(',')[1].encode())
             img = Image.open(BytesIO(img_data))
             img_data = np.array(img)
-            # event = json.loads(message["event"]["text"])
-            # msg = message["hello"]
-            # print('BackgroundTaskConsumer.recognize started with timestamp={}'.format(msg))
-            # img_data = base64.b64decode(event["img"].split(',')[1].encode())
-            # img = Image.open(BytesIO(img_data))
-            # img_data = np.array(img)
             faces, boxes, landmarks = self.recognizer.detectFaces(img_data)
             embeddings = [self.recognizer._getEmbedding(face) for face in faces]
             users = []
             for embed in embeddings:
                 result, scores = self.recognizer.identify(embed)
                 users.append(result)
-            print(f"{users}: {timestamp}")
+            # print(f"{users}: {timestamp}")
+
+            boxes = boxes.tolist()
+            response = [b + [users[idx]] for idx, b in enumerate(boxes)]
+            response = json.dumps(response)
+
+            async_to_sync(self.channel_layer.group_send)(
+                "recognize-faces",
+                {
+                    "type": "faces_ready",
+                    "text": response,
+                },
+            )
             # print('BackgroundTaskConsumer.recognize waited a sec with timestamp={}'.format(msg))
         except Exception as e:
             print(e)

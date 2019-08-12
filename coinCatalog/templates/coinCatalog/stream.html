@@ -8,6 +8,20 @@
   <title>Sberbank</title>
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
   <link rel="stylesheet" href="{% static '/coinCatalog/css/style.css' %}">
+  <style>
+    .video {
+      width: 640px;
+      height: 480px;
+      position: absolute;
+      left: 0;
+    }
+
+    #canvas {
+      position: absolute;
+      border: 1px solid #000;
+      left: 0;
+    }
+  </style>
 </head>
 <body style="font-family: serif, 'Open Sans' !important;">
   <div class="d-flex flex-column flex-md-row align-items-center p-3 px-md-4 mb-3 bg-white border-bottom box-shadow">
@@ -26,8 +40,9 @@
 
   <div class="container">
     <div class="row">
-      <div class="col-md-12 ">
+      <div class="col-md-12" style="">
         <video autoplay class="video"></video>
+        <canvas id="canvas" width="640" height="480"></canvas>
       </div>
     </div>
   </div>
@@ -35,7 +50,7 @@
   <script>
     const video = document.querySelector('video');
 
-navigator.mediaDevices.getUserMedia({video: {width: 600, height: 600}}).then((stream) => video.srcObject = stream);
+navigator.mediaDevices.getUserMedia({video: {width: 640, height: 480}}).then((stream) => video.srcObject = stream);
 
 const getFrame = () => {
     console.log("send frame");
@@ -49,13 +64,26 @@ const getFrame = () => {
     });
 
 };
-const FPS = 5;
+const FPS = 3;
 
 let socketUrl = "ws://" + window.location.host + window.location.pathname;
 let socket = new WebSocket(socketUrl);
 
+let canvas = document.getElementById('canvas');
+let context = canvas.getContext('2d');
+
 socket.onmessage = function (event) {
-    console.log(event);
+    context.clearRect(0, 0, canvas.width, canvas.height);
+    let rects = JSON.parse(JSON.parse(event.data).text);
+
+    rects.forEach(rect => {
+        context.beginPath();
+        context.rect(rect[1], rect[0], rect[3] - rect[1], rect[2] - rect[0]);
+        context.strokeStyle = 'blue';
+        context.lineWidth = "3";
+        context.stroke();
+        context.closePath();
+    });
 };
 
 socket.onopen = function (event) {
