@@ -36,7 +36,7 @@ class FaceRecognitionConsumer(SyncConsumer):
         sys.path.pop()
 
         self.dataBase = DataBase(
-            filepath="./FaceRecognitionData/Temp/users_face_exp.hdf"
+            filepath=RecognizerConfig.DATA_BASE_PATH
         )
 
         # os.environ.setdefault("MXNET_CUDNN_AUTOTUNE_DEFAULT", "0")
@@ -59,21 +59,21 @@ class FaceRecognitionConsumer(SyncConsumer):
 
     def recognize(self, message):
         try:
-            self.fps_counter += 1
-            if time.time() - self.fps_start > 2:
-                self.actual_fps = self.fps_counter / (time.time() - self.fps_start)
-                self.fps_start = time.time()
-                self.fps_counter = 0
-            print(f"FPS = {self.actual_fps}")
+            # self.fps_counter += 1
+            # if time.time() - self.fps_start > 2:
+            #     self.actual_fps = self.fps_counter / (time.time() - self.fps_start)
+            #     self.fps_start = time.time()
+            #     self.fps_counter = 0
+            # print(f"FPS = {self.actual_fps}")
+
             text_data = json.loads(message["text_data"]) if message["text_data"] else None
-            bytes_data = message["bytes_data"]
-            if text_data:
-                timestamp = float(text_data['timestamp']) / 1000
-                if time.time() - timestamp >= 1 / 2:
-                    print('pass frame: ' + str(time.time() - timestamp))
-                    return
-                else:
-                    print('success: ' + str(time.time() - timestamp))
+            timestamp = float(message["bytes_data"][:13]) / 1000
+            bytes_data = message["bytes_data"][13:]
+            if time.time() - timestamp >= 0.5:
+                print('pass frame: ' + str(time.time() - timestamp))
+                return
+            else:
+                print('success: ' + str(time.time() - timestamp))
             start_recog = time.time()
             if not bytes_data:
                 bytes_data = base64.b64decode(text_data["img"].split(',')[1].encode())
@@ -81,7 +81,7 @@ class FaceRecognitionConsumer(SyncConsumer):
             img = Image.open(bytes_data)
             img_data = np.array(img)
             faces, boxes, landmarks = self.recognizer.detectFaces(img_data)
-            faces, boxes = sorted_faces(faces, boxes, 5)
+            faces, boxes = sorted_faces(faces, boxes, 10)
             embeddings = self.recognizer._getEmbedding(faces)
             # embeddings = [self.recognizer._getEmbedding(face) for face in faces]
             users = []
