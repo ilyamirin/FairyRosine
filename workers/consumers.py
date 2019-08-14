@@ -15,6 +15,15 @@ from channels import routing
 from asgiref.sync import async_to_sync
 
 
+def area(box):
+    return abs(box[2] - box[0]) * abs(box[3] - box[1])
+
+
+def sorted_faces(faces, boxes, n=5):
+    idxs = np.array([i for (b, i) in sorted([(area(b), i) for i, b in enumerate(boxes)], reverse=True)[:n]])
+    return np.array(faces)[idxs], np.array(boxes)[idxs]
+
+
 class FaceRecognitionConsumer(SyncConsumer):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -23,7 +32,7 @@ class FaceRecognitionConsumer(SyncConsumer):
         from FaceRecognition.InsightFaceRecognition import FaceRecognizer, RecognizerConfig
         from FaceDetection.RetinaFaceDetector import RetinaFace
         from FaceDetection.Config import DetectorConfig
-        from DataBase.DataBaseHDF import DataBase
+        from DataBaseKit.DataBaseHDF import DataBase
         sys.path.pop()
 
         self.dataBase = DataBase(
@@ -44,35 +53,47 @@ class FaceRecognitionConsumer(SyncConsumer):
             detector=self.detector
         )
         print("recognizer is ready")
-        # warmUp = np.zeros(shape=(480, 640, 3), dtype=np.float32)
-        # faces, boxes, landmarks = recognizer.detectFaces(warmUp)
-        # embeddings = [recognizer._getEmbedding(face) for face in faces]
-        # users = []
-        # for embed in embeddings:
-        #     result, scores = recognizer.identify(embed)
+        self.fps_counter = 0
+        self.fps_start = time.time()
+        self.actual_fps = 0
 
-    def recognize(self, text_data):
+    def recognize(self, message):
         try:
-            event_text = json.loads(text_data["text_data"])
-            timestamp = float(event_text['timestamp']) / 1000
-            if time.time() - timestamp >= 1 / 2:
-                print('pass frame - ' + str(time.time() - timestamp))
-                return
-            img_data = base64.b64decode(event_text["img"].split(',')[1].encode())
-            img = Image.open(BytesIO(img_data))
+            self.fps_counter += 1
+            if time.time() - self.fps_start > 2:
+                self.actual_fps = self.fps_counter / (time.time() - self.fps_start)
+                self.fps_start = time.time()
+                self.fps_counter = 0
+            print(f"FPS = {self.actual_fps}")
+            text_data = json.loads(message["text_data"]) if message["text_data"] else None
+            bytes_data = message["bytes_data"]
+            if text_data:
+                timestamp = float(text_data['timestamp']) / 1000
+                if time.time() - timestamp >= 1 / 2:
+                    print('pass frame: ' + str(time.time() - timestamp))
+                    return
+                else:
+                    print('success: ' + str(time.time() - timestamp))
+            start_recog = time.time()
+            if not bytes_data:
+                bytes_data = base64.b64decode(text_data["img"].split(',')[1].encode())
+            bytes_data = BytesIO(bytes_data)
+            img = Image.open(bytes_data)
             img_data = np.array(img)
             faces, boxes, landmarks = self.recognizer.detectFaces(img_data)
-            embeddings = [self.recognizer._getEmbedding(face) for face in faces]
+            faces, boxes = sorted_faces(faces, boxes, 5)
+            embeddings = self.recognizer._getEmbedding(faces)
+            # embeddings = [self.recognizer._getEmbedding(face) for face in faces]
             users = []
             for embed in embeddings:
                 result, scores = self.recognizer.identify(embed)
                 users.append(result)
-            # print(f"{users}: {timestamp}")
 
             boxes = boxes.tolist()
             response = [b + [users[idx]] for idx, b in enumerate(boxes)]
-            response = json.dumps(response)
-
+            # response = response
+            end_recog = time.time()
+            print(f"recog time = {end_recog - start_recog}")
             async_to_sync(self.channel_layer.group_send)(
                 "recognize-faces",
                 {
@@ -83,3 +104,6 @@ class FaceRecognitionConsumer(SyncConsumer):
             # print('BackgroundTaskConsumer.recognize waited a sec with timestamp={}'.format(msg))
         except Exception as e:
             print(e)
+
+    def register(self):
+        pass

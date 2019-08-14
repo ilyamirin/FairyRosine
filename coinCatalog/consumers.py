@@ -32,14 +32,7 @@ class StreamConsumer(AsyncWebsocketConsumer):
     async def receive(self, text_data=None, bytes_data=None):
         try:
             print(f"process {len(text_data) if text_data else 0} len bytes={len(bytes_data) if bytes_data else 0}")
-            await channel_layer.send("recognizefaces", {"type": "recognize", "text_data": text_data})
-            # faces, boxes, landmarks = recognizer.detectFaces(img_data)
-            # embeddings = [recognizer._getEmbedding(face) for face in faces]
-            # users = []
-            # for embed in embeddings:
-            #     result, scores = recognizer.identify(embed)
-            #     users.append(result)
-            # print(f"{users}")
+            await channel_layer.send("recognizefaces", {"type": "recognize", "text_data": text_data, "bytes_data": bytes_data})
         except Exception as e:
             print(e)
 

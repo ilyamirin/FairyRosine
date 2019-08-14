@@ -23,7 +23,7 @@ const getFrame = () => {
 //    });
 
 };
-const FPS = 4;
+const FPS = 10;
 
 let socketUrl = "ws://" + window.location.host + window.location.pathname;
 let socket = new WebSocket(socketUrl);
@@ -33,7 +33,7 @@ let context = canvas.getContext('2d');
 
 socket.onmessage = function (event) {
     context.clearRect(0, 0, canvas.width, canvas.height);
-    let rects = JSON.parse(JSON.parse(event.data).text);
+    let rects = JSON.parse(event.data).text;
 
     rects.forEach(rect => {
         context.beginPath();
