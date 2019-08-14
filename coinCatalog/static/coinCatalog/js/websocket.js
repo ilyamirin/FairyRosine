@@ -9,18 +9,16 @@ const getFrame = () => {
     canvas.height = video.videoHeight;
     canvas.getContext('2d').drawImage(video, 0, 0);
 
-//    b64Data = canvas.toDataURL('image/png');
-//    return atob(b64Data);
+    let b = + new Date();
+    let uint8 = new Uint8Array(8);
+
 
     canvas.toBlob(function(blob){
-        socket.send(blob);
+        let encoder = new TextEncoder().encode(String(+ new Date()));
+        let _blob = new Blob([encoder]);
+        let res = new Blob([_blob, blob]);
+        socket.send(res);
     }, 'image/png', 1);
-
-
-//    return JSON.stringify({
-//        img: canvas.toDataURL('image/png'),
-//        timestamp: + new Date(),
-//    });
 
 };
 const FPS = 4;
