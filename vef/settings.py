@@ -62,7 +62,13 @@ CHANNEL_LAYERS = {
     'default': {
         'BACKEND': 'channels_redis.core.RedisChannelLayer',
         'CONFIG': {
-            'hosts': [('127.0.0.1', 6379)]
+            'hosts': [('10.193.48.43', 6379)]  # local address
+        }
+    },
+    'face': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            'hosts': [('10.60.16.44', 6379)]  # remote address
         }
     }
 }
