@@ -5,7 +5,7 @@ from django.conf.urls.static import static
 from django.conf.urls import url
 
 urlpatterns = [
-    url(r'admin/$', admin.site.urls),
+    url(r'admin/', admin.site.urls),
     url(r'', include('coinCatalog.urls'), name='index'),
 ]
 

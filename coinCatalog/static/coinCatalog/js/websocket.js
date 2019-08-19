@@ -1,6 +1,8 @@
 const video = document.querySelector('video');
 
-navigator.mediaDevices.getUserMedia({video: {width: 640, height: 480}}).then((stream) => video.srcObject = stream);
+navigator.mediaDevices.getUserMedia({video: {width: 640, height: 480}})
+    .then(stream => video.srcObject = stream)
+    .catch(e => console.log(e));
 
 const getFrame = () => {
     console.log("send frame");
