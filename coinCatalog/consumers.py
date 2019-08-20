@@ -13,6 +13,7 @@ from PIL import Image
 from channels.layers import get_channel_layer
 from string import ascii_letters
 import random
+import operator
 
 
 face_channel_layer = get_channel_layer("face")
@@ -25,6 +26,8 @@ class StreamConsumer(AsyncWebsocketConsumer):
     def __init__(self, *args):
         super().__init__(*args)
         self.uid = "".join(random.choice(ascii_letters) for _ in range(8))
+        self.rec_coins = {}
+        self.cnt_rec_coins = 0
         print("consumer created")
 
     async def connect(self):
@@ -41,6 +44,22 @@ class StreamConsumer(AsyncWebsocketConsumer):
         if message["uid"] == self.uid:
             message['type'] = 'coin'
             print(f'{self.uid}: coins ready')
+
+            for coin in message["text"]:
+                self.cnt_rec_coins += 1
+                self.rec_coins[coin[4]] = 1 + self.rec_coins.get(coin[4], 0)
+
+            if self.cnt_rec_coins >= 20:
+                coins = [(key, value) for key, value in self.rec_coins.items()]
+                coins = list(reversed(sorted(coins, key=operator.itemgetter(1))))
+                resp = {
+                    "type": "recognized_coins",
+                    "text": coins
+                }
+                await self.send(json.dumps(resp))
+                self.cnt_rec_coins = 0
+                self.rec_coins = {}
+
             await self.send(json.dumps(message))
 
     async def receive(self, text_data=None, bytes_data=None):

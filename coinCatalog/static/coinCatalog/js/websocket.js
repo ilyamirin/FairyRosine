@@ -70,8 +70,23 @@ function startWebSocketInteraction(){
 
     drawInterval = setInterval(() => drawCanvasData(), 1000 / 24);
 
+    function drawCoins(coins){
+        let ul = document.getElementById('rec-coins');
+        ul.innerHTML = "";
+        coins.forEach(v => {
+            let li = document.createElement('li');
+            li.classList.add("list-group-item");
+            li.classList.add("list-group-item-action");
+            li.innerHTML = v[0];
+            ul.appendChild(li);
+        });
+    }
+
     socket.onmessage = function (event) {
         let data = JSON.parse(event.data);
+        if (data.type == 'recognized_coins'){
+            drawCoins(data.text);
+        }
         canvasData[data.type] = data.text;
     };
 
