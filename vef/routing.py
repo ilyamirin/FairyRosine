@@ -12,7 +12,7 @@ application = ProtocolTypeRouter({
         AuthMiddlewareStack(
             URLRouter(
                 [
-                    url(r'^stream/$', StreamConsumer),
+                    url(r'^stream1/', StreamConsumer),
                 ]
             )
         )

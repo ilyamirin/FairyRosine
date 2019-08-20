@@ -17,6 +17,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_extensions',
+    'sslserver',
 ]
 
 MIDDLEWARE = [
@@ -27,6 +29,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
 
 ROOT_URLCONF = 'vef.urls'
@@ -62,8 +65,8 @@ CHANNEL_LAYERS = {
     'default': {
         'BACKEND': 'channels_redis.core.RedisChannelLayer',
         'CONFIG': {
-            # 'hosts': [('10.193.48.43', 6379)],
-            'hosts': [('10.60.16.44', 6379)],
+            'hosts': [('10.193.48.43', 6379)],
+            # 'hosts': [('10.60.17.34', 6379)],
             # 'capacity': 1,
             # 'expiry': 1,
         }
@@ -71,8 +74,8 @@ CHANNEL_LAYERS = {
     'face': {
         'BACKEND': 'channels_redis.core.RedisChannelLayer',
         'CONFIG': {
-            # 'hosts': [('10.193.48.43', 6379)],
-            'hosts': [('10.60.16.44', 6379)],
+            'hosts': [('10.193.48.43', 6379)],
+            # 'hosts': [('10.60.17.34', 6379)],
             # 'capacity': 1,
             # 'expiry': 1,
         }
@@ -81,7 +84,7 @@ CHANNEL_LAYERS = {
         'BACKEND': 'channels_redis.core.RedisChannelLayer',
         'CONFIG': {
             # 'hosts': [('10.193.48.43', 6379)],
-            'hosts': [('10.60.16.44', 6379)],
+            'hosts': [('10.60.17.34', 6379)],
             # 'capacity': 1,
             # 'expiry': 1,
         }
@@ -89,8 +92,8 @@ CHANNEL_LAYERS = {
     'server': {
         'BACKEND': 'channels_redis.core.RedisChannelLayer',
         'CONFIG': {
-            'hosts': [('10.60.16.44', 6379)],
-            # 'hosts': [('10.193.48.43', 6379)],
+            # 'hosts': [('10.60.17.34', 6379)],
+            'hosts': [('10.193.48.43', 6379)],
             # 'capacity': 1,
             # 'expiry': 1,
         }

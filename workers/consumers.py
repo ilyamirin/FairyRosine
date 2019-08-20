@@ -41,7 +41,7 @@ class FaceRecognitionConsumer(SyncConsumer):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         print("worker created", flush=True)
-        sys.path.append("C:/Projects/ServantGrunbeld")
+        sys.path.append("C:/Users/dvfu/Desktop/coinCatalog/git_projs/ServantGrunbeld")
 
         from FaceRecognition.InsightFaceRecognition import FaceRecognizer, RecognizerConfig
         from FaceDetection.RetinaFaceDetector import RetinaFace
@@ -81,7 +81,7 @@ class FaceRecognitionConsumer(SyncConsumer):
             uid = message["uid"]
             timestamp, img_data = get_image_data_from_bytes_data(message["bytes_data"])
 
-            if time.time() - timestamp >= 0.5:
+            if time.time() - timestamp >= 2.0:
                 print('pass frame: ' + str(time.time() - timestamp))
                 return
             else:
