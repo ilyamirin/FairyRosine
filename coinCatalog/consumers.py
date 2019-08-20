@@ -25,8 +25,6 @@ class StreamConsumer(AsyncWebsocketConsumer):
     def __init__(self, *args):
         super().__init__(*args)
         self.uid = "".join(random.choice(ascii_letters) for _ in range(8))
-        # self.rec_coins = {}
-        # self.cnt_rec_coins = 0
         print("consumer created")
 
     async def connect(self):
@@ -35,12 +33,13 @@ class StreamConsumer(AsyncWebsocketConsumer):
 
     async def faces_ready(self, message):
         if message["uid"] == self.uid:
-
+            message['type'] = 'face'
             print(f'{self.uid}: faces ready')
             await self.send(json.dumps(message))
 
     async def coins_ready(self, message):
         if message["uid"] == self.uid:
+            message['type'] = 'coin'
             print(f'{self.uid}: coins ready')
             await self.send(json.dumps(message))
 

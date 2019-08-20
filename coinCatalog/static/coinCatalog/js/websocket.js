@@ -35,41 +35,62 @@ function startWebSocketInteraction(){
     let canvas = document.getElementById('canvas');
     let context = canvas.getContext('2d');
 
-    socket.onmessage = function (event) {
+    let frameLoop = null;
+
+    let canvasData = {
+        "face": [],
+        "coin": [],
+    }
+
+    function drawRect(rect, colorStroke, fillStyle){
+        context.beginPath();
+        context.rect(rect[1], rect[0], rect[3] - rect[1], rect[2] - rect[0]);
+        context.strokeStyle = colorStroke;
+        context.lineWidth = "3";
+        context.stroke();
+        context.closePath();
+
+        context.beginPath();
+        context.fillStyle = fillStyle;
+        context.fillRect(rect[1] - 2, rect[0] + rect[2] - rect[0], Math.max(rect[3] - rect[1] + 4, rect[4].length * 9 + 4), 20);
+        context.closePath();
+
+        context.beginPath();
+        context.font = "16px Arial";
+        context.fillStyle = 'white';
+        context.fillText(rect[4], rect[1] + 2, rect[2] - rect[0] + rect[0] + 15);
+        context.closePath();
+    }
+
+    function drawCanvasData() {
         context.clearRect(0, 0, canvas.width, canvas.height);
-        let rects = JSON.parse(event.data).text;
+        canvasData["face"].forEach(rect => drawRect(rect, 'green', 'green'));
+        canvasData["coin"].forEach(rect => drawRect(rect, 'blue', 'blue'));
+    }
 
-        rects.forEach(rect => {
-            context.beginPath();
-            context.rect(rect[1], rect[0], rect[3] - rect[1], rect[2] - rect[0]);
-            context.strokeStyle = 'green';
-            context.lineWidth = "3";
-            context.stroke();
-            context.closePath();
+    drawInterval = setInterval(() => drawCanvasData(), 1000 / 24);
 
-            context.beginPath();
-            context.fillStyle = 'green';
-            context.fillRect(rect[1] - 2, rect[0] + rect[2] - rect[0], Math.max(rect[3] - rect[1] + 4, rect[4].length * 9 + 4), 20);
-            context.closePath();
-
-            context.beginPath();
-            context.font = "16px Arial";
-            context.fillStyle = 'white';
-            context.fillText(rect[4], rect[1] + 2, rect[2] - rect[0] + rect[0] + 15);
-            context.closePath();
-        });
+    socket.onmessage = function (event) {
+        let data = JSON.parse(event.data);
+        canvasData[data.type] = data.text;
     };
 
     socket.onopen = function (event) {
         console.log('socket opened');
-        setInterval(() => getFrame(), 1000 / FPS);
+        frameLoop = setInterval(() => getFrame(), 1000 / FPS);
     };
 
     socket.onclose = function (event) {
         console.log('socket closed');
+        if (frameLoop)
+            clearInterval(frameLoop);
+        alert("Соединение было разорвано!");
     };
 
     socket.onerror = function (event) {
         console.log('socket errors');
+        if (frameLoop)
+            clearInterval(frameLoop);
+        alert("Сокет вернул ошибку!");
     };
 }
