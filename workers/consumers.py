@@ -143,6 +143,8 @@ class CoinRecognitionConsumer(SyncConsumer):
                 with open(result) as namesFH:
                     names_list = namesFH.read().strip().split("\n")
                     self.alt_names = [x.strip() for x in names_list]
+
+        print(f"({self.dn.network_width(self.net_main)} {self.dn.network_height(self.net_main)}")
         self.darknet_image = darknet.make_image(darknet.network_width(self.net_main), darknet.network_height(self.net_main), 3)
 
     def recognize(self, message):
@@ -161,14 +163,19 @@ class CoinRecognitionConsumer(SyncConsumer):
 
             detections = self.dn.detect_image(self.net_main, self.meta_main, self.darknet_image, thresh=0.5)
             response = []
-            for detection in detections:
-                label = detection[0].decode()
-                confedence = detection[1]
-                # y1 x1
-                # y2 x2
+            kx = frame_rgb.shape[1] / self.dn.network_width(self.net_main)
+            ky = frame_rgb.shape[0] / self.dn.network_height(self.net_main)
+
+            for label, confedence, (x1, y1, width, height) in detections:
+                print(y1, x1, y1 + height, x1 +width)
+                label = label.decode()
+                x1 = x1*kx
+                y1 = y1*ky
+
                 coords = [
-                    int(detection[2][1]), int(detection[2][0]),
-                    int(detection[2][1] + detection[2][3]), int(detection[2][0] + detection[2][2])]
+                    int(y1 - height*ky/2), int(x1 - width*kx/2),
+                    int(y1 + height*ky/2), int(x1 + width*kx/2)]
+
                 response_item = coords + [label + str(confedence)]
                 response.append(response_item)
             end_recog = time.time()
