@@ -16,10 +16,11 @@ import random
 
 
 face_channel_layer = get_channel_layer("face")
+coin_channel_layer = get_channel_layer("coin")
 
 
 class StreamConsumer(AsyncWebsocketConsumer):
-    groups = ["recognize-faces"]
+    groups = ["recognize-faces", "recognize-coins"]
 
     def __init__(self, *args):
         super().__init__(*args)
@@ -35,11 +36,19 @@ class StreamConsumer(AsyncWebsocketConsumer):
             print(f'{self.uid}: faces ready')
             await self.send(json.dumps(message))
 
+    async def coins_ready(self, message):
+        if message["uid"] == self.uid:
+            print(f'{self.uid}: coins ready')
+            await self.send(json.dumps(message))
+
     async def receive(self, text_data=None, bytes_data=None):
         try:
             print(f"{self.uid}: receive {len(text_data) if text_data else 0} text data, {len(bytes_data) if bytes_data else 0} bytes data")
             await asyncio.gather(
-                face_channel_layer.send("recognizefaces", {"type": "recognize", "bytes_data": bytes_data, "uid": self.uid}),
+                face_channel_layer.send("recognizefaces",
+                                        {"type": "recognize", "bytes_data": bytes_data, "uid": self.uid}),
+                coin_channel_layer.send("recognizecoins",
+                                        {"type": "recognize", "bytes_data": bytes_data, "uid": self.uid}),
             )
         except Exception as e:
             print(e)

@@ -62,15 +62,37 @@ CHANNEL_LAYERS = {
     'default': {
         'BACKEND': 'channels_redis.core.RedisChannelLayer',
         'CONFIG': {
-            'hosts': [('10.193.48.43', 6379)],  # local address
-            'capacity': 1,
-            'expiry': 1,
+            # 'hosts': [('10.193.48.43', 6379)],
+            'hosts': [('10.60.16.44', 6379)],
+            # 'capacity': 1,
+            # 'expiry': 1,
         }
     },
     'face': {
         'BACKEND': 'channels_redis.core.RedisChannelLayer',
         'CONFIG': {
-            'hosts': [('10.60.16.44', 6379)]  # remote address
+            # 'hosts': [('10.193.48.43', 6379)],
+            'hosts': [('10.60.16.44', 6379)],
+            # 'capacity': 1,
+            # 'expiry': 1,
+        }
+    },
+    'coin': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            # 'hosts': [('10.193.48.43', 6379)],
+            'hosts': [('10.60.16.44', 6379)],
+            # 'capacity': 1,
+            # 'expiry': 1,
+        }
+    },
+    'server': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            'hosts': [('10.60.16.44', 6379)],
+            # 'hosts': [('10.193.48.43', 6379)],
+            # 'capacity': 1,
+            # 'expiry': 1,
         }
     }
 }

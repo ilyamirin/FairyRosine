@@ -5,7 +5,7 @@ from channels.auth import AuthMiddlewareStack
 
 from coinCatalog.consumers import StreamConsumer
 # from workers.stt_worker import SpeechRecognitionConsumer
-from workers.consumers import FaceRecognitionConsumer
+from workers.consumers import FaceRecognitionConsumer, CoinRecognitionConsumer
 
 application = ProtocolTypeRouter({
     'websocket': AllowedHostsOriginValidator(
@@ -20,6 +20,6 @@ application = ProtocolTypeRouter({
     'channel': ChannelNameRouter({
         'recognizefaces': FaceRecognitionConsumer,
         # 'speech_recognizer': SpeechRecognitionConsumer,
-        # 'recognizecoins': CoinRecognitionConsumer,
+        'recognizecoins': CoinRecognitionConsumer,
     }),
 })
