@@ -68,16 +68,9 @@ class FaceRecognitionConsumer(SyncConsumer):
 
     def recognize(self, message):
         try:
-            # self.fps_counter += 1
-            # if time.time() - self.fps_start > 2:
-            #     self.actual_fps = self.fps_counter / (time.time() - self.fps_start)
-            #     self.fps_start = time.time()
-            #     self.fps_counter = 0
-            # print(f"FPS = {self.actual_fps}")
-
-            # text_data = json.loads(message["text_data"]) if message["text_data"] else None
             timestamp = float(message["bytes_data"][:13]) / 1000
             bytes_data = message["bytes_data"][13:]
+            uid = message["uid"]
             if time.time() - timestamp >= 0.5:
                 print('pass frame: ' + str(time.time() - timestamp))
                 return
@@ -108,6 +101,7 @@ class FaceRecognitionConsumer(SyncConsumer):
                 {
                     "type": "faces_ready",
                     "text": response,
+                    "uid": uid,
                 },
             )
             # print('BackgroundTaskConsumer.recognize waited a sec with timestamp={}'.format(msg))

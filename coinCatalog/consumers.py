@@ -11,8 +11,10 @@ import json
 import asyncio
 from PIL import Image
 from channels.layers import get_channel_layer
+from string import ascii_letters
+import random
 
-# channel_layer = get_channel_layer()
+
 face_channel_layer = get_channel_layer("face")
 
 
@@ -21,6 +23,7 @@ class StreamConsumer(AsyncWebsocketConsumer):
 
     def __init__(self, *args):
         super().__init__(*args)
+        self.uid = "".join(random.choice(ascii_letters) for _ in range(8))
         print("consumer created")
 
     async def connect(self):
@@ -28,23 +31,16 @@ class StreamConsumer(AsyncWebsocketConsumer):
         await self.accept()
 
     async def faces_ready(self, message):
-        print(f'{type(message)}')
-        await self.send(json.dumps(message))
+        if message["uid"] == self.uid:
+            print(f'{self.uid}: faces ready')
+            await self.send(json.dumps(message))
 
     async def receive(self, text_data=None, bytes_data=None):
         try:
-            print(f"process {len(text_data) if text_data else 0} len bytes={len(bytes_data) if bytes_data else 0}")
+            print(f"{self.uid}: receive {len(text_data) if text_data else 0} text data, {len(bytes_data) if bytes_data else 0} bytes data")
             await asyncio.gather(
-                face_channel_layer.send("recognizefaces", {"type": "recognize", "bytes_data": bytes_data}),
-                # channel_layer.send("recognizecoins", {"type": "recognize", "text_data": bytes_data}),
+                face_channel_layer.send("recognizefaces", {"type": "recognize", "bytes_data": bytes_data, "uid": self.uid}),
             )
-            # faces, boxes, landmarks = recognizer.detectFaces(img_data)
-            # embeddings = [recognizer._getEmbedding(face) for face in faces]
-            # users = []
-            # for embed in embeddings:
-            #     result, scores = recognizer.identify(embed)
-            #     users.append(result)
-            # print(f"{users}")
         except Exception as e:
             print(e)
 
