@@ -18,10 +18,11 @@ import operator
 
 face_channel_layer = get_channel_layer("face")
 coin_channel_layer = get_channel_layer("coin")
+dialog_channel_layer = get_channel_layer("dialog")
 
 
 class StreamConsumer(AsyncWebsocketConsumer):
-    groups = ["recognize-faces", "recognize-coins"]
+    groups = ["recognize-faces", "recognize-coins", "dialog"]
 
     def __init__(self, *args):
         super().__init__(*args)
@@ -62,6 +63,12 @@ class StreamConsumer(AsyncWebsocketConsumer):
 
             await self.send(json.dumps(message))
 
+    async def dialog_answer_ready(self, message):
+        if message["uid"] == self.uid:
+            message['type'] = 'dialog_answer'
+            print(f'{self.uid}: dialog ready')
+            await self.send(json.dumps(message))
+
     async def receive(self, text_data=None, bytes_data=None):
         try:
             print(f"{self.uid}: receive {len(text_data) if text_data else 0} text data, {len(bytes_data) if bytes_data else 0} bytes data")
@@ -70,6 +77,8 @@ class StreamConsumer(AsyncWebsocketConsumer):
                                         {"type": "recognize", "bytes_data": bytes_data, "uid": self.uid}),
                 coin_channel_layer.send("recognizecoins",
                                         {"type": "recognize", "bytes_data": bytes_data, "uid": self.uid}),
+                dialog_channel_layer.send("dialog",
+                                        {"type": "dialog_answer", "text": text_data, "uid": self.uid}),
             )
         except Exception as e:
             print(e)

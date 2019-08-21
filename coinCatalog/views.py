@@ -29,6 +29,9 @@ def category(req, id=-1):
 def stream(req):
   return render(req, 'coinCatalog/stream.html')
 
+def dialog(req):
+  return render(req, 'coinCatalog/dialog.html')
+
 def coin(req, id=-1):
   coin = Coin.objects.get(id=id)
   imgs = ImgCoin.objects.filter(coin=id)

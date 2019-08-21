@@ -10,6 +10,7 @@ urlpatterns = [
     url(r'^coin/(?P<id>\d+)/$', views.coin, name='coin'),
     url(r'^stream/$', views.stream, name='stream'),
     url(r'^$', views.index, name='index'),
+    url(r'^dialog/$', views.dialog, name='dialog'),
 ]
 
 if settings.DEBUG:

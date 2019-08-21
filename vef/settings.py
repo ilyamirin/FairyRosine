@@ -84,6 +84,17 @@ CHANNEL_LAYERS = {
         'BACKEND': 'channels_redis.core.RedisChannelLayer',
         'CONFIG': {
             # 'hosts': [('10.193.48.43', 6379)],
+            # 'hosts': [('10.60.16.44', 6379)],
+            'hosts': [('10.60.17.34', 6379)],
+            # 'capacity': 1,
+            # 'expiry': 1,
+        }
+    },
+    'dialog': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            # 'hosts': [('10.193.48.43', 6379)],
+            # 'hosts': [('10.60.16.44', 6379)],
             'hosts': [('10.60.17.34', 6379)],
             # 'capacity': 1,
             # 'expiry': 1,
