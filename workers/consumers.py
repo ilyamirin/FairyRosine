@@ -37,9 +37,21 @@ def get_image_data_from_bytes_data(bytes_data):
     return timestamp, img_data
 
 
-class FaceRecognitionConsumer(SyncConsumer):
+class TimeShifter:
+    def __init__(self):
+        self.shift = {}
+
+    def get_age(self, uid, timestamp):
+        now = time.time()
+        if uid not in self.shift:
+            self.shift[uid] = now - timestamp
+        return now - timestamp - self.shift[uid]
+
+
+class FaceRecognitionConsumer(SyncConsumer, TimeShifter):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        TimeShifter.__init__(self)
         print("worker created", flush=True)
         sys.path.append("C:/Users/dvfu/Desktop/coinCatalog/git_projs/ServantGrunbeld")
 
@@ -80,23 +92,19 @@ class FaceRecognitionConsumer(SyncConsumer):
         try:
             uid = message["uid"]
             timestamp, img_data = get_image_data_from_bytes_data(message["bytes_data"])
-
-            if time.time() - timestamp >= 2.0:
-                print('pass frame: ' + str(time.time() - timestamp))
+            age = self.get_age(uid, timestamp)
+            print(f"face {'pass: ' if age >= 1 else 'go: '} {age}")
+            if age >= 1:
                 return
-            else:
-                print('success: ' + str(time.time() - timestamp))
-
             start_recog = time.time()
             faces, boxes, landmarks = self.recognizer.detectFaces(img_data)
-            faces, boxes = sorted_faces(faces, boxes, 10)
-            embeddings = self.recognizer._getEmbedding(faces)
-            # embeddings = [self.recognizer._getEmbedding(face) for face in faces]
-            users = []
-            for embed in embeddings:
-                result, scores = self.recognizer.identify(embed)
-                users.append(result)
-
+            if len(boxes) > 0:
+                faces, boxes = sorted_faces(faces, boxes, 10)
+                embeddings = self.recognizer._getEmbedding(faces)
+                users = []
+                for embed in embeddings:
+                    result, scores = self.recognizer.identify(embed)
+                    users.append(result)
             boxes = boxes.tolist()
             response = [b + [users[idx]] for idx, b in enumerate(boxes)]
             # response = response
@@ -110,7 +118,6 @@ class FaceRecognitionConsumer(SyncConsumer):
                     "uid": uid,
                 },
             )
-            # print('BackgroundTaskConsumer.recognize waited a sec with timestamp={}'.format(msg))
         except Exception as e:
             print(e)
 
@@ -118,9 +125,10 @@ class FaceRecognitionConsumer(SyncConsumer):
         pass
 
 
-class CoinRecognitionConsumer(SyncConsumer):
+class CoinRecognitionConsumer(SyncConsumer, TimeShifter):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        TimeShifter.__init__(self)
         print("coin worker created", flush=True)
         path = "C:/Projects/darknet_win"
         sys.path.append(path)
@@ -151,7 +159,10 @@ class CoinRecognitionConsumer(SyncConsumer):
         try:
             uid = message["uid"]
             timestamp, frame_read = get_image_data_from_bytes_data(message["bytes_data"])
-
+            age = self.get_age(uid, timestamp)
+            print(f"coin {'pass: ' if age >= 1 else 'go: '} {age}")
+            if age >= 1:
+                return
             start_recog = time.time()
             frame_rgb = cv2.cvtColor(frame_read, cv2.COLOR_BGR2RGB)
             frame_resized = cv2.resize(frame_rgb,
@@ -166,22 +177,19 @@ class CoinRecognitionConsumer(SyncConsumer):
             kx = frame_rgb.shape[1] / self.dn.network_width(self.net_main)
             ky = frame_rgb.shape[0] / self.dn.network_height(self.net_main)
 
-            for label, confedence, (x1, y1, width, height) in detections:
-                print(y1, x1, y1 + height, x1 +width)
+            for label, confidence, (x1, y1, width, height) in detections:
                 label = label.decode()
                 x1 = x1*kx
                 y1 = y1*ky
-
                 coords = [
                     int(y1 - height*ky/2), int(x1 - width*kx/2),
-                    int(y1 + height*ky/2), int(x1 + width*kx/2)]
+                    int(y1 + height*ky/2), int(x1 + width*kx/2)
+                ]
 
-                response_item = coords + [label + str(confedence)]
+                response_item = coords + [label] + [confidence]
                 response.append(response_item)
             end_recog = time.time()
             print(f"coin recog time = {end_recog - start_recog}")
-            if len(response) == 0:
-                return
             async_to_sync(server_channel_layer.group_send)(
                 "recognize-coins",
                 {
