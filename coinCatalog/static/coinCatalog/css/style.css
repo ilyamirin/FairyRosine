@@ -8,7 +8,24 @@
   text-decoration: none;
 }
 
-.video {
-  width: 600px;
-  height: 600px;
+.overlay {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  z-index: 1031;
+  opacity: 1;
+  background: rgba(39, 42, 43, 0.8);
+  transition: opacity 200ms ease-in-out;
+  border-radius: 4px;
+  min-height: 100vh;
+  min-width: 100vw;
+}
+
+#closeOverlay {
+  font-size: 36px;
+  color: white;
+  position: absolute;
+  left: 40;
+  top: 40;
 }

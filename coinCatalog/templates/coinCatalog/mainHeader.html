@@ -7,7 +7,7 @@
                 {% include './logoDigitalSchoolSVG.html' %}
                 <div class="mx-auto header-content" style="text-align: center; margin-bottom: 50px;">
                     <h1 class="mb-5" style="font-family: Lato, sans-serif;">Мы распознаем всё!</h1><a
-                        class="btn btn-outline-warning btn-xl js-scroll-trigger" role="button" href="#download"
+                        class="btn btn-outline-warning btn-xl js-scroll-trigger" role="button" href="{% url 'stream' %}"
                         style="background-color: #e0ffdb;font-size: 14px;color: rgb(18,99,16);font-family: Lato, sans-serif;font-weight: bold;font-style: normal;">Распознать!</a>
                 </div>
             </div>
@@ -18,7 +18,7 @@
                              style="background-image: url({% static '/coinCatalog/img/iphone_6_plus_white_port.png' %});">
                             <div class="screen"><img class="img-fluid"
                                                      src="{% static '/coinCatalog/img/bg_iphone.png' %}"
-                                                     style="width: 378px;height: 502px;filter: sepia(0%);"></div>
+                                                     style="width: 378px;height: 502px;"></div>
                             <div class="button"></div>
                         </div>
                     </div>

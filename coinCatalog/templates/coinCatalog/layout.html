@@ -12,23 +12,25 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Muli">
     <link rel="stylesheet" href="{% static '/coinCatalog/fonts/font-awesome.min.css' %}">
     <link rel="stylesheet" href="{% static '/coinCatalog/css/untitled.css' %}">
+    <link rel="stylesheet" href="{% static '/coinCatalog/css/style.css' %}">
 </head>
 
-<body id="page-top" style="background: url({% static '/coinCatalog/img/bg-pattern.png' %}), linear-gradient(to left, #447722, #009900); min-height: calc(100% - 80px); height: calc(100% - 80px);">
+<body id="page-top" style="background: url({% static '/coinCatalog/img/bg-pattern.png' %}), linear-gradient(to left, #447722, #009900); min-height: calc(100% - 71px); height: calc(100% - 71px);">
+    <script src="{% static '/coinCatalog/js/jquery.min.js' %}"></script>
     <nav class="navbar navbar-light navbar-expand-lg fixed-top" id="mainNav"
          style="background-color: #ffffff;opacity: 0.85;">
         <div class="container">
             <button data-toggle="collapse" data-target="#navbarResponsive" class="navbar-toggler float-right"
                     aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation"><i
                     class="fa fa-bars"></i></button>
-            <img src="{% static '/coinCatalog/logosber.svg' %}" style="width: 200px;" class="navbar-brand">
+            <a href="{% url 'production' %}"><img src="{% static '/coinCatalog/logosber.svg' %}" style="width: 200px;" class="navbar-brand"></a>
             <div class="collapse navbar-collapse" id="navbarResponsive">
                 <ul class="nav navbar-nav ml-auto">
-                    <li class="nav-item" role="presentation"><a class="nav-link js-scroll-trigger" href="#download"
-                                                                style="font-weight: bold;font-size: 15px;color: #00ac00;">КАТАЛОГ</a>
+                    <li class="nav-item" role="presentation">
+                        <a class="nav-link js-scroll-trigger" href="{% url 'index' %}" style="font-weight: bold;font-size: 15px;color: #00ac00;">КАТАЛОГ</a>
                     </li>
-                    <li class="nav-item" role="presentation"><a class="nav-link js-scroll-trigger" href="#features"
-                                                                style="font-weight: bold;font-size: 15px;color: #00ac00;">РАСПОЗНАВАНИЕ</a>
+                    <li class="nav-item" role="presentation">
+                        <a class="nav-link js-scroll-trigger" href="{% url 'stream' %}" style="font-weight: bold;font-size: 15px;color: #00ac00;">РАСПОЗНАВАНИЕ</a>
                     </li>
                 </ul>
             </div>
@@ -42,7 +44,6 @@
             <p style="color: #00ac00;font-size: 14px;font-weight: bold;">© ШЦЭ ДВФУ, 2019</p>
         </div>
     </footer>
-    <script src="{% static '/coinCatalog/js/jquery.min.js' %}"></script>
     <script src="{% static '/coinCatalog/bootstrap/js/bootstrap.min.js' %}"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.4.1/jquery.easing.min.js"></script>
     <script src="{% static '/coinCatalog/js/new-age.js' %}"></script>

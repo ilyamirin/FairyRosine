@@ -11,7 +11,8 @@ urlpatterns = [
     url(r'^stream/$', views.stream, name='stream'),
     url(r'^dialog/$', views.dialog, name='dialog'),
     url(r'^$', views.index, name='index'),
-    url(r'^production/', views.production, name='production')
+    url(r'^production/', views.production, name='production'),
+    url(r'^getCoin/', views.get_coin, name='getCoin'),
 ]
 
 if settings.DEBUG:

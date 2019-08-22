@@ -3,6 +3,10 @@ from .models import Category
 from .models import Coin
 from .models import ImgCoin
 
+import json
+from django.forms.models import model_to_dict
+from django.http import HttpResponse
+
 def index(req):
   categories = Category.objects.all()
 
@@ -45,3 +49,16 @@ def coin(req, id=-1):
 
 def production(req):
   return render(req, 'coinCatalog/production.html')
+
+def get_coin(req, id=1):
+  coin = model_to_dict(Coin.objects.get(id=id))
+
+  imgs = ImgCoin.objects.filter(coin=id).values()
+  imgs = [img for img in imgs]
+
+  res = {
+    "coin": coin,
+    "imgs": imgs,
+  }
+
+  return HttpResponse(json.dumps(res))
