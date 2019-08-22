@@ -1,20 +1,8 @@
-from io import BytesIO
-
-from channels.consumer import SyncConsumer, AsyncConsumer
 from channels.generic.websocket import WebsocketConsumer, AsyncWebsocketConsumer
-from concurrent.futures import ThreadPoolExecutor
-import time
-import numpy as np
-import base64
-from asgiref.sync import async_to_sync
 import json
-import asyncio
-from PIL import Image
 from channels.layers import get_channel_layer
 from string import ascii_letters
 import random
-import operator
-import copy
 
 dialog_channel_layer = get_channel_layer("dialog")
 speech_channel_layer = get_channel_layer("speech")
@@ -45,7 +33,7 @@ class DialogServerConsumer(AsyncWebsocketConsumer):
             if len(text_data) > 0:
                 await dialog_channel_layer.send("dialog", {"type": "dialog_answer", "text": text_data, "uid": self.uid})
             if len(bytes_data) > 0:
-                await speech_channel_layer.send("speech", {"type": "recognize_speech", "text": text_data, "uid": self.uid})
+                await speech_channel_layer.send("speech", {"type": "recognize_speech", "text": bytes_data, "uid": self.uid})
         except Exception as e:
             print(e)
 

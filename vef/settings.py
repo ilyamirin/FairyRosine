@@ -62,8 +62,8 @@ DATABASES = {
 }
 
 
-def configure_channel(ip='127.0.0.1', port=6379, backend='channels_redis.core.RedisChannelLayer'):
-    return {'CONFIG': {'hosts': [(ip, port)]}, 'BACKEND': backend}
+def configure_channel(ip='127.0.0.1', port=6379, backend='channels_redis.core.RedisChannelLayer', hosts=None):
+    return {'CONFIG': {'hosts': hosts if hosts else [(ip, port)]}, 'BACKEND': backend}
 
 
 local_ip = '10.60.17.34'
@@ -71,14 +71,16 @@ remote_ip_1 = '10.193.48.75'
 
 local = configure_channel(local_ip)
 remote_1 = configure_channel(remote_ip_1)
+everybody = configure_channel(hosts=[(local_ip, 6379), (remote_ip_1, 6379)])
 
 # Channels layer configuration
 CHANNEL_LAYERS = {
-    'server': remote_1,
-    'face': remote_1,
+    'server': local,
+    'face': local,
     'coin': local,
     'dialog': local,
     'speech': local,
+    'clock': everybody,
     'default': local,
 }
 

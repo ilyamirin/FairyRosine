@@ -11,6 +11,8 @@ navigator.mediaDevices.getUserMedia({video: {width: 640, height: 480}})
     });
 
 function startWebSocketInteraction(){
+    let timeShift = 0;
+
     const getFrame = () => {
         console.log("send frame");
         const canvas = document.createElement('canvas');
@@ -19,7 +21,7 @@ function startWebSocketInteraction(){
         canvas.getContext('2d').drawImage(video, 0, 0);
 
         canvas.toBlob(function(blob){
-            let encoder = new TextEncoder().encode(String(+ new Date()));
+            let encoder = new TextEncoder().encode(String(+ new Date() - timeShift));
             let _blob = new Blob([encoder]);
             let res = new Blob([_blob, blob]);
             socket.send(res);
@@ -84,6 +86,12 @@ function startWebSocketInteraction(){
 
     socket.onmessage = function (event) {
         let data = JSON.parse(event.data);
+        if (data.type === 'sync_clock') {
+            let serverNow = Math.round(data.timestamp * 1000);
+            timeShift = + new Date() - serverNow;
+            console.log('sync clock, shift = ' + timeShift/1000 + ' seconds');
+            return;
+        }
         if (data.type == 'recognized_coins'){
             drawCoins(data.text);
         }

@@ -38,20 +38,27 @@ def get_image_data_from_bytes_data(bytes_data):
 
 
 class TimeShifter:
-    def __init__(self):
-        self.shift = {}
+    def get_age(self, timestamp):
+        if not hasattr(self, "shift"):
+            self.set_shift(timestamp)
+        return time.time() - timestamp - self.shift
 
-    def get_age(self, uid, timestamp):
+    def set_shift(self, timestamp):
         now = time.time()
-        if uid not in self.shift:
-            self.shift[uid] = now - timestamp
-        return now - timestamp - self.shift[uid]
+        self.shift = now - timestamp
+        print(f"sync clock, shift = {self.shift} seconds")
+
+    def sync_clock(self, message):
+        try:
+            timestamp = message["timestamp"]
+            self.set_shift(timestamp)
+        except Exception as e:
+            print(e)
 
 
 class FaceRecognitionConsumer(SyncConsumer, TimeShifter):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        TimeShifter.__init__(self)
         print("face worker created", flush=True)
         sys.path.append("C:/Projects/ServantGrunbeld")
 
@@ -92,7 +99,7 @@ class FaceRecognitionConsumer(SyncConsumer, TimeShifter):
         try:
             uid = message["uid"]
             timestamp, img_data = get_image_data_from_bytes_data(message["bytes_data"])
-            age = self.get_age(uid, timestamp)
+            age = self.get_age(timestamp)
             print(f"face {'pass: ' if age >= 1 else 'go: '} {age}")
             if age >= 1:
                 return
@@ -128,7 +135,6 @@ class FaceRecognitionConsumer(SyncConsumer, TimeShifter):
 class CoinRecognitionConsumer(SyncConsumer, TimeShifter):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        TimeShifter.__init__(self)
         print("coin worker created", flush=True)
         path = "C:/Projects/darknet_win"
         sys.path.append(path)
@@ -159,7 +165,7 @@ class CoinRecognitionConsumer(SyncConsumer, TimeShifter):
         try:
             uid = message["uid"]
             timestamp, frame_read = get_image_data_from_bytes_data(message["bytes_data"])
-            age = self.get_age(uid, timestamp)
+            age = self.get_age(timestamp)
             print(f"coin {'pass: ' if age >= 1 else 'go: '} {age}")
             if age >= 1:
                 return

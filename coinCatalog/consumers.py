@@ -1,23 +1,15 @@
-from io import BytesIO
-
-from channels.consumer import SyncConsumer, AsyncConsumer
 from channels.generic.websocket import WebsocketConsumer, AsyncWebsocketConsumer
-from concurrent.futures import ThreadPoolExecutor
-import time
-import numpy as np
-import base64
-from asgiref.sync import async_to_sync
 import json
 import asyncio
-from PIL import Image
 from channels.layers import get_channel_layer
 from string import ascii_letters
 import random
 import operator
-import copy
+import time
 
 face_channel_layer = get_channel_layer("face")
 coin_channel_layer = get_channel_layer("coin")
+clock_channel_layer = get_channel_layer("clock")
 
 
 class StreamConsumer(AsyncWebsocketConsumer):
@@ -28,11 +20,26 @@ class StreamConsumer(AsyncWebsocketConsumer):
         self.uid = "".join(random.choice(ascii_letters) for _ in range(8))
         self.rec_coins = {}
         self.cnt_rec_coins = 0
-        print("consumer created")
+        print("consumer created", flush=True)
+
+    async def sync_clock(self):
+        while True:
+            message = {"type": "sync_clock", "timestamp": time.time(), "uid": self.uid}
+            try:
+                await asyncio.gather(
+                    clock_channel_layer.send("recognizefaces", message),
+                    clock_channel_layer.send("recognizecoins", message),
+                    self.send(json.dumps(message)),
+                )
+                print("sync clock", flush=True)
+            except Exception as e:
+                print('sync clock exception: ' + str(e))
+            await asyncio.sleep(4)
 
     async def connect(self):
         print('connection successful!!')
         await self.accept()
+        asyncio.get_event_loop().create_task(self.sync_clock())
 
     async def faces_ready(self, message):
         if message["uid"] == self.uid:
