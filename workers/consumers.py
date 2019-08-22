@@ -52,8 +52,8 @@ class FaceRecognitionConsumer(SyncConsumer, TimeShifter):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         TimeShifter.__init__(self)
-        print("worker created", flush=True)
-        sys.path.append("C:/Users/dvfu/Desktop/coinCatalog/git_projs/ServantGrunbeld")
+        print("face worker created", flush=True)
+        sys.path.append("C:/Projects/ServantGrunbeld")
 
         from FaceRecognition.InsightFaceRecognition import FaceRecognizer, RecognizerConfig
         from FaceDetection.RetinaFaceDetector import RetinaFace

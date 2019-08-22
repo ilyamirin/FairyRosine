@@ -61,51 +61,25 @@ DATABASES = {
     }
 }
 
-redis_port = 6379
 
-local_ip = '10.193.48.75'
-local_hosts = [(local_ip, redis_port)]
+def configure_channel(ip='127.0.0.1', port=6379, backend='channels_redis.core.RedisChannelLayer'):
+    return {'CONFIG': {'hosts': [(ip, port)]}, 'BACKEND': backend}
 
-remote_ip = '10.60.17.34'
-remote_hosts = [(remote_ip, redis_port)]
+
+local_ip = '10.60.17.34'
+remote_ip_1 = '10.193.48.75'
+
+local = configure_channel(local_ip)
+remote_1 = configure_channel(remote_ip_1)
 
 # Channels layer configuration
 CHANNEL_LAYERS = {
-    'default': {
-        'BACKEND': 'channels_redis.core.RedisChannelLayer',
-        'CONFIG': {
-            'hosts': local_hosts,
-            # 'hosts': remote_hosts,
-        }
-    },
-    'face': {
-        'BACKEND': 'channels_redis.core.RedisChannelLayer',
-        'CONFIG': {
-            'hosts': local_hosts,
-            # 'hosts': remote_hosts,
-        }
-    },
-    'coin': {
-        'BACKEND': 'channels_redis.core.RedisChannelLayer',
-        'CONFIG': {
-            'hosts': local_hosts,
-            # 'hosts': remote_hosts,
-        }
-    },
-    'dialog': {
-        'BACKEND': 'channels_redis.core.RedisChannelLayer',
-        'CONFIG': {
-            'hosts': local_hosts,
-            # 'hosts': remote_hosts,
-        }
-    },
-    'server': {
-        'BACKEND': 'channels_redis.core.RedisChannelLayer',
-        'CONFIG': {
-            'hosts': local_hosts,
-            # 'hosts': remote_hosts,
-        }
-    }
+    'server': remote_1,
+    'face': remote_1,
+    'coin': local,
+    'dialog': local,
+    'speech': local,
+    'default': local,
 }
 
 AUTH_PASSWORD_VALIDATORS = [

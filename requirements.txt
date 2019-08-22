@@ -11,3 +11,4 @@ scikit-image
 scipy
 programy
 google-cloud-speech
+django-extensions
