@@ -1,0 +1,13 @@
+django
+channels
+numpy
+pillow
+asgi_redis
+channels_redis
+mxnet
+opencv-python
+h5py
+scikit-image
+scipy
+programy
+google-cloud-speech
