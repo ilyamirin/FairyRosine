@@ -14,6 +14,7 @@ from channels.layers import get_channel_layer
 from string import ascii_letters
 import random
 import operator
+import copy
 
 
 face_channel_layer = get_channel_layer("face")
@@ -65,9 +66,10 @@ class StreamConsumer(AsyncWebsocketConsumer):
 
     async def dialog_answer_ready(self, message):
         if message["uid"] == self.uid:
-            message['type'] = 'dialog_answer'
+            res = copy.deepcopy(message)
+            res['type'] = 'dialog_answer'
             print(f'{self.uid}: dialog ready')
-            await self.send(json.dumps(message))
+            await self.send(json.dumps(res))
 
     async def receive(self, text_data=None, bytes_data=None):
         try:

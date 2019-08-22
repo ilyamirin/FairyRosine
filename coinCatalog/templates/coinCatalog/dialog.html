@@ -10,29 +10,39 @@
   <link rel="stylesheet" href="{% static '/coinCatalog/css/style.css' %}">
 </head>
 <body>
-  <input type="text" id="question" name="question" size="80"/>
-  <button id="send">Отправить</button>
-  <textarea id="history" name="history" rows="20" cols="80"></textarea>
-
+    <div>
+          <input type="text" id="question" name="question" size="80"/>
+          <button id="send">Отправить</button>
+    </div>
+    <div>
+          <textarea id="history" name="history" rows="20" cols="80"></textarea>
+    </div>
   <script>
 
       let ws_scheme = window.location.protocol == "https:" ? "wss" : "ws";
       let socketUrl = ws_scheme + "://" + window.location.host + window.location.pathname;
       let socket = new WebSocket(socketUrl);
       var button = document.getElementById("send");
+      var history1 = document.getElementById("history");
 
       button.addEventListener("click", function() {
-          var input = document.getElementById("question");
-          socket.send(input.value);
+
+          var input = document.getElementById("question").value;
+          document.getElementById("question").value = "";
+          history1.value += input + ":\n";
+          socket.send(input);
       });
 
       socket.onmessage = function (event) {
         let data = JSON.parse(event.data);
         console.log(event);
-        if (data.type == 'dialog_answer'){
-            var history = document.getElementById("history");
-            history.value += data.text + "\n";
+        if (data.type == 'dialog_answer') {
+            console.log(data);
+            history1.value += data.text + "\n";
+            console.log(data.topic);
+            //document.getElementById(data.topic).setAttribute("fill", "red");
             console.log(data.text);
+            console.log(data.topic);
         }
     };
 
