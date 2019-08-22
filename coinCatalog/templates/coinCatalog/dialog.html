@@ -8,15 +8,19 @@
   <title>Sberbank</title>
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
   <link rel="stylesheet" href="{% static '/coinCatalog/css/style.css' %}">
+  <script src="https://rawgit.com/mattdiamond/Recorderjs/master/dist/recorder.js"></script>
 </head>
 <body>
     <div>
-          <input type="text" id="question" name="question" size="80"/>
-          <button id="send">Отправить</button>
-    </div>
-    <div>
           <textarea id="history" name="history" rows="20" cols="80"></textarea>
     </div>
+    <div>
+          <input type="text" id="question" name="question" size="80"/>
+    </div>
+    <button id="send">Отправить</button>
+    <button id="mic_btn">Микрофон вкл.</button>
+
+
   <script>
 
       let ws_scheme = window.location.protocol == "https:" ? "wss" : "ws";
@@ -24,25 +28,63 @@
       let socket = new WebSocket(socketUrl);
       var button = document.getElementById("send");
       var history1 = document.getElementById("history");
+      var micBtn = document.getElementById("mic_btn");
+      var input = document.getElementById("question");
+      var rec = null;
+      var isRecording = false;
 
-      button.addEventListener("click", function() {
-
-          var input = document.getElementById("question").value;
-          document.getElementById("question").value = "";
-          history1.value += input + ":\n";
-          socket.send(input);
+      navigator.mediaDevices.getUserMedia({
+          audio: true
+      }).then(stream => {
+          const aCtx = new AudioContext();
+          const streamSource = aCtx.createMediaStreamSource(stream);
+          rec = new Recorder(streamSource);
       });
+
+      micBtn.addEventListener("click", function() {
+          isRecording = !isRecording;
+          if (isRecording) {
+              micBtn.innerText = "Микрофон выкл.";
+              rec.clear();
+              rec.record();
+          }
+          else {
+              micBtn.innerText = "Микрофон вкл.";
+              rec.stop()
+              rec.exportWAV((blob) => {
+                  socket.send(blob);
+              });
+          }
+      });
+
+      function sendAnswer() {
+          let input = document.getElementById("question").value;
+          document.getElementById("question").value = "";
+          history1.value = input + "\n\n" + history1.value;
+          socket.send(input);
+      }
+
+      button.addEventListener("click", sendAnswer);
+
+      input.onkeypress = function(event) {
+          if (event.keyCode === 13) {
+              sendAnswer();
+          }
+      };
 
       socket.onmessage = function (event) {
         let data = JSON.parse(event.data);
         console.log(event);
         if (data.type == 'dialog_answer_ready') {
             console.log(data);
-            history1.value += data.text + "\n";
+            history1.value = data.text + "\n\n" + history1.value;
             console.log(data.topic);
             //document.getElementById(data.topic).setAttribute("fill", "red");
             console.log(data.text);
             console.log(data.topic);
+        }
+        if (data.type === 'recognized_speech_ready') {
+            history1.value = data.text + "\n\n" + history1.value;
         }
     };
 

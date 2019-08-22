@@ -12,3 +12,4 @@ scipy
 programy
 google-cloud-speech
 django-extensions
+pydub

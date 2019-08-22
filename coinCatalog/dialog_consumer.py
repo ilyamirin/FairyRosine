@@ -23,17 +23,24 @@ class DialogServerConsumer(AsyncWebsocketConsumer):
             print(f'{self.uid}: dialog ready')
             await self.send(json.dumps(message))
 
+    async def send_to_bot(self, text):
+        try:
+            await dialog_channel_layer.send("dialog", {"type": "dialog_answer", "text": text, "uid": self.uid})
+        except Exception as e:
+            print(f"send to bot: {e}")
+
     async def recognized_speech_ready(self, message):
-        if message["uid"] == self.uid:
+        if message["uid"] == self.uid and message["text"] != "":
             await self.send(json.dumps(message))
+            await self.send_to_bot(message["text"])
 
     async def receive(self, text_data=None, bytes_data=None):
         try:
             print(f"{self.uid}: receive {len(text_data) if text_data else 0} text data, {len(bytes_data) if bytes_data else 0} bytes data")
-            if len(text_data) > 0:
-                await dialog_channel_layer.send("dialog", {"type": "dialog_answer", "text": text_data, "uid": self.uid})
-            if len(bytes_data) > 0:
-                await speech_channel_layer.send("speech", {"type": "recognize_speech", "text": bytes_data, "uid": self.uid})
+            if text_data and len(text_data) > 0:
+                await self.send_to_bot(text_data)
+            if bytes_data and len(bytes_data) > 0:
+                await speech_channel_layer.send("speech", {"type": "recognize_speech", "audio": bytes_data, "uid": self.uid})
         except Exception as e:
             print(e)
 
