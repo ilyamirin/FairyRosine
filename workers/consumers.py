@@ -136,8 +136,8 @@ class CoinRecognitionConsumer(SyncConsumer, TimeShifter):
         sys.path.pop()
         self.dn = darknet
 
-        config_path = f"{path}/yolov3.cfg"
-        weight_path = f"{path}/backup/yolov3_last.weights"
+        config_path = f"C:\Projects\coins\cfg\yolov3.cfg"
+        weight_path = f"{path}/backup/yolov3_best.weights"
         meta_path = r"C:\Projects\coins\cfg\coins.data"  # "./cfg/coco.data"
 
         self.net_main = darknet.load_net_custom(config_path.encode("ascii"), weight_path.encode("ascii"), 0, 1)

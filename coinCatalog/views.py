@@ -42,3 +42,6 @@ def coin(req, id=-1):
   }
 
   return render(req, 'coinCatalog/coin.html', coin)
+
+def production(req):
+  return render(req, 'coinCatalog/production.html')

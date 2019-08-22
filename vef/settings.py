@@ -18,7 +18,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django_extensions',
-    'sslserver',
 ]
 
 MIDDLEWARE = [
@@ -37,7 +36,9 @@ ROOT_URLCONF = 'vef.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [
+            os.path.join(BASE_DIR, '/coinCatalog/templates/coinCatalog/'),
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -60,53 +61,49 @@ DATABASES = {
     }
 }
 
+redis_port = 6379
+
+local_ip = '10.193.48.75'
+local_hosts = [(local_ip, redis_port)]
+
+remote_ip = '10.60.17.34'
+remote_hosts = [(remote_ip, redis_port)]
+
 # Channels layer configuration
 CHANNEL_LAYERS = {
     'default': {
         'BACKEND': 'channels_redis.core.RedisChannelLayer',
         'CONFIG': {
-            'hosts': [('10.193.48.43', 6379)],
-            # 'hosts': [('10.60.17.34', 6379)],
-            # 'capacity': 1,
-            # 'expiry': 1,
+            'hosts': local_hosts,
+            # 'hosts': remote_hosts,
         }
     },
     'face': {
         'BACKEND': 'channels_redis.core.RedisChannelLayer',
         'CONFIG': {
-            # 'hosts': [('10.193.48.43', 6379)],
-            'hosts': [('10.60.17.34', 6379)],
-            # 'capacity': 1,
-            # 'expiry': 1,
+            'hosts': local_hosts,
+            # 'hosts': remote_hosts,
         }
     },
     'coin': {
         'BACKEND': 'channels_redis.core.RedisChannelLayer',
         'CONFIG': {
-            # 'hosts': [('10.193.48.43', 6379)],
-            # 'hosts': [('10.60.16.44', 6379)],
-            'hosts': [('10.60.17.34', 6379)],
-            # 'capacity': 1,
-            # 'expiry': 1,
+            'hosts': local_hosts,
+            # 'hosts': remote_hosts,
         }
     },
     'dialog': {
         'BACKEND': 'channels_redis.core.RedisChannelLayer',
         'CONFIG': {
-            # 'hosts': [('10.193.48.43', 6379)],
-            # 'hosts': [('10.60.16.44', 6379)],
-            'hosts': [('10.60.17.34', 6379)],
-            # 'capacity': 1,
-            # 'expiry': 1,
+            'hosts': local_hosts,
+            # 'hosts': remote_hosts,
         }
     },
     'server': {
         'BACKEND': 'channels_redis.core.RedisChannelLayer',
         'CONFIG': {
-            # 'hosts': [('10.60.17.34', 6379)],
-            'hosts': [('10.193.48.43', 6379)],
-            # 'capacity': 1,
-            # 'expiry': 1,
+            'hosts': local_hosts,
+            # 'hosts': remote_hosts,
         }
     }
 }

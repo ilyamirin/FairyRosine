@@ -1,0 +1,30 @@
+{% load static %}
+<header class="masthead"
+        style="background: url({% static '/coinCatalog/img/bg-pattern.png' %}), linear-gradient(to left, #447722, #009900);min-height: 100%;padding-top: 80px;padding-bottom: 20px;">
+    <div class="container h-100">
+        <div class="row h-100">
+            <div class="col-lg-7 my-auto" style="text-align: center;padding-bottom: 0px;margin-bottom: 0px;">
+                {% include './logoDigitalSchoolSVG.html' %}
+                <div class="mx-auto header-content" style="text-align: center; margin-bottom: 50px;">
+                    <h1 class="mb-5" style="font-family: Lato, sans-serif;">Мы распознаем всё!</h1><a
+                        class="btn btn-outline-warning btn-xl js-scroll-trigger" role="button" href="#download"
+                        style="background-color: #e0ffdb;font-size: 14px;color: rgb(18,99,16);font-family: Lato, sans-serif;font-weight: bold;font-style: normal;">Распознать!</a>
+                </div>
+            </div>
+            <div class="col-lg-5 my-auto">
+                <div class="device-container">
+                    <div class="device-mockup iphone6_plus portrait white">
+                        <div class="device"
+                             style="background-image: url({% static '/coinCatalog/img/iphone_6_plus_white_port.png' %});">
+                            <div class="screen"><img class="img-fluid"
+                                                     src="{% static '/coinCatalog/img/bg_iphone.png' %}"
+                                                     style="width: 378px;height: 502px;filter: sepia(0%);"></div>
+                            <div class="button"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="iphone-mockup"></div>
+            </div>
+        </div>
+    </div>
+</header>
