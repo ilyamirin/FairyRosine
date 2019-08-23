@@ -4,7 +4,6 @@ numpy
 pillow
 asgi_redis
 channels_redis
-mxnet
 opencv-python
 h5py
 scikit-image
