@@ -6,6 +6,7 @@ from string import ascii_letters
 import random
 import operator
 import time
+import copy
 
 face_channel_layer = get_channel_layer("face")
 coin_channel_layer = get_channel_layer("coin")
@@ -43,13 +44,15 @@ class StreamConsumer(AsyncWebsocketConsumer):
 
     async def faces_ready(self, message):
         if message["uid"] == self.uid:
-            message['type'] = 'face'
+            res = copy.deepcopy(message)
+            res['type'] = 'face'
             print(f'{self.uid}: faces ready')
-            await self.send(json.dumps(message))
+            await self.send(json.dumps(res))
 
     async def coins_ready(self, message):
         if message["uid"] == self.uid:
-            message['type'] = 'coin'
+            res = copy.deepcopy(message)
+            res['type'] = 'coin'
             print(f'{self.uid}: coins ready')
 
             for coin in message["text"]:
@@ -67,7 +70,7 @@ class StreamConsumer(AsyncWebsocketConsumer):
                 self.cnt_rec_coins = 0
                 self.rec_coins = {}
 
-            await self.send(json.dumps(message))
+            await self.send(json.dumps(res))
 
     async def receive(self, text_data=None, bytes_data=None):
         try:

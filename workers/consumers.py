@@ -171,15 +171,19 @@ class CoinRecognitionConsumer(SyncConsumer, TimeShifter):
             if age >= 1:
                 return
             start_recog = time.time()
-            frame_rgb = cv2.cvtColor(frame_read, cv2.COLOR_BGR2RGB)
+            frame_rgb = frame_read
+            # frame_rgb = cv2.cvtColor(frame_read, cv2.COLOR_BGR2RGB)
             frame_resized = cv2.resize(frame_rgb,
                                        (self.dn.network_width(self.net_main),
                                         self.dn.network_height(self.net_main)),
                                        interpolation=cv2.INTER_LINEAR)
 
+            print((self.dn.network_width(self.net_main),
+                                        self.dn.network_height(self.net_main)))
+
             self.dn.copy_image_from_bytes(self.darknet_image, frame_resized.tobytes())
 
-            detections = self.dn.detect_image(self.net_main, self.meta_main, self.darknet_image, thresh=0.5)
+            detections = self.dn.detect_image(self.net_main, self.meta_main, self.darknet_image, thresh=0.3)
             response = []
             kx = frame_rgb.shape[1] / self.dn.network_width(self.net_main)
             ky = frame_rgb.shape[0] / self.dn.network_height(self.net_main)
