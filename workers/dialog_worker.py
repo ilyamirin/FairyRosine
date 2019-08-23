@@ -26,7 +26,6 @@ class Args(args.ClientArguments):
 
 
 class BotClientMod(ConsoleBotClient):
-
     def parse_arguments(self, *args, **kwargs):
         client_args = Args()
         client_args.parse_args(self)
@@ -37,24 +36,21 @@ server_channel_layer = get_channel_layer("server")
 
 
 class DialogConsumer(SyncConsumer):
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         print("dialog worker created", flush=True)
         self.bot = BotClientMod("1")
-        self.bot.client_context = self.bot.create_client_context(self.bot._configuration.client_configuration.default_userid)
-        print()
+        self.clients = {}
 
     def dialog_answer(self, message):
         try:
             uid = message["uid"]
-            answer = self.bot.client_context.bot.ask_question(self.bot.client_context, message["text"], responselogger=self.bot)
-
-            conversation = self.bot.client_context.bot.get_conversation(self.bot.client_context)
+            if uid not in self.clients:
+                self.clients[uid] = self.bot.create_client_context(uid)
+            answer = self.clients[uid].bot.ask_question(self.clients[uid], message["text"], responselogger=self.bot)
+            conversation = self.clients[uid].bot.get_conversation(self.clients[uid])
             topic = conversation.property("topic")
-
-            #topic = self.bot.client_context.brain.dynamics.dynamic_var(self.bot.client_context, "topic")
-
+            # topic = self.bot.client_context.bot.ask_question(self.bot.client_context, "topic", responselogger=self.bot)[:-1].lower()
             print(f"answer = {answer}")
             print(f"topic = {topic}")
             async_to_sync(server_channel_layer.group_send)(
