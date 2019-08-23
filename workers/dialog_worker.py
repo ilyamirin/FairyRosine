@@ -41,7 +41,6 @@ class DialogConsumer(SyncConsumer):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         print("dialog worker created", flush=True)
-        print(1111)
         self.bot = BotClientMod("1")
         self.bot.client_context = self.bot.create_client_context(self.bot._configuration.client_configuration.default_userid)
         print()
@@ -50,8 +49,12 @@ class DialogConsumer(SyncConsumer):
         try:
             uid = message["uid"]
             answer = self.bot.client_context.bot.ask_question(self.bot.client_context, message["text"], responselogger=self.bot)
-            topic = 'hello'
-            #topic = self.bot.client_context.bot.ask_question(self.bot.client_context, "topic", responselogger=self.bot)[:-1].lower()
+
+            conversation = self.bot.client_context.bot.get_conversation(self.bot.client_context)
+            topic = conversation.property("topic")
+
+            #topic = self.bot.client_context.brain.dynamics.dynamic_var(self.bot.client_context, "topic")
+
             print(f"answer = {answer}")
             print(f"topic = {topic}")
             async_to_sync(server_channel_layer.group_send)(

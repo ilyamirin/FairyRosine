@@ -20,6 +20,10 @@
     <button id="send">Отправить</button>
     <button id="mic_btn">Микрофон вкл.</button>
 
+    <div id="graph_frame" style="width: 50%; height: 50%; overflow: hidden;">
+        {% include 'coinCatalog/sb_first.gv.svg' %}
+    </div>
+
 
   <script>
 
@@ -64,6 +68,29 @@
           socket.send(input);
       }
 
+      var previousRect = null;
+
+      function highLight(topic) {
+            if (previousRect != null) {
+                previousRect.setAttribute("fill", "none");
+            }
+
+            //get current topic's rectangle, color it
+            let currentRect = document.getElementById(topic).getElementsByTagName("polygon")[0];
+            currentRect.setAttribute("fill", "#00AC00");
+            previousRect = currentRect;
+
+            //get position, scroll iframe to current topic's rectangle
+            let textObj = document.getElementById(topic).getElementsByTagName("text")[0]
+            let x = textObj.getAttribute("x");
+            let y = textObj.getAttribute("y");
+            let xOffset = document.getElementById("graph_frame").clientWidth / 2
+            let yOffset = document.getElementById("graph_frame").clientHeight / 2
+            console.log(x, y);
+            document.getElementById("graph_frame").scrollTo({left: 1*x + 4 - xOffset , top: 1*y + 423 - yOffset, behavior: "smooth"});
+            console.log(1*x + 4, 1*y + 423)
+      }
+
       button.addEventListener("click", sendAnswer);
 
       input.onkeypress = function(event) {
@@ -76,12 +103,9 @@
         let data = JSON.parse(event.data);
         console.log(event);
         if (data.type == 'dialog_answer_ready') {
-            console.log(data);
             history1.value = data.text + "\n\n" + history1.value;
-            console.log(data.topic);
-            //document.getElementById(data.topic).setAttribute("fill", "red");
-            console.log(data.text);
-            console.log(data.topic);
+            highLight(data.topic);
+
         }
         if (data.type === 'recognized_speech_ready') {
             history1.value = data.text + "\n\n" + history1.value;
