@@ -1,76 +1,73 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  {% load static %}
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>Sberbank</title>
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-  <link rel="stylesheet" href="{% static '/coinCatalog/css/style.css' %}">
-  <script src="https://rawgit.com/mattdiamond/Recorderjs/master/dist/recorder.js"></script>
-</head>
-<body>
-    <div>
-          <textarea id="history" name="history" rows="20" cols="80"></textarea>
+{% extends 'coinCatalog/layout.html' %}
+
+{% block content %}
+    {% load static %}
+
+    <script src="https://rawgit.com/mattdiamond/Recorderjs/master/dist/recorder.js"></script>
+    <div class="container" style="padding-top: 110px; min-height: 100%; padding-bottom: 20px;">
+        <div class="row" style="padding: 20px; background-color: white; border-radius: 5px;">
+            <div class="col-md-12" style="text-align: center;">
+                <div style="padding-bottom: 20px;">
+                    <textarea id="history" name="history" rows="10" cols="80" placeholder="Здесь будет история сообщений"></textarea>
+                    <div>
+                        <input type="text" id="question" name="question" size="80" placeholder="Введите ваше сообщение здесь"/>
+                    </div>
+                    <br>
+                    <button id="send" class="btn btn-large btn-success">Отправить</button>
+                    <button id="mic_btn" class="btn btn-large btn-outline-success" style="color: #28a745; border-color: #28a745"><i class="fa fa-microphone" aria-hidden="true"></i></button>
+                </div>
+                <div id="graph_frame" style="width: 100%; overflow: hidden;">
+                    {% include 'coinCatalog/sb_first.gv.svg' %}
+                </div>
+            </div>
+        </div>
     </div>
-    <div>
-          <input type="text" id="question" name="question" size="80"/>
-    </div>
-    <button id="send">Отправить</button>
-    <button id="mic_btn">Микрофон вкл.</button>
 
-    <div id="graph_frame" style="width: 50%; height: 50%; overflow: hidden;">
-        {% include 'coinCatalog/sb_first.gv.svg' %}
-    </div>
+    <script>
 
+        let ws_scheme = window.location.protocol == "https:" ? "wss" : "ws";
+        let socketUrl = ws_scheme + "://" + window.location.host + window.location.pathname;
+        let socket = new WebSocket(socketUrl);
+        var button = document.getElementById("send");
+        var history1 = document.getElementById("history");
+        var micBtn = document.getElementById("mic_btn");
+        var input = document.getElementById("question");
+        var rec = null;
+        var isRecording = false;
 
-  <script>
+        navigator.mediaDevices.getUserMedia({
+            audio: true
+        }).then(stream => {
+            const aCtx = new AudioContext();
+            const streamSource = aCtx.createMediaStreamSource(stream);
+            rec = new Recorder(streamSource);
+        });
 
-      let ws_scheme = window.location.protocol == "https:" ? "wss" : "ws";
-      let socketUrl = ws_scheme + "://" + window.location.host + window.location.pathname;
-      let socket = new WebSocket(socketUrl);
-      var button = document.getElementById("send");
-      var history1 = document.getElementById("history");
-      var micBtn = document.getElementById("mic_btn");
-      var input = document.getElementById("question");
-      var rec = null;
-      var isRecording = false;
+        micBtn.addEventListener("click", function () {
+            isRecording = !isRecording;
+            if (isRecording) {
+                micBtn.innerText = "Микрофон выкл.";
+                rec.clear();
+                rec.record();
+            } else {
+                micBtn.innerText = "Микрофон вкл.";
+                rec.stop()
+                rec.exportWAV((blob) => {
+                    socket.send(blob);
+                });
+            }
+        });
 
-      navigator.mediaDevices.getUserMedia({
-          audio: true
-      }).then(stream => {
-          const aCtx = new AudioContext();
-          const streamSource = aCtx.createMediaStreamSource(stream);
-          rec = new Recorder(streamSource);
-      });
+        function sendAnswer() {
+            let input = document.getElementById("question").value;
+            document.getElementById("question").value = "";
+            history1.value = input + "\n\n" + history1.value;
+            socket.send(input);
+        }
 
-      micBtn.addEventListener("click", function() {
-          isRecording = !isRecording;
-          if (isRecording) {
-              micBtn.innerText = "Микрофон выкл.";
-              rec.clear();
-              rec.record();
-          }
-          else {
-              micBtn.innerText = "Микрофон вкл.";
-              rec.stop()
-              rec.exportWAV((blob) => {
-                  socket.send(blob);
-              });
-          }
-      });
+        var previousRect = null;
 
-      function sendAnswer() {
-          let input = document.getElementById("question").value;
-          document.getElementById("question").value = "";
-          history1.value = input + "\n\n" + history1.value;
-          socket.send(input);
-      }
-
-      var previousRect = null;
-
-      function highLight(topic) {
+        function highLight(topic) {
             if (previousRect != null) {
                 previousRect.setAttribute("fill", "none");
             }
@@ -87,50 +84,49 @@
             let xOffset = document.getElementById("graph_frame").clientWidth / 2
             let yOffset = document.getElementById("graph_frame").clientHeight / 2
             console.log(x, y);
-            document.getElementById("graph_frame").scrollTo({left: 1*x + 4 - xOffset , top: 1*y + 423 - yOffset, behavior: "smooth"});
-            console.log(1*x + 4, 1*y + 423)
-      }
-
-      button.addEventListener("click", sendAnswer);
-
-      input.onkeypress = function(event) {
-          if (event.keyCode === 13) {
-              sendAnswer();
-          }
-      };
-
-      socket.onmessage = function (event) {
-        let data = JSON.parse(event.data);
-        console.log(event);
-        if (data.type == 'dialog_answer_ready') {
-            history1.value = data.text + "\n\n" + history1.value;
-            highLight(data.topic);
-
+            document.getElementById("graph_frame").scrollTo({
+                left: 1 * x + 4 - xOffset,
+                top: 1 * y + 423 - yOffset,
+                behavior: "smooth"
+            });
+            console.log(1 * x + 4, 1 * y + 423)
         }
-        if (data.type === 'recognized_speech_ready') {
-            history1.value = data.text + "\n\n" + history1.value;
-        }
-    };
 
-    socket.onopen = function (event) {
-        console.log('socket opened');
-    };
+        button.addEventListener("click", sendAnswer);
 
-    socket.onclose = function (event) {
-        console.log('socket closed');
-        alert("Соединение было разорвано!");
-    };
+        input.onkeypress = function (event) {
+            if (event.keyCode === 13) {
+                sendAnswer();
+            }
+        };
 
-    socket.onerror = function (event) {
-        console.log('socket errors');
-        alert("Сокет вернул ошибку!");
-    };
+        socket.onmessage = function (event) {
+            let data = JSON.parse(event.data);
+            console.log(event);
+            if (data.type == 'dialog_answer_ready') {
+                history1.value = data.text + "\n\n" + history1.value;
+                highLight(data.topic);
 
-  </script>
+            }
+            if (data.type === 'recognized_speech_ready') {
+                history1.value = data.text + "\n\n" + history1.value;
+            }
+        };
 
-  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
-  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+        socket.onopen = function (event) {
+            console.log('socket opened');
+        };
 
-</body>
-</html>
+        socket.onclose = function (event) {
+            console.log('socket closed');
+            alert("Соединение было разорвано!");
+        };
+
+        socket.onerror = function (event) {
+            console.log('socket errors');
+            alert("Сокет вернул ошибку!");
+        };
+
+    </script>
+
+{% endblock %}
