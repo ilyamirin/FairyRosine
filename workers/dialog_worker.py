@@ -5,14 +5,18 @@ from programy.clients.events.console.client import ConsoleBotClient
 import programy.clients.args as args
 
 from channels.layers import get_channel_layer
+from os import getcwd
+
+
+cwd = getcwd()
 
 
 class Args(args.ClientArguments):
     def __init__(self):
         self.args = None
-        self._bot_root = "C:\Projects\FairyRosine\workers\\NosferatuZodd\storage"
-        self._logging = 'C:\Projects\FairyRosine\workers\\NosferatuZodd\config\windows\logging.yaml'
-        self._config_name = 'C:\Projects\FairyRosine\workers\\NosferatuZodd\config\windows\config.yaml'
+        self._bot_root = cwd + "\workers\\NosferatuZodd\storage"
+        self._logging = cwd + '\workers\\NosferatuZodd\config\windows\logging.yaml'
+        self._config_name = cwd + '\workers\\NosferatuZodd\config\windows\config.yaml'
         self._config_format = 'yaml'
         self._no_loop = False
         self._substitutions = None
