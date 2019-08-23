@@ -28,7 +28,7 @@ function startWebSocketInteraction(){
         }, 'image/jpeg', 0.8);
 
     };
-    const FPS = 5;
+    const FPS = 3;
 
     let ws_scheme = window.location.protocol == "https:" ? "wss" : "ws";
     let socketUrl = ws_scheme + "://" + window.location.host + window.location.pathname.slice(0, -1) + "1/";
