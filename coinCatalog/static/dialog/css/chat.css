@@ -116,6 +116,12 @@
 			border:1.5px solid #f5f6fa;
 
 		}
+		#user_name_msg {
+		    color: white;
+		    font-size: 14px;
+		    -webkit-text-stroke-width: 1px;
+            -webkit-text-stroke-color: #000;
+		}
 	.img_cont{
 			position: relative;
 			height: 70px;

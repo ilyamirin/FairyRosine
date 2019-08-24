@@ -12,7 +12,7 @@ let micBtnStyle = document.getElementById('mic_btn_style');
 let pushVoice = document.getElementById('pushVoice');
 let timeShift = 0;
 let FPS = 1;
-let imgCompressionLvl = 1;
+let imgCompressionLvl = 0.8;
 const video = document.querySelector('video');
 
 let message_history = [];
@@ -66,6 +66,7 @@ body.addEventListener("touchend", micMouseUp);
 
 let avatars = [];
 let currentAvatar = null;
+let currentName = "";
 
 function renderChat(){
     let parent = document.getElementById('parentChat');
@@ -76,7 +77,8 @@ function renderChat(){
     message_history.forEach((v, i) => {
         if (v[0] == "user") {
             let part1 = '<div class="d-flex justify-content-start mb-4"><div class="img_cont_msg"><img src="' + (v[2] == null ? avatars[i] : ("data:image/png;base64," + v[2])) + '" class="rounded-circle user_img_msg"></div>';
-            let part2 = '<div class="msg_cotainer">';
+//            let part15 = '<div class="msg_cotainer">';
+            let part2 = '<div class="msg_cotainer"><div id="user_name_msg">' + v[3] + '</div>';
             let part3 = '</div></div>';
             parent.innerHTML += part1 + part2 + v[1] + part3;
         }
@@ -96,7 +98,7 @@ function sendAnswer() {
     if (!input.length)
         return;
 
-    renderChat(message_history.push(["user", input, currentAvatar]));
+    renderChat(message_history.push(["user", input, currentAvatar, currentName]));
     socket.send(input);
 }
 
@@ -148,7 +150,7 @@ socket.onmessage = function (event) {
         }
     }
     if (data.type === 'recognized_speech_ready') {
-        renderChat(message_history.push(["user", data.text, currentAvatar]));
+        renderChat(message_history.push(["user", data.text, currentAvatar, currentName]));
         return;
     }
     if (data.type === 'sync_clock') {
@@ -159,7 +161,9 @@ socket.onmessage = function (event) {
     }
     if (data.type === 'faces_ready') {
         currentAvatar = data.dialog_photo;
+        currentName = data.display_name;
         console.log('avatar updated');
+        document.getElementById('user_name').innerHTML = currentName;
         return;
     }
     setTimeout(() => renderChat(message_history.push(["bot", data.text])), 500);

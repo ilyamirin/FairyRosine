@@ -3,9 +3,25 @@
 
 {% block addition_links %}
 <style>
-    .video {
-
+    #video {
+        max-width: 640px;
+        max-height: 480px;
+        position: absolute;
+        left: 0;
+        right: 0;
+        margin-left: auto;
+        margin-right: auto;
     }
+    #canvas {
+        max-width: 640px;
+        max-height: 480px;
+        position: absolute;
+        left: 0;
+        right: 0;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
 </style>
 {% endblock %}
 
@@ -48,9 +64,9 @@
 <div class="container" style="padding-top: 100px; min-height: 100%;">
     <div class="container">
         <div class="row">
-            <div class="col-md-12" style="">
-                <video autoplay id="video" style="width: 640px;height: 480px;position: absolute;left: 50%;margin-left:-320px;"></video>
-                <canvas id="canvas" style="position: absolute;border: 1px solid #000;left: 50%;margin-left:-320px;" width="640" height="480"></canvas>
+            <div class="col-md-12" style="text-aling: center;">
+                <video autoplay id="video"></video>
+                <canvas id="canvas" width="640" height="480"></canvas>
             </div>
         </div>
     </div>
