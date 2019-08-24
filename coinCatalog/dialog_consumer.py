@@ -6,10 +6,19 @@ import random
 
 dialog_channel_layer = get_channel_layer("dialog")
 speech_channel_layer = get_channel_layer("speech")
+face_channel_layer = get_channel_layer("face")
+
+
+def is_image(bytes_data):
+    pref = bytes_data[:100]
+    for suff in b'PNG', b'JPG', b'JPEG', b'JFIF', b'JPE':
+        if suff in pref:
+            return True
+    return False
 
 
 class DialogServerConsumer(AsyncWebsocketConsumer):
-    groups = ["dialog", "speech"]
+    groups = ["dialog", "speech", "recognize-faces"]
 
     def __init__(self, *args):
         super().__init__(*args)
@@ -34,13 +43,22 @@ class DialogServerConsumer(AsyncWebsocketConsumer):
             await self.send(json.dumps(message))
             await self.send_to_bot(message["text"])
 
+    async def faces_ready(self, message):
+        if message["uid"] == self.uid:
+            await self.send(json.dumps(message))
+
     async def receive(self, text_data=None, bytes_data=None):
         try:
             print(f"{self.uid}: receive {len(text_data) if text_data else 0} text data, {len(bytes_data) if bytes_data else 0} bytes data")
             if text_data and len(text_data) > 0:
                 await self.send_to_bot(text_data)
             if bytes_data and len(bytes_data) > 0:
-                await speech_channel_layer.send("speech", {"type": "recognize_speech", "audio": bytes_data, "uid": self.uid})
+                if is_image(bytes_data):
+                    await face_channel_layer.send("recognizefaces",
+                                                  {"type": "recognize", "bytes_data": bytes_data, "uid": self.uid, "dialog": True})
+                else:
+                    await speech_channel_layer.send("speech",
+                                                    {"type": "recognize_speech", "audio": bytes_data, "uid": self.uid})
         except Exception as e:
             print(e)
 

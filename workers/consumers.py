@@ -14,6 +14,9 @@ from channels import routing
 from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
 import cv2
+from coinCatalog.models import DialogUser
+from datetime import datetime
+import base64
 
 
 server_channel_layer = get_channel_layer("server")
@@ -105,26 +108,54 @@ class FaceRecognitionConsumer(SyncConsumer, TimeShifter):
                 return
             start_recog = time.time()
             faces, boxes, landmarks = self.recognizer.detectFaces(img_data)
+            current_user_uid, photo_slice = None, None
             if len(boxes) > 0:
+                # y1 x1 y2 x2
                 faces, boxes = sorted_faces(faces, boxes, 10)
                 embeddings = self.recognizer._getEmbedding(faces)
+                y1, x1, y2, x2 = boxes[0]
+                photo_slice = img_data[y1:y2, x1:x2]
                 users = []
-                for embed in embeddings:
+                for i, embed in enumerate(embeddings):
                     result, scores = self.recognizer.identify(embed)
+                    if result == "Unknown" and i == 0:
+                        result = self.recognizer.dataBase.checkIncomingName("Known", addIndex=True)
+                        current_user_uid = result
+                        print(f"Это новый персонаж: {result}")
+                        self.recognizer.enroll(embed, result)
+                        cv2.imwrite(f"{result.replace('/', ' ')}.png", photo_slice)
+                        user = DialogUser(uid=result, time_enrolled=datetime.now(), photo=photo_slice.tobytes(), name=result)
+                        user.save()
                     users.append(result)
+            if current_user_uid:
+                user = DialogUser.objects.get(uid=current_user_uid)
+                user.photo = photo_slice.tobytes()
+                user.save()
             boxes = boxes.tolist()
             response = [b + [users[idx]] for idx, b in enumerate(boxes)]
-            # response = response
+            if photo_slice:
+                photo_slice = base64.b64encode(cv2.imencode('.jpg', photo_slice)[1])
             end_recog = time.time()
             print(f"recog time = {end_recog - start_recog}")
-            async_to_sync(server_channel_layer.group_send)(
-                "recognize-faces",
-                {
-                    "type": "faces_ready",
-                    "text": response,
-                    "uid": uid,
-                },
-            )
+            if message.get("dialog", False):
+                async_to_sync(server_channel_layer.group_send)(
+                    "recognize-faces",
+                    {
+                        "type": "faces_ready",
+                        "uid": uid,
+                        "dialog_uid": current_user_uid,
+                        "dialog_photo": photo_slice
+                    },
+                )
+            else:
+                async_to_sync(server_channel_layer.group_send)(
+                    "recognize-faces",
+                    {
+                        "type": "faces_ready",
+                        "text": response,
+                        "uid": uid,
+                    },
+                )
         except Exception as e:
             print(e)
 
