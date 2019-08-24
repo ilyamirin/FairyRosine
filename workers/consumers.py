@@ -118,23 +118,23 @@ class FaceRecognitionConsumer(SyncConsumer, TimeShifter):
                 users = []
                 for i, embed in enumerate(embeddings):
                     result, scores = self.recognizer.identify(embed)
-                    if result == "Unknown" and i == 0:
-                        result = self.recognizer.dataBase.checkIncomingName("Known", addIndex=True)
+                    # Самое большое лицо
+                    if i == 0:
+                        # Если мы его не знаем
+                        if result == "Unknown":
+                            result = self.recognizer.dataBase.checkIncomingName("Known", addIndex=True)
+                            print(f"Это новый персонаж: {result}")
+                            self.recognizer.enroll(embed, result)
+                            cv2.imwrite(f"{result.replace('/', ' ')}.png", photo_slice)
+                            user = DialogUser(uid=result, time_enrolled=datetime.now(), photo=photo_slice.tobytes(), name=result)
+                            user.save()
                         current_user_uid = result
-                        print(f"Это новый персонаж: {result}")
-                        self.recognizer.enroll(embed, result)
-                        cv2.imwrite(f"{result.replace('/', ' ')}.png", photo_slice)
-                        user = DialogUser(uid=result, time_enrolled=datetime.now(), photo=photo_slice.tobytes(), name=result)
-                        user.save()
                     users.append(result)
-            if current_user_uid:
-                user = DialogUser.objects.get(uid=current_user_uid)
-                user.photo = photo_slice.tobytes()
-                user.save()
             boxes = boxes.tolist()
             response = [b + [users[idx]] for idx, b in enumerate(boxes)]
-            if photo_slice:
-                photo_slice = base64.b64encode(cv2.imencode('.jpg', photo_slice)[1])
+            if photo_slice is not None:
+                photo_slice = cv2.cvtColor(photo_slice, cv2.COLOR_BGR2RGB)
+                photo_slice = base64.b64encode(cv2.imencode('.png', photo_slice)[1]).decode()
             end_recog = time.time()
             print(f"recog time = {end_recog - start_recog}")
             if message.get("dialog", False):

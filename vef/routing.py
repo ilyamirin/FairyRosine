@@ -7,7 +7,7 @@ from coinCatalog.consumers import StreamConsumer
 from coinCatalog.dialog_consumer import DialogServerConsumer
 from workers.consumers import FaceRecognitionConsumer, CoinRecognitionConsumer
 from workers.dialog_worker import DialogConsumer
-from workers.speech_worker import GoogleSpeechConsumer, YdxSpeechConsumer
+from workers.speech_worker import GoogleSpeechConsumer, YdxSpeechConsumer, AzureSpeechConsumer
 
 application = ProtocolTypeRouter({
     'websocket': AllowedHostsOriginValidator(

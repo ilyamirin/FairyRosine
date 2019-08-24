@@ -8,6 +8,7 @@ import os
 import io
 import requests
 import json
+import sys
 
 from channels.layers import get_channel_layer
 
@@ -82,19 +83,23 @@ class YdxSpeechConsumer(SyncConsumer):
                     "uid": uid,
                 },
             )
-        # except Exception as e:
-        #     print(e)
+        except Exception as e:
+            print(e)
 
 
-def test():
-    import subprocess
-    with open(os.devnull, 'rb') as devnull:
-        pass
-        # p = subprocess.Popen("ls", stdin=devnull, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    # f = io.BytesIO()
-    # print(isinstance(f, os.PathLike))
+class AzureSpeechConsumer(SyncConsumer):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        print("speech worker created", flush=True)
+        sys.path.append("C:/Projects/ServantGrunbeld")
+        from SpeechRecognition.AzureRecognition import AzureRecognizer
+        sys.path.pop()
+        self.recognizer = AzureRecognizer()
 
-
-
-# if __name__ == "__main__":
-#     test()
+    def recognize_speech(self, message):
+        uid = message["uid"]
+        audio = AudioSegment(data=message["audio"])
+        f = io.BytesIO()
+        audio.export(out_f=f, format='wav')
+        response = self.recognizer.processAudio(f.getbuffer())
+        print(response)
