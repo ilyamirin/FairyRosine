@@ -110,6 +110,12 @@
 			border:1.5px solid #f5f6fa;
 
 		}
+		.user_img_msg_title{
+			height: 55px;
+			width: 55px;
+			border:1.5px solid #f5f6fa;
+
+		}
 	.img_cont{
 			position: relative;
 			height: 70px;
