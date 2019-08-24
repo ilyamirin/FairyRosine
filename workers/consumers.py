@@ -126,7 +126,7 @@ class FaceRecognitionConsumer(SyncConsumer, TimeShifter):
                             print(f"Это новый персонаж: {result}")
                             self.recognizer.enroll(embed, result)
                             cv2.imwrite(f"{result.replace('/', ' ')}.png", photo_slice)
-                            user = DialogUser(uid=result, time_enrolled=datetime.now(), photo=photo_slice.tobytes(), name=result)
+                            user = DialogUser(uid=result, time_enrolled=datetime.now(), photo=photo_slice.tobytes(), name="")
                             user.save()
                         current_user_uid = result
                     users.append(result)
@@ -138,13 +138,18 @@ class FaceRecognitionConsumer(SyncConsumer, TimeShifter):
             end_recog = time.time()
             print(f"recog time = {end_recog - start_recog}")
             if message.get("dialog", False):
+                try:
+                    name = DialogUser.objects.get(uid=current_user_uid).name
+                except:
+                    name = ""
                 async_to_sync(server_channel_layer.group_send)(
                     "recognize-faces",
                     {
                         "type": "faces_ready",
                         "uid": uid,
                         "dialog_uid": current_user_uid,
-                        "dialog_photo": photo_slice
+                        "dialog_photo": photo_slice,
+                        "display_name": name
                     },
                 )
             else:

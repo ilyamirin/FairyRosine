@@ -23,6 +23,7 @@ class DialogServerConsumer(AsyncWebsocketConsumer):
     def __init__(self, *args):
         super().__init__(*args)
         self.uid = "".join(random.choice(ascii_letters) for _ in range(8))
+        self.dialog_uid = ""
 
     async def connect(self):
         await self.accept()
@@ -34,7 +35,7 @@ class DialogServerConsumer(AsyncWebsocketConsumer):
 
     async def send_to_bot(self, text):
         try:
-            await dialog_channel_layer.send("dialog", {"type": "dialog_answer", "text": text, "uid": self.uid})
+            await dialog_channel_layer.send("dialog", {"type": "dialog_answer", "text": text, "uid": self.uid, "dialog_uid": self.dialog_uid})
         except Exception as e:
             print(f"send to bot: {e}")
 
@@ -45,6 +46,8 @@ class DialogServerConsumer(AsyncWebsocketConsumer):
 
     async def faces_ready(self, message):
         if message["uid"] == self.uid:
+            if message.get("dialog_uid", "") != "":
+                self.dialog_uid = message["dialog_uid"]
             await self.send(json.dumps(message))
 
     async def receive(self, text_data=None, bytes_data=None):
