@@ -24,6 +24,6 @@ application = ProtocolTypeRouter({
         'recognizefaces': FaceRecognitionConsumer,
         'recognizecoins': CoinRecognitionConsumer,
         'dialog': DialogConsumer,
-        'speech': AzureSpeechConsumer,
+        'speech': YdxSpeechConsumer,
     }),
 })
