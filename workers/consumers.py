@@ -108,7 +108,7 @@ class FaceRecognitionConsumer(SyncConsumer, TimeShifter):
                 return
             start_recog = time.time()
             faces, boxes, landmarks = self.recognizer.detectFaces(img_data)
-            current_user_uid, photo_slice = None, None
+            current_user_uid, photo_slice, photo_slice_b64 = [None]*3
             if len(boxes) > 0:
                 # y1 x1 y2 x2
                 faces, boxes = sorted_faces(faces, boxes, 10)
@@ -142,6 +142,7 @@ class FaceRecognitionConsumer(SyncConsumer, TimeShifter):
             end_recog = time.time()
             print(f"recog time = {end_recog - start_recog}")
             if message.get("dialog", False):
+                name = ""
                 if current_user_uid is not None:
                     try:
                         name = DialogUser.objects.get(uid=current_user_uid).name
