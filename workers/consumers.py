@@ -133,22 +133,25 @@ class FaceRecognitionConsumer(SyncConsumer, TimeShifter):
             boxes = boxes.tolist()
             response = [b + [users[idx]] for idx, b in enumerate(boxes)]
             if photo_slice is not None:
-                photo_slice = cv2.cvtColor(photo_slice, cv2.COLOR_BGR2RGB)
-                photo_slice = base64.b64encode(cv2.imencode('.png', photo_slice)[1]).decode()
+                photo_slice_b64 = cv2.cvtColor(photo_slice, cv2.COLOR_BGR2RGB)
+                photo_slice_b64 = base64.b64encode(cv2.imencode('.png', photo_slice_b64)[1]).decode()
             end_recog = time.time()
             print(f"recog time = {end_recog - start_recog}")
             if message.get("dialog", False):
-                try:
-                    name = DialogUser.objects.get(uid=current_user_uid).name
-                except:
-                    name = ""
+                if current_user_uid is not None:
+                    try:
+                        name = DialogUser.objects.get(uid=current_user_uid).name
+                    except:
+                        name = current_user_uid if not current_user_uid.startswith("Known") else ""
+                        user = DialogUser(uid=current_user_uid, time_enrolled=datetime.now(), photo=photo_slice.tobytes(), name=name)
+                        user.save()
                 async_to_sync(server_channel_layer.group_send)(
                     "recognize-faces",
                     {
                         "type": "faces_ready",
                         "uid": uid,
                         "dialog_uid": current_user_uid,
-                        "dialog_photo": photo_slice,
+                        "dialog_photo": photo_slice_b64,
                         "display_name": name
                     },
                 )
