@@ -97,9 +97,16 @@ class AzureSpeechConsumer(SyncConsumer):
         self.recognizer = AzureRecognizer()
 
     def recognize_speech(self, message):
-        uid = message["uid"]
-        audio = AudioSegment(data=message["audio"])
-        f = io.BytesIO()
-        audio.export(out_f=f, format='wav')
-        response = self.recognizer.processAudio(f.getbuffer())
-        print(response)
+        try:
+            uid = message["uid"]
+            text = self.recognizer.processAudio(message["audio"])
+            async_to_sync(server_channel_layer.group_send)(
+                "speech",
+                {
+                    "type": "recognized_speech_ready",
+                    "text": text,
+                    "uid": uid,
+                },
+            )
+        except Exception as e:
+            print(e)
