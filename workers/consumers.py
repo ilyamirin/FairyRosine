@@ -114,7 +114,11 @@ class FaceRecognitionConsumer(SyncConsumer, TimeShifter):
                 faces, boxes = sorted_faces(faces, boxes, 10)
                 embeddings = self.recognizer._getEmbedding(faces)
                 y1, x1, y2, x2 = boxes[0]
-                photo_slice = img_data[y1:y2, x1:x2]
+                w, h, div, (maxy, maxx, *_) = x2 - x1, y2 - y1, 5, img_data.shape
+                photo_slice = img_data[
+                    max(y1 - h//div, 0):min(y2 + h//div, maxy - 1),
+                    max(x1 - w//div, 0):min(x2 + w//div, maxx - 1)
+                ]
                 users = []
                 for i, embed in enumerate(embeddings):
                     result, scores = self.recognizer.identify(embed)
