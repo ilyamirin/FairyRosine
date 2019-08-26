@@ -50,7 +50,7 @@ class YdxSpeechConsumer(SyncConsumer):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         print("speech worker created", flush=True)
-        self.ydx_yam_token = "CggaATEVAgAAABKABDQkBQjL-tRCQO_4TowfKPlaQaJGh3SZXEJHxhV8FzsyexZRC1QnnDKUWs32Iq_mQ098yhDLOfKHOCeb0YMVELvr2EYNoZqUNB_nCn7itJa3m_r-eSE-m_DS0BxGRr-dSaU3O55x0ICVQkja4GK8T2C9BXvlIbmP40XhXJOakkhwADr1oS4BN3cBx_hS4NEJ1BK-fkEv-y0n5uHf7kgSBSanwRQxEExY0GmasXKUlt7Gb6Vd1ohtuMVlJt45PUoDna_8iK56Xv1NA8L2-DQjGfn2r3agllRfRmi6OU-MotUn67NXfHNvcis1vPiXeb1I5NKjah80gevEgFwk_XKZUyc4QMhToXtuBtIGicespkLBqCXrSIiGSRNC4y2v90DERPr_-aMm9aoYHim2pzPMeZo-heHMbnr5tdOqPCS8BgimkF3i3sa7VPMOTl2bJw4ucDE29N3n7kg14541Lu4as846EsnVkP2cZY_50rcUKucqo26QfBprbQ_O9DfismFTZ4ea2asO88kJpTwtC_bRKSTT5l-_aPAT12AOVekSJA700MQlWhnEQ6_jrb3WtRWDSfccR0iEHqu6CFQT3r_NIETUxJ3MzpyC07jHvctrXfets3w_f9BISuBsoJxoV14aOHoPWhWAom9MDF3tjz28MtfIjdVqjeBDiCNZx2qrpsSiGmMKIDMyOTBiNWJjMGI3ZDQ2NjdhNjJmZDJhYjk3NGY3ZTlkENTHgusFGJSZhesFIiEKFGFqZWIwdGtlZWo1bmlzcWk2N2dyEglhbGV4aXNraGJaADACOAFKCBoBMRUCAAAAUAEg8gQ"
+        self.ydx_yam_token = open("token.txt", "r").read().strip()
 
     def recognize_speech(self, message):
         try:
@@ -74,6 +74,8 @@ class YdxSpeechConsumer(SyncConsumer):
             decoded_data = json.loads(response_data.text)
             print(decoded_data)
             text = decoded_data.get("result") if decoded_data.get("error_code") is None else ""
+            if not decoded_data.get("error_code") is None:
+                self.ydx_yam_token = open("token.txt", "r").read().strip()
             print(text, flush=True)
             async_to_sync(server_channel_layer.group_send)(
                 "speech",
