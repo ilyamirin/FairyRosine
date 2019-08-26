@@ -8,12 +8,15 @@ var input = document.getElementById("question");
 let body = document.getElementsByTagName("body")[0];
 var rec = null;
 var isRecording = false;
+var ctrlDown = false;
 let micBtnStyle = document.getElementById('mic_btn_style');
 let pushVoice = document.getElementById('pushVoice');
 let timeShift = 0;
 let FPS = 1;
 let imgCompressionLvl = 0.8;
 const video = document.querySelector('video');
+
+firstWhite = true;
 
 let message_history = [];
 
@@ -138,6 +141,21 @@ input.onkeypress = function (event) {
     }
 };
 
+window.addEventListener('keydown', function(event) {
+    if (ctrlDown || !(event.keyCode == 17))
+        return;
+    ctrlDown = true;
+    micMouseDown();
+});
+
+window.addEventListener('keyup', function (event) {
+    console.log(event);
+    if (!ctrlDown || !(event.keyCode == 17))
+        return;
+    ctrlDown = false;
+    micMouseUp();
+});
+
 socket.onmessage = function (event) {
     let data = JSON.parse(event.data);
     console.log(data);
@@ -159,11 +177,15 @@ socket.onmessage = function (event) {
         console.log('sync clock, shift = ' + timeShift/1000 + ' seconds');
         return;
     }
-    if (data.type === 'faces_ready') {
+    if (data.type === 'dialog_faces_ready') {
         currentAvatar = data.dialog_photo;
         currentName = data.display_name;
         console.log('avatar updated');
         document.getElementById('user_name').innerHTML = currentName;
+        return;
+    }
+    if (data.type === 'face') {
+        canvasData[data.type] = data.text;
         return;
     }
     setTimeout(() => renderChat(message_history.push(["bot", data.text])), 500);

@@ -2,6 +2,7 @@ let canvas = document.getElementById('canvas');
 let context = canvas.getContext('2d');
 
 let frameLoop = null;
+var firstWhite = false;
 
 let canvasData = {
     "face": [],
@@ -29,8 +30,9 @@ function drawRect(rect, colorStroke, fillStyle){
 }
 
 function drawCanvasData() {
+    let userColor = 'blue';
     context.clearRect(0, 0, canvas.width, canvas.height);
-    canvasData["face"].forEach(rect => drawRect(rect, 'green', 'green'));
+    canvasData["face"].forEach((rect, i) => drawRect(rect, (!i && firstWhite) ? userColor: 'green', (!i && firstWhite) ? userColor : 'green'));
     canvasData["coin"].forEach(rect => drawRect(rect, 'blue', 'blue'));
 }
 
