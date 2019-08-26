@@ -100,6 +100,7 @@ class FaceRecognitionConsumer(SyncConsumer, TimeShifter):
 
     def recognize(self, message):
         try:
+            known_prefix = "Known"
             uid = message["uid"]
             timestamp, img_data = get_image_data_from_bytes_data(message["bytes_data"])
             age = self.get_age(timestamp)
@@ -122,18 +123,23 @@ class FaceRecognitionConsumer(SyncConsumer, TimeShifter):
                 users = []
                 for i, embed in enumerate(embeddings):
                     result, scores = self.recognizer.identify(embed)
+                    display_name = ""
                     # Самое большое лицо
                     if i == 0:
                         # Если мы его не знаем
                         if result == "Unknown":
-                            result = self.recognizer.dataBase.checkIncomingName("Known", addIndex=True)
+                            result = self.recognizer.dataBase.checkIncomingName(known_prefix, addIndex=True)
                             print(f"Это новый персонаж: {result}")
                             self.recognizer.enroll(embed, result)
                             cv2.imwrite(f"{result.replace('/', ' ')}.png", photo_slice)
                             user = DialogUser(uid=result, time_enrolled=datetime.now(), photo=photo_slice.tobytes(), name="")
                             user.save()
                         current_user_uid = result
-                    users.append(result)
+                    try:
+                        display_name = DialogUser.objects.get(uid=result).name
+                    except:
+                        pass
+                    users.append(display_name)
             boxes = boxes.tolist()
             response = [b + [users[idx]] for idx, b in enumerate(boxes)]
             if photo_slice is not None:
@@ -147,7 +153,7 @@ class FaceRecognitionConsumer(SyncConsumer, TimeShifter):
                     try:
                         name = DialogUser.objects.get(uid=current_user_uid).name
                     except:
-                        name = current_user_uid if not current_user_uid.startswith("Known") else ""
+                        name = current_user_uid if not current_user_uid.startswith(known_prefix) else ""
                         user = DialogUser(uid=current_user_uid, time_enrolled=datetime.now(), photo=photo_slice.tobytes(), name=name)
                         user.save()
                 async_to_sync(server_channel_layer.group_send)(
