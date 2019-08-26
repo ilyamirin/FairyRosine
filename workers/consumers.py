@@ -44,7 +44,7 @@ class TimeShifter:
     def get_age(self, timestamp):
         if not hasattr(self, "shift"):
             self.set_shift(timestamp)
-        return time.time() - timestamp - self.shift
+        return time.time() - timestamp + self.shift
 
     def set_shift(self, timestamp):
         now = time.time()
