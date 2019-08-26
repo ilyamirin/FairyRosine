@@ -3,56 +3,57 @@
 {% block content %}
     {% load static %}
         <div class="container" style="padding-top: 20px; padding-bottom: 20px;">
-            <div class="row">
-                <h3 align="center">{{ coin.name }}</h3>
-            </div>
-            <div class="row">
-                <table class="table table-bordered table-sm table-responsive-sm" style="text-align: center;">
-                  <thead>
-                      <tr>
-                          <th>Номинал</th>
-                          <th scope="col">Качество чеканки</th>
-                          <th scope="col">Металл, проба</th>
-                          <th scope="col">Содержание хим. чистого металла, г.</th>
-                          <th scope="col">Масса общая, г.</th>
-                          <th scope="col">Диаметр, мм.</th>
-                          <th scope="col">Толщина, мм.</th>
-                          <th scope="col">Макс. тираж, шт.</th>
-                      </tr>
-                  </thead>
-                  <tbody>
-                      <tr>
-                          <td>{{ coin.nominal }}</td>
-                          <td>{{ coin.quality }}</td>
-                          <td>{{ coin.probe }}</td>
-                          <td>{{ coin.pure_metal }}</td>
-                          <td>{{ coin.mass }}</td>
-                          <td>{{ coin.diameter }}</td>
-                          <td>{{ coin.thickness }}</td>
-                          <td>{{ coin.copies }}</td>
-                      </tr>
-                  </tbody>
-                  <thead>
-                      <tr>
-                          <th scope="col" colspan="4">Оригинальная комплектация монеты</th>
-                          <th scope="col" colspan="4">Изготовитель</th>
-                      </tr>
-                  </thead>
-                  <tbody>
-                      <tr>
-                          <td colspan="4">{{ coin.original_equipment }}</td>
-                          <td colspan="4">{{ coin.manufacturer }}</td>
-                      </tr>
-                  </tbody>
-                </table>
-            </div>
-
-            <div class="row">
-                {% for img in imgs %}
-                <div class="col-md-3">
-                    <img src="{% static '/coinCatalog/' %}{{ img.href }}" style="width: 100%;">
+            <div class="row" style="padding: 20px; background-color: white; border-radius: 15px;">
+                <div class="col-md-12 col-sm-12 col-xs-12">
+                    <h3 align="center">{{ coin.name }}</h3>
                 </div>
-                {% endfor %}
+                <div class="col-md-12 col-sm-12 col-xs-12" style="margin-top: 20px;">
+                    <table class="table table-sm table-responsive-sm" style="text-align: center;">
+                      <thead>
+                          <tr class="table-success">
+                              <th style="vertical-align: middle;">Номинал</th>
+                              <th style="vertical-align: middle;" scope="col">Качество чеканки</th>
+                              <th style="vertical-align: middle;" scope="col">Металл, проба</th>
+                              <th style="vertical-align: middle;" scope="col">Содержание хим. чистого металла, г.</th>
+                              <th style="vertical-align: middle;" scope="col">Масса общая, г.</th>
+                              <th style="vertical-align: middle;" scope="col">Диаметр, мм.</th>
+                              <th style="vertical-align: middle;" scope="col">Толщина, мм.</th>
+                              <th style="vertical-align: middle;" scope="col">Макс. тираж, шт.</th>
+                          </tr>
+                      </thead>
+                      <tbody>
+                          <tr style="font-family: Muli, Helvetica, Arial, sans-serif;">
+                              <td>{{ coin.nominal }}</td>
+                              <td>{{ coin.quality }}</td>
+                              <td>{{ coin.probe }}</td>
+                              <td>{{ coin.pure_metal }}</td>
+                              <td>{{ coin.mass }}</td>
+                              <td>{{ coin.diameter }}</td>
+                              <td>{{ coin.thickness }}</td>
+                              <td>{{ coin.copies }}</td>
+                          </tr>
+                      </tbody>
+                      <thead>
+                          <tr class="table-success">
+                              <th scope="col" colspan="4">Оригинальная комплектация монеты</th>
+                              <th scope="col" colspan="4">Изготовитель</th>
+                          </tr>
+                      </thead>
+                      <tbody>
+                          <tr>
+                              <td colspan="4">{{ coin.original_equipment }}</td>
+                              <td colspan="4">{{ coin.manufacturer }}</td>
+                          </tr>
+                      </tbody>
+                    </table>
+                </div>
+                <div class="row" style="margin-top: 20px;">
+                    {% for img in imgs %}
+                    <div class="col-md-3 col-sm-6 col-xs-12">
+                        <img src="{% static '/coinCatalog/' %}{{ img.href }}" style="width: 100%;">
+                    </div>
+                    {% endfor %}
+                </div>
             </div>
         </div>
 {% endblock %}

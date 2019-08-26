@@ -12,6 +12,16 @@
         margin-left: auto;
         margin-right: auto;
     }
+    #video2 {
+        max-width: 640px;
+        max-height: 480px;
+        position: absolute;
+        left: 0;
+        right: 0;
+        margin-left: auto;
+        margin-right: auto;
+        top: 500px;
+    }
     #canvas {
         max-width: 640px;
         max-height: 480px;
@@ -21,13 +31,25 @@
         margin-left: auto;
         margin-right: auto;
     }
+    #canvas2 {
+        max-width: 640px;
+        max-height: 480px;
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 500px;
+        margin-left: auto;
+        margin-right: auto;
+    }
 
 </style>
+<!--<link rel="manifest" href="{% static '/coinCatalog/manifest.json' %}">-->
+<!--<meta name="mobile-web-app-capable" content="yes">-->
 {% endblock %}
 
 {% block content %}
 
-<div class="modal fade" id="coinModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+<div class="modal fade" id="coinModal" tabindex="-1" style="padding-top: 50px;" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -53,6 +75,10 @@
                 </table>
                 <p id="modal-coin-body-description"></p>
 
+                <div class="row modal-imgs" id="modal-imgs">
+
+                </div>
+
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
@@ -61,12 +87,20 @@
     </div>
 </div>
 
-<div class="container" style="padding-top: 100px; min-height: 100%;">
+<div class="container" style="padding-top: 20px; height: 100%; min-height: 1020px;">
     <div class="container">
         <div class="row">
             <div class="col-md-12" style="text-aling: center;">
                 <video autoplay id="video"></video>
                 <canvas id="canvas" width="640" height="480"></canvas>
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12" style="text-aling: center;">
+                <video autoplay id="video2"></video>
+                <canvas id="canvas2" width="640" height="480"></canvas>
             </div>
         </div>
     </div>

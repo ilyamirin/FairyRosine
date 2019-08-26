@@ -5,6 +5,8 @@ function getCoinFromServer(id) {
         url: location.protocol + "//" + location.host + "/getCoin",
         data: 'id=' + id,
         success: function(data){
+            let modalImgs = document.getElementById('modal-imgs');
+            modalImgs.innerHTML = "";
             let res = JSON.parse(data);
             let coin = res['coin'];
             console.log(coin['name']);
@@ -12,6 +14,16 @@ function getCoinFromServer(id) {
             $("#modal-coin-body-manufacturer").html(coin['manufacturer']);
             $("#modal-coin-body-copies").html(coin['copies']);
             $("#modal-coin-body-description").html(coin['description']);
+
+            res['imgs'].forEach(v => {
+                let img = document.createElement('img');
+                img.src = location.protocol + "//" + location.host + '/static/coinCatalog/' + v['href'];
+                img.style.width = "100%";
+                let col = document.createElement('div');
+                col.classList.add('col-md-3');
+                col.appendChild(img);
+                modalImgs.appendChild(col);
+            });
         }
     });
 }
