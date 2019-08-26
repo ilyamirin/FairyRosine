@@ -42,14 +42,17 @@ class DialogConsumer(SyncConsumer):
         print("dialog worker created", flush=True)
         self.bot = BotClientMod("1")
         self.clients = {}
+        self.asking_name = False
 
     def dialog_answer(self, message):
         try:
             uid = message["uid"]
             text = message["text"]
-            if "меня зовут" in text.lower():
+            if "меня зовут" in text.lower() or self.asking_name:
                 current_user_uid = message.get("dialog_uid", "")
-                name = " ".join([part.capitalize() for part in text.lower().split("меня зовут")[-1].split()])
+                name_raw = text.lower().strip().split("меня зовут")[-1] if "меня зовут" in text.lower() else text.lower().strip()
+                name = " ".join([part.capitalize() for part in name_raw.split()])
+                self.asking_name = False
                 try:
                     user = DialogUser.objects.get(uid=current_user_uid)
                     user.name = name
@@ -59,6 +62,7 @@ class DialogConsumer(SyncConsumer):
             if uid not in self.clients:
                 self.clients[uid] = self.bot.create_client_context(uid)
             answer = self.clients[uid].bot.ask_question(self.clients[uid], text, responselogger=self.bot)
+            self.asking_name = "меня зовут" in answer.lower()
             conversation = self.clients[uid].bot.get_conversation(self.clients[uid])
             topic = conversation.property("topic")
             # topic = self.bot.client_context.bot.ask_question(self.bot.client_context, "topic", responselogger=self.bot)[:-1].lower()
