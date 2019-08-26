@@ -46,7 +46,6 @@ class StreamConsumer(AsyncWebsocketConsumer):
         if message["uid"] == self.uid:
             res = copy.deepcopy(message)
             res['type'] = 'face'
-            print(f'{self.uid}: faces ready')
             await self.send(json.dumps(res))
 
     async def coins_ready(self, message):

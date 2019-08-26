@@ -3,6 +3,7 @@ import json
 from channels.layers import get_channel_layer
 from string import ascii_letters
 import random
+import copy
 
 dialog_channel_layer = get_channel_layer("dialog")
 speech_channel_layer = get_channel_layer("speech")
@@ -18,7 +19,7 @@ def is_image(bytes_data):
 
 
 class DialogServerConsumer(AsyncWebsocketConsumer):
-    groups = ["dialog", "speech", "recognize-faces"]
+    groups = ["dialog", "speech", "recognize-faces", "dialog-recognize-faces"]
 
     def __init__(self, *args):
         super().__init__(*args)
@@ -44,11 +45,17 @@ class DialogServerConsumer(AsyncWebsocketConsumer):
             await self.send(json.dumps(message))
             await self.send_to_bot(message["text"])
 
-    async def faces_ready(self, message):
+    async def dialog_faces_ready(self, message):
         if message["uid"] == self.uid:
             if message.get("dialog_uid", "") != "":
                 self.dialog_uid = message["dialog_uid"]
             await self.send(json.dumps(message))
+
+    async def faces_ready(self, message):
+        if message["uid"] == self.uid:
+            res = copy.deepcopy(message)
+            res['type'] = 'face'
+            await self.send(json.dumps(res))
 
     async def receive(self, text_data=None, bytes_data=None):
         try:

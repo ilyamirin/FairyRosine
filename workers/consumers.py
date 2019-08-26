@@ -147,34 +147,35 @@ class FaceRecognitionConsumer(SyncConsumer, TimeShifter):
                 photo_slice_b64 = base64.b64encode(cv2.imencode('.png', photo_slice_b64)[1]).decode()
             end_recog = time.time()
             print(f"recog time = {end_recog - start_recog}")
-            if message.get("dialog", False):
-                name = ""
-                if current_user_uid is not None:
-                    try:
-                        name = DialogUser.objects.get(uid=current_user_uid).name
-                    except:
-                        name = current_user_uid if not current_user_uid.startswith(known_prefix) else ""
-                        user = DialogUser(uid=current_user_uid, time_enrolled=datetime.now(), photo=photo_slice.tobytes(), name=name)
-                        user.save()
-                async_to_sync(server_channel_layer.group_send)(
-                    "recognize-faces",
-                    {
-                        "type": "faces_ready",
-                        "uid": uid,
-                        "dialog_uid": current_user_uid,
-                        "dialog_photo": photo_slice_b64,
-                        "display_name": name
-                    },
-                )
-            else:
-                async_to_sync(server_channel_layer.group_send)(
-                    "recognize-faces",
-                    {
-                        "type": "faces_ready",
-                        "text": response,
-                        "uid": uid,
-                    },
-                )
+
+            async_to_sync(server_channel_layer.group_send)(
+                "recognize-faces",
+                {
+                    "type": "faces_ready",
+                    "text": response,
+                    "uid": uid,
+                },
+            )
+
+            name = ""
+            if current_user_uid is not None:
+                try:
+                    name = DialogUser.objects.get(uid=current_user_uid).name
+                except:
+                    name = current_user_uid if not current_user_uid.startswith(known_prefix) else ""
+                    user = DialogUser(uid=current_user_uid, time_enrolled=datetime.now(), photo=photo_slice.tobytes(), name=name)
+                    user.save()
+            async_to_sync(server_channel_layer.group_send)(
+                "dialog-recognize-faces",
+                {
+                    "type": "dialog_faces_ready",
+                    "uid": uid,
+                    "dialog_uid": current_user_uid,
+                    "dialog_photo": photo_slice_b64,
+                    "display_name": name
+                },
+            )
+
         except Exception as e:
             print(e)
 
