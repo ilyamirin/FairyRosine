@@ -13,3 +13,4 @@ google-cloud-speech
 django-extensions
 pydub
 whitenoise
+pyOpenSSL

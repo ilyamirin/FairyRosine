@@ -9,6 +9,7 @@ import io
 import requests
 import json
 import sys
+from vef.settings import SERVANT_DIR
 
 from channels.layers import get_channel_layer
 
@@ -97,7 +98,7 @@ class AzureSpeechConsumer(SyncConsumer):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         print("creating azure speech worker...", flush=True)
-        sys.path.append("C:/Projects/ServantGrunbeld")
+        sys.path.append(SERVANT_DIR)
         from SpeechRecognition.AzureRecognition import AzureRecognizer
         sys.path.pop()
         self.recognizer = AzureRecognizer()

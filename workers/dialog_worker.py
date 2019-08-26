@@ -5,19 +5,21 @@ from programy.clients.events.console.client import ConsoleBotClient
 import programy.clients.args as args
 
 from channels.layers import get_channel_layer
-from os import getcwd
+import os
 
 from coinCatalog.models import DialogUser
-
-cwd = getcwd()
+from vef.settings import LINGVO_DIR
 
 
 class Args(args.ClientArguments):
-    def __init__(self):
+    def __init__(self, *args, **kwargs):
+        super().__init__(args, kwargs)
         self.args = None
-        self._bot_root = cwd + "\workers\\NosferatuZodd\storage"
-        self._logging = cwd + '\workers\\NosferatuZodd\config\windows\logging.yaml'
-        self._config_name = cwd + '\workers\\NosferatuZodd\config\windows\config.yaml'
+        self._bot_root = os.path.join(LINGVO_DIR, "storage")
+        config_dir = os.path.join(LINGVO_DIR, "config")
+        platform = "xnix" if os.name == "posix" else "windows"
+        self._logging = os.path.join(config_dir, platform, "logging.yaml")
+        self._config_name = os.path.join(config_dir, platform, "config.yaml")
         self._config_format = 'yaml'
         self._no_loop = False
         self._substitutions = None
@@ -39,10 +41,11 @@ server_channel_layer = get_channel_layer("server")
 class DialogConsumer(SyncConsumer):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        print("dialog worker created", flush=True)
+        print("creating dialog worker..", flush=True)
         self.bot = BotClientMod("1")
         self.clients = {}
         self.asking_name = False
+        print("dialog worker created", flush=True)
 
     def dialog_answer(self, message):
         try:

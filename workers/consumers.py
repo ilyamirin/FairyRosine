@@ -17,6 +17,7 @@ import cv2
 from coinCatalog.models import DialogUser
 from datetime import datetime
 import base64
+from vef.settings import SERVANT_DIR
 
 
 server_channel_layer = get_channel_layer("server")
@@ -62,8 +63,9 @@ class TimeShifter:
 class FaceRecognitionConsumer(SyncConsumer, TimeShifter):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        print("face worker created", flush=True)
-        sys.path.append("C:/Projects/ServantGrunbeld")
+        print("creating face worker...", flush=True)
+
+        sys.path.append(SERVANT_DIR)
 
         from FaceRecognition.InsightFaceRecognition import FaceRecognizer, RecognizerConfig
         from FaceDetection.RetinaFaceDetector import RetinaFace
@@ -81,12 +83,13 @@ class FaceRecognitionConsumer(SyncConsumer, TimeShifter):
         sys.path.pop()
 
         # os.environ.setdefault("MXNET_CUDNN_AUTOTUNE_DEFAULT", "0")
-        print("preparing detector")
+        print("preparing detector...")
         self.detector = RetinaFace(
             prefix=DetectorConfig.PREFIX,
             epoch=DetectorConfig.EPOCH
         )
-        print("preparing recognizer")
+        print("detector is ready")
+        print("preparing recognizer...")
         self.recognizer = FaceRecognizer(
             prefix=RecognizerConfig.PREFIX,
             epoch=RecognizerConfig.EPOCH,
@@ -97,6 +100,7 @@ class FaceRecognitionConsumer(SyncConsumer, TimeShifter):
         self.fps_counter = 0
         self.fps_start = time.time()
         self.actual_fps = 0
+        print("face worker created", flush=True)
 
     def recognize(self, message):
         try:
