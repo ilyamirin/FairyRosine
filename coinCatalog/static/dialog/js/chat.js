@@ -1,20 +1,27 @@
-let ws_scheme = window.location.protocol == "https:" ? "wss" : "ws";
+let ws_scheme = window.location.protocol === "https:" ? "wss" : "ws";
 let socketUrl = ws_scheme + "://" + window.location.host + window.location.pathname;
 let socket = new WebSocket(socketUrl);
-var button = document.getElementById("send");
-var history1 = document.getElementById("history");
-var micBtn = document.getElementById("mic_btn");
-var input = document.getElementById("question");
+let button = document.getElementById("send");
+let micBtn = document.getElementById("mic_btn");
+let input = document.getElementById("question");
 let body = document.getElementsByTagName("body")[0];
-var rec = null;
-var isRecording = false;
-var ctrlDown = false;
+let rec = null;
+let isRecording = false;
+let ctrlDown = false;
 let micBtnStyle = document.getElementById('mic_btn_style');
 let pushVoice = document.getElementById('pushVoice');
 let timeShift = 0;
 let FPS = 1;
 let imgCompressionLvl = 0.8;
 const video = document.querySelector('video');
+
+let hiddenFaces = false;
+
+let dblVideoHidden = document.getElementById('dblVideoHidden');
+dblVideoHidden.addEventListener('dblclick', function() {
+    hiddenFaces = !hiddenFaces;
+    (hiddenFaces) ? resetCanvas() : activateCanvas();
+});
 
 firstWhite = true;
 
@@ -46,7 +53,7 @@ let micMouseDown = function() {
     pushVoice.style.display = 'block';
     rec.clear();
     rec.record();
-}
+};
 
 let micMouseUp = function() {
     if (isRecording){
@@ -55,12 +62,12 @@ let micMouseUp = function() {
         micBtnStyle.classList.remove("attach_btn2");
         micBtnStyle.classList.add("attach_btn");
         pushVoice.style.display = 'none';
-        rec.stop()
+        rec.stop();
         rec.exportWAV((blob) => {
             socket.send(blob);
         });
     }
-}
+};
 
 micBtn.addEventListener("mousedown", micMouseDown);
 micBtn.addEventListener("touchstart", micMouseDown);

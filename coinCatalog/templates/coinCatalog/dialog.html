@@ -10,7 +10,7 @@
     <link rel="stylesheet" type="text/css" href="{% static '/dialog/css/chat.css' %}">
 
     <style>
-        @media only screen and (min-width : 1025px) {
+        @media only screen and (min-width : 1400px) {
             .lg-fluid {
                 width: 100%;
                 max-width: none;
@@ -21,6 +21,7 @@
         #video {
             max-width: 640px;
             max-height: 480px;
+            width: 100%;
             position: absolute;
             left: 0;
             right: 0;
@@ -32,6 +33,7 @@
         #canvas {
             max-width: 640px;
             max-height: 480px;
+            width: 100%;
             position: absolute;
             left: 0;
             right: 0;
@@ -50,7 +52,7 @@
     <div class="container lg-fluid" style="padding-top: 20px; height: 100%;">
         <div class="row justify-content-center" style="height: 100%;">
 
-            <div class="col-lg-4 col-md-12 d-md-none d-sm-none d-none d-lg-none d-xl-flex" style="text-aling: center;">
+            <div class="col-lg-4 col-md-12 d-md-none d-sm-none d-none d-lg-none d-xl-flex" style="text-align: center;" id="dblVideoHidden">
                 <video autoplay id="video"></video>
                 <canvas id="canvas" width="640" height="480"></canvas>
             </div>

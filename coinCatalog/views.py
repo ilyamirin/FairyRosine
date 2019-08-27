@@ -31,7 +31,9 @@ def category(req, id=-1):
   return render(req, 'coinCatalog/category.html', coins)
 
 def stream(req):
-  return render(req, 'coinCatalog/stream.html')
+  res = render(req, 'coinCatalog/stream.html')
+  res['Feature-Policy'] = "fullscreen *"
+  return res
 
 def dialog(req):
   return render(req, 'coinCatalog/dialog.html')

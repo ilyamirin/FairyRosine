@@ -1,5 +1,4 @@
 function getCoinFromServer(id) {
-    let coinPlace = document.getElementById('modal-coin-body');
     $.ajax({
         type: 'GET',
         url: location.protocol + "//" + location.host + "/getCoin",
@@ -30,22 +29,34 @@ function getCoinFromServer(id) {
 
 function clickCoin(event) {
     getCoinFromServer(1);
-    let title = event.target.getAttribute('modal-title');
-    document.getElementById('modal-coin-title').innerHTML = title;
+    document.getElementById('modal-coin-title').innerHTML = this.getAttribute('modal-title');
 }
 
 function drawCoins(coins){
-    let ul = document.getElementById('rec-coins');
-    ul.innerHTML = "";
-    coins.forEach(v => {
-        let li = document.createElement('li');
-        li.classList.add("list-group-item");
-        li.classList.add("list-group-item-action");
-        li.setAttribute('data-toggle', 'modal');
-        li.setAttribute('data-target', '#coinModal');
-        li.setAttribute('modal-title', v[0]);
-        li.innerHTML = v[0];
-        li.onclick = clickCoin;
-        ul.appendChild(li);
+    let row = document.getElementById('rec-coins');
+    row.innerHTML = "";
+    coins.slice(0, 4).forEach(v => {
+        let wrapper = document.createElement('div');
+        wrapper.classList.add("col-md-3");
+        wrapper.setAttribute('style', 'padding: 10px;');
+        wrapper.setAttribute('data-toggle', 'modal');
+        wrapper.setAttribute('data-target', '#coinModal');
+        wrapper.setAttribute('modal-title', v[0]);
+        wrapper.addEventListener("click", clickCoin);
+
+        let div = document.createElement('div');
+        div.setAttribute('style', 'background-color: white; border-radius: 8px; padding: 6px;');
+
+        let img = document.createElement('div');
+        img.setAttribute('style', 'width: 100%; height: 150px; background-color: #ccc; margin-top: 10px;');
+        div.appendChild(img);
+
+        let txt = document.createElement('p');
+        txt.innerHTML = v[0];
+        div.appendChild(txt);
+
+        wrapper.appendChild(div);
+
+        row.appendChild(wrapper);
     });
 }
