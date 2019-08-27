@@ -4,9 +4,12 @@ from channels.layers import get_channel_layer
 from string import ascii_letters
 import random
 import copy
+import time
+import asyncio
 
 dialog_channel_layer = get_channel_layer("dialog")
 speech_channel_layer = get_channel_layer("speech")
+clock_channel_layer = get_channel_layer("clock")
 face_channel_layer = get_channel_layer("face")
 
 
@@ -26,8 +29,23 @@ class DialogServerConsumer(AsyncWebsocketConsumer):
         self.uid = "".join(random.choice(ascii_letters) for _ in range(8))
         self.dialog_uid = ""
 
+    async def sync_clock(self):
+        while True:
+            message = {"type": "sync_clock", "timestamp": time.time(), "uid": self.uid}
+            try:
+                await asyncio.gather(
+                    clock_channel_layer.send("recognizefaces", message),
+                    clock_channel_layer.send("recognizecoins", message),
+                    self.send(json.dumps(message)),
+                )
+                print("sync clock", flush=True)
+            except Exception as e:
+                print('sync clock exception: ' + str(e))
+            await asyncio.sleep(4)
+
     async def connect(self):
         await self.accept()
+        asyncio.get_event_loop().create_task(self.sync_clock())
 
     async def dialog_answer_ready(self, message):
         if message["uid"] == self.uid:
