@@ -7,8 +7,10 @@ import json
 from django.forms.models import model_to_dict
 from django.http import HttpResponse
 
-def index(req):
-  categories = Category.objects.all()
+def index(req, lang='en'):
+  if lang == None:
+    lang = 'en'
+  categories = Category.objects.filter(lang=lang)
 
   cats = {
     "categories": categories,
@@ -22,7 +24,8 @@ def category(req, id=-1):
   res = coins.values()
 
   for i in res:
-    i['img'] = ImgCoin.objects.get(coin=i['id']).href
+    imgs = ImgCoin.objects.filter(coin=i['id']).values()[0]
+    i['img'] = imgs['href']
 
   coins = {
     "coins": res,

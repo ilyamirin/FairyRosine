@@ -47,12 +47,15 @@
                       </tbody>
                     </table>
                 </div>
-                <div class="row" style="margin-top: 20px;">
                     {% for img in imgs %}
-                    <div class="col-md-3 col-sm-6 col-xs-12">
-                        <img src="{% static '/coinCatalog/' %}{{ img.href }}" style="width: 100%;">
+                    <div class="col-md-3 col-sm-6 col-xs-12" style="text-align: center;">
+                        <img src="{% static '/coinCatalog/coins/' %}{{ img.href }}" style="min-width: 150px; max-width: 200px;">
                     </div>
                     {% endfor %}
+                <div class="row" style="padding: 30px;">
+                    <div class="col-md-12">
+                        {{ coin.description }}}
+                    </div>
                 </div>
             </div>
         </div>

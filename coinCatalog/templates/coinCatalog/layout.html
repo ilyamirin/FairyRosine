@@ -24,7 +24,7 @@
                     aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
                 <i class="fa fa-bars"></i>
             </button>
-            <a href="{% url 'production' %}"><img src="{% static '/coinCatalog/logosber.svg' %}" style="width: 200px;" class="navbar-brand"></a>
+            <a href="{% url 'index' %}"><img src="{% static '/coinCatalog/logosber.svg' %}" style="width: 200px;" class="navbar-brand"></a>
             <div class="collapse navbar-collapse dont-collapse-md" id="navbarResponsive">
                 <ul class="nav navbar-nav ml-auto">
                     {% include './nav_elems.html' %}
@@ -53,12 +53,13 @@
 
     <footer style="background-color: rgb(255,255,255);">
         <div class="container">
-            <p style="color: #00ac00;font-size: 14px;font-weight: bold;">© ШЦЭ ДВФУ, 2019</p>
+            <p style="color: #00ac00;font-size: 14px;font-weight: bold;">© <span id="footer-text"></span> &#8195; ( <a href="{% url 'index' %}ru/" style="color:#00ac00;">RU</a> | <a href="{% url 'index' %}en/" style="color:#00ac00;">EN</a> )</p>
         </div>
     </footer>
     <script src="{% static '/coinCatalog/bootstrap/js/bootstrap.min.js' %}"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.4.1/jquery.easing.min.js"></script>
     <script src="{% static '/coinCatalog/js/new-age.js' %}"></script>
+    <script src="{% static '/coinCatalog/js/local.js' %}"></script>
 </body>
 
 </html>
