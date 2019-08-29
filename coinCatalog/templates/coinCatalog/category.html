@@ -3,15 +3,15 @@
 {% block content %}
     {% load static %}
     <div class="container" style="padding-top: 20px; padding-bottom: 20px;">
-        <div class="row" style="margin-top: 0px;">
+        <div class="row" style="margin-top: 0;">
             {% for coin in coins %}
             <div class="col-lg-3 col-md-6 col-sm-6 col-xs-12" style="margin-top: 20px;">
-                <div class="card shadow-lg">
-                    <div class="card-body">
+                <div class="card shadow-lg" style="height: 420px; overflow: hidden;">
+                    <div class="card-body" style="text-align: center;">
                         <h5 class="card-title" style="font-weight:500;font-size:1.15rem;">{{ coin.short_name }}</h5>
                         <p class="text-muted card-subtitle mb-2" style="line-height:1.2;font-size:0.95rem;font-style:italic;">{{ coin.manufacturer }}</p>
-                        <img class="rounded border shadow" style="width: 100%;" src="{% static '/coinCatalog/' %}{{ coin.img }}">
-                        <a href="{% url 'coin' id=coin.id %}" style="text-decoration: none;"><button class="btn btn-success btn-block btn-lg btn-outline-success" type="button" style="margin-top: 20px;">Перейти</button></a>
+                        <img class="rounded border shadow" style="max-width: 200px; max-height: 200px;" src="{% static '/coinCatalog/coins/' %}{{ coin.img }}">
+                        <a href="{% url 'coin' id=coin.id %}" style="text-decoration: none; position: absolute; bottom: 10px; left: 0; right: 0; margin-right: auto; margin-left: auto; width: 200px;"><button class="btn btn-success btn-block btn-lg btn-outline-success" type="button" style="margin-top: 20px;">Перейти</button></a>
                     </div>
                 </div>
             </div>

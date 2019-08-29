@@ -1,5 +1,30 @@
+let dicts = {
+    "BELYY_MEDVED_2012_avers": 19,
+    "BELYY_MEDVED_2012_reverse": 19,
+    "Dinozavry_morskiye_2013_avers": 47,
+    "Dinozavry_morskiye_2013_reverse": 47,
+    "Pervyy_samolet_2011_avers": 97,
+    "Pervyy_samolet_2011_reverse": 97,
+    "Polet_k_zvezdam_2012_avers": 104,
+    "Polet_k_zvezdam_2012_reverse": 104,
+    "Tigrenok_2010_avers": 129,
+    "Tigrenok_2010_reverse": 129,
+};
+
+let imgs = {
+    "BELYY_MEDVED_2012_avers": 'mon_files/image104.gif',
+    "BELYY_MEDVED_2012_reverse": 'mon_files/image102.gif',
+    "Dinozavry_morskiye_2013_avers": 'mon_files/image251.gif',
+    "Dinozavry_morskiye_2013_reverse": 'mon_files/image247.gif',
+    "Pervyy_samolet_2011_avers": 'mon_files/image516.gif',
+    "Pervyy_samolet_2011_reverse": 'mon_files/image514.gif',
+    "Polet_k_zvezdam_2012_avers": 'mon_files/image547.gif',
+    "Polet_k_zvezdam_2012_reverse": 'mon_files/image545.gif',
+    "Tigrenok_2010_avers": 'mon_files/image651.gif',
+    "Tigrenok_2010_reverse": 'mon_files/image649.gif',
+};
+
 function getCoinFromServer(id) {
-    let coinPlace = document.getElementById('modal-coin-body');
     $.ajax({
         type: 'GET',
         url: location.protocol + "//" + location.host + "/getCoin",
@@ -17,7 +42,7 @@ function getCoinFromServer(id) {
 
             res['imgs'].forEach(v => {
                 let img = document.createElement('img');
-                img.src = location.protocol + "//" + location.host + '/static/coinCatalog/' + v['href'];
+                img.src = location.protocol + "//" + location.host + '/static/coinCatalog/coins/' + v['href'];
                 img.style.width = "100%";
                 let col = document.createElement('div');
                 col.classList.add('col-md-3');
@@ -30,22 +55,41 @@ function getCoinFromServer(id) {
 
 function clickCoin(event) {
     getCoinFromServer(1);
-    let title = event.target.getAttribute('modal-title');
-    document.getElementById('modal-coin-title').innerHTML = title;
+    document.getElementById('modal-coin-title').innerHTML = this.getAttribute('modal-title');
 }
 
 function drawCoins(coins){
-    let ul = document.getElementById('rec-coins');
-    ul.innerHTML = "";
-    coins.forEach(v => {
-        let li = document.createElement('li');
-        li.classList.add("list-group-item");
-        li.classList.add("list-group-item-action");
-        li.setAttribute('data-toggle', 'modal');
-        li.setAttribute('data-target', '#coinModal');
-        li.setAttribute('modal-title', v[0]);
-        li.innerHTML = v[0];
-        li.onclick = clickCoin;
-        ul.appendChild(li);
+    let row = document.getElementById('rec-coins');
+    row.innerHTML = "";
+
+
+
+    coins.slice(0, 4).forEach(v => {
+        let a = document.createElement("a");
+        a.href = location.protocol + "//" + location.host + "/coin/" + dicts[v[0]];
+        a.setAttribute('style', 'color: black; text-decoration: underline;');
+        let wrapper = document.createElement('div');
+        wrapper.classList.add("col-md-3");
+        wrapper.setAttribute('style', 'padding: 10px;');
+        // wrapper.setAttribute('data-toggle', 'modal');
+        wrapper.setAttribute('data-target', '#coinModal');
+        wrapper.setAttribute('modal-title', v[0]);
+        wrapper.addEventListener("click", clickCoin);
+
+        let div = document.createElement('div');
+        div.setAttribute('style', 'background-color: white; border-radius: 8px; padding: 6px; text-align: center;');
+
+        let img = document.createElement('img');
+        img.src = location.protocol + "//" + location.host + '/static/coinCatalog/coins/' + imgs[v[0]];
+        img.setAttribute('style', 'max-width: 100%; height: 150px; background-color: #ccc; margin-top: 10px;');
+        div.appendChild(img);
+
+        let txt = document.createElement('p');
+        txt.innerHTML = v[0].slice(0, 20);
+        div.appendChild(txt);
+
+        a.appendChild(div);
+        wrapper.appendChild(a);
+        row.appendChild(wrapper);
     });
 }

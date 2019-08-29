@@ -1,7 +1,8 @@
 from django.db import models
 
 class Category(models.Model):
-    name = models.CharField(max_length=60)
+    lang = models.CharField(max_length=255, null=True)
+    name = models.CharField(max_length=60, null=True)
     href = models.CharField(max_length=255, default='invest_coins.jpg')
 
     def __str__(self):
@@ -9,6 +10,7 @@ class Category(models.Model):
 
 class Coin(models.Model):
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
+    lang = models.CharField(max_length=255, null=True)
     name = models.CharField(max_length=255, null=True)
     short_name = models.CharField(max_length=150, null=True)
     nominal = models.CharField(max_length=150, null=True)

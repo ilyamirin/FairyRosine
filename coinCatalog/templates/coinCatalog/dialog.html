@@ -10,7 +10,7 @@
     <link rel="stylesheet" type="text/css" href="{% static '/dialog/css/chat.css' %}">
 
     <style>
-        @media only screen and (min-width : 1025px) {
+        @media only screen and (min-width : 1400px) {
             .lg-fluid {
                 width: 100%;
                 max-width: none;
@@ -21,6 +21,7 @@
         #video {
             max-width: 640px;
             max-height: 480px;
+            width: 100%;
             position: absolute;
             left: 0;
             right: 0;
@@ -32,6 +33,7 @@
         #canvas {
             max-width: 640px;
             max-height: 480px;
+            width: 100%;
             position: absolute;
             left: 0;
             right: 0;
@@ -50,7 +52,7 @@
     <div class="container lg-fluid" style="padding-top: 20px; height: 100%;">
         <div class="row justify-content-center" style="height: 100%;">
 
-            <div class="col-lg-4 col-md-12 d-md-none d-sm-none d-none d-lg-none d-xl-flex" style="text-aling: center;">
+            <div class="col-lg-4 col-md-12 d-md-none d-sm-none d-none d-lg-none d-xl-flex" style="text-align: center;" id="dblVideoHidden">
                 <video autoplay id="video"></video>
                 <canvas id="canvas" width="640" height="480"></canvas>
             </div>
@@ -89,9 +91,22 @@
                 </div>
             </div>
 
-            <div class="col-lg-4 col-md-12 col-sm-12 col-xs-12 chat d-none d-sm-none d-md-flex" style="padding-bottom: 20px;">
-                <div id="graph_frame" style="width: 100%; overflow: hidden; border-radius: 15px;">
-                    {% include 'coinCatalog/sb_first.gv.svg' %}
+            <div class="col-lg-4 col-md-12 col-sm-12 col-xs-12 chat" style="padding-bottom: 20px;">
+                <div class="row">
+                    <div class="col">
+                        <div id="graph_frame" style="overflow: hidden; border-radius: 15px; margin-bottom: 10%">
+                            {% include 'coinCatalog/sb_first.gv.svg' %}
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <div id="table_frame" style="background: #ffffff; overflow: hidden; border-radius: 15px;">
+                            <table id="table_client_statement" align="center" border="5px" style="text-align: center; width: 90%" cellpadding="5px">
+                                <!--rdf triples will be added here by "refresh_client_statement" func-->
+                            </table>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

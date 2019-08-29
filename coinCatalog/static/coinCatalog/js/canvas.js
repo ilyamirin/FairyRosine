@@ -2,12 +2,12 @@ let canvas = document.getElementById('canvas');
 let context = canvas.getContext('2d');
 
 let frameLoop = null;
-var firstWhite = false;
+let firstWhite = false;
 
 let canvasData = {
     "face": [],
     "coin": [],
-}
+};
 
 function drawRect(rect, colorStroke, fillStyle){
     context.beginPath();
@@ -37,3 +37,12 @@ function drawCanvasData() {
 }
 
 drawInterval = setInterval(() => drawCanvasData(), 1000 / 24);
+
+function resetCanvas() {
+    clearInterval(drawInterval);
+    context.clearRect(0, 0, canvas.width, canvas.height);
+}
+
+function activateCanvas() {
+    drawInterval = setInterval(() => drawCanvasData(), 1000 / 24);
+}

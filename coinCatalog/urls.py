@@ -10,7 +10,7 @@ urlpatterns = [
     url(r'^coin/(?P<id>\d+)/$', views.coin, name='coin'),
     url(r'^stream/$', views.stream, name='stream'),
     url(r'^dialog/$', views.dialog, name='dialog'),
-    url(r'^$', views.index, name='index'),
+    url(r'^((?P<lang>[a-zA-Z]+)/)?$', views.index, name='index'),
     url(r'^production/', views.production, name='production'),
     url(r'^getCoin/', views.get_coin, name='getCoin'),
 ]

@@ -1,6 +1,5 @@
 const video = document.getElementById('video');
 const video2 = document.getElementById('video2');
-let cameras = [];
 
 let isMobile = false;
 if(/(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|ipad|iris|kindle|Android|Silk|lge |maemo|midp|mmp|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|series(4|6)0|symbian|treo|up\.(browser|link)|vodafone|wap|windows (ce|phone)|xda|xiino/i.test(navigator.userAgent)
@@ -8,11 +7,12 @@ if(/(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine
     isMobile = true;
 }
 
-if (isMobile){
+let iOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+
+if (isMobile && !iOS){
     document.documentElement.requestFullscreen().then(() => {
         screen.orientation.lock("landscape")
         .then(function() {
-//            alert('Locked');
         })
         .catch(function(error) {
             alert(error);
@@ -23,31 +23,41 @@ if (isMobile){
 }
 
 navigator.mediaDevices.enumerateDevices().then(devices => {
-    cameras = devices.filter(function(device){ return device.kind == "videoinput"; });
+    let cameras = devices.filter(function(device){ return device.kind === "videoinput"; });
+    let loadedVideos = Math.min(cameras.length, 2);
     if (cameras.length > 0) {
-        let constraints = { deviceId: { exact: cameras[0].deviceId } };
-        navigator.mediaDevices.getUserMedia({ video: constraints }).then(stream => {
+        let constraints = (!cameras[0].deviceId.length)
+        ? { video: { facingMode: 'user', width: 640, height: 480} }
+        : { video: { deviceId: { exact: cameras[0].deviceId } } };
+        navigator.mediaDevices.getUserMedia(constraints).then(stream => {
             video.srcObject = stream;
-            video2.srcObject = video.srcObject;
+            if (cameras.length < 2)
+                video2.srcObject = video.srcObject;
+            loadedVideos--;
+            if (!loadedVideos)
+                startWebSocketInteraction();
         })
         .catch(e => {
             alert("Не удалось получить доступ к видео 1. Подключите камеру и обновите страницу");
             console.log(e);
         })
     }
-    if (cameras.length == 2) {
-        let constraints = { deviceId: { exact: cameras[1].deviceId } };
-        navigator.mediaDevices.getUserMedia({ video: constraints }).then(stream => {
+    if (cameras.length === 2) {
+        let constraints = (!cameras[1].deviceId.length)
+        ? { video: { facingMode: { exact: "environment" }, width: 640, height: 480 } }
+        : { video: { deviceId: { exact: cameras[1].deviceId } } };
+
+        navigator.mediaDevices.getUserMedia(constraints).then(stream => {
             video2.srcObject = stream;
+            loadedVideos--;
+            if (!loadedVideos)
+                startWebSocketInteraction();
         })
         .catch(e => {
             alert("Не удалось получить доступ к видео 2. Подключите камеру и обновите страницу");
             console.log(e);
         })
-    } else {
-        video2.srcObject = video.srcObject;
     }
-    startWebSocketInteraction();
 })
 .catch(e => {
     alert("Не удалось получить доступ к видео. Подключите камеру и обновите страницу");
@@ -62,9 +72,9 @@ function startWebSocketInteraction(){
     const getFrame = i => {
         console.log("send frame");
         const canvas = document.createElement('canvas');
-        canvas.width = video.videoWidth;
-        canvas.height = video.videoHeight;
-        canvas.getContext('2d').drawImage(video, 0, 0);
+        canvas.width = videos[i].videoWidth;
+        canvas.height = videos[i].videoHeight;
+        canvas.getContext('2d').drawImage(videos[i], 0, 0);
 
         canvas.toBlob(function(blob){
             let encoder = new TextEncoder().encode(String(+ new Date() - timeShift));
@@ -76,7 +86,7 @@ function startWebSocketInteraction(){
     };
     const FPS = 3;
 
-    let ws_scheme = window.location.protocol == "https:" ? "wss" : "ws";
+    let ws_scheme = window.location.protocol === "https:" ? "wss" : "ws";
     let socketUrl = ws_scheme + "://" + window.location.host + window.location.pathname.slice(0, -1) + "1/";
     let socket = new WebSocket(socketUrl);
 
@@ -88,7 +98,7 @@ function startWebSocketInteraction(){
             console.log('sync clock, shift = ' + timeShift/1000 + ' seconds');
             return;
         }
-        if (data.type == 'recognized_coins'){
+        if (data.type === 'recognized_coins'){
             drawCoins(data.text);
         }
         canvasData[data.type] = data.text;
@@ -97,24 +107,21 @@ function startWebSocketInteraction(){
     socket.onopen = function (event) {
         console.log('socket opened');
         frameLoop = setInterval(() => getFrame(0), 1000 / FPS);
-//        frameLoop2 = setInterval(() => getFrame(1), 1000 / FPS);
     };
 
     socket.onclose = function (event) {
         console.log('socket closed');
         if (frameLoop)
             clearInterval(frameLoop);
-//        if (frameLoop2)
-//            clearInterval(frameLoop2);
-        alert("Соединение было разорвано!");
+        let keys = event.keys().map(v => [v, event[v]]).flat();
+        alert("Соединение было разорвано!" + JSON.stringify(keys));
     };
 
     socket.onerror = function (event) {
         console.log('socket errors');
         if (frameLoop)
             clearInterval(frameLoop);
-//        if (frameLoop2)
-//            clearInterval(frameLoop2);
-        alert("Сокет вернул ошибку!");
+        let keys = event.keys().map(v => [v, event[v]]).flat();
+        alert("Сокет вернул ошибку!" + JSON.stringify(keys));
     };
 }

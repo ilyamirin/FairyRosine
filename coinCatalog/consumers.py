@@ -7,6 +7,7 @@ import random
 import operator
 import time
 import copy
+import collections
 
 face_channel_layer = get_channel_layer("face")
 coin_channel_layer = get_channel_layer("coin")
@@ -21,6 +22,7 @@ class StreamConsumer(AsyncWebsocketConsumer):
         self.uid = "".join(random.choice(ascii_letters) for _ in range(8))
         self.rec_coins = {}
         self.cnt_rec_coins = 0
+        self.coins_queue = []
         print("consumer created", flush=True)
 
     async def sync_clock(self):
@@ -49,6 +51,27 @@ class StreamConsumer(AsyncWebsocketConsumer):
             await self.send(json.dumps(res))
 
     async def coins_ready(self, message):
+        if message["uid"] == self.uid:
+            res = copy.deepcopy(message)
+            res['type'] = 'coin'
+            print(f'{self.uid}: coins ready')
+            for coin_descr in message["text"]:
+                coin_id = coin_descr[4]
+                self.coins_queue.append((time.time(), coin_id))
+            now, window = time.time(), 5
+            self.coins_queue = [(t, coin_id) for t, coin_id in self.coins_queue if now - t <= window]
+            cnt = collections.Counter(coin_id for t, coin_id in self.coins_queue)
+            coins = [(coin, counts) for coin, counts in cnt.items()]
+            resp = {
+                "type": "recognized_coins",
+                "text": coins
+            }
+            await asyncio.gather(
+                self.send(json.dumps(resp)),
+                self.send(json.dumps(res)),
+            )
+
+    async def coins_ready_old(self, message):
         if message["uid"] == self.uid:
             res = copy.deepcopy(message)
             res['type'] = 'coin'
