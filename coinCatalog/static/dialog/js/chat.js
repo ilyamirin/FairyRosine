@@ -123,19 +123,42 @@ function highLight(topic) {
     currentRect.setAttribute("fill", "#00AC00");
     previousRect = currentRect;
 
-    //get position, scroll iframe to current topic's rectangle
+    //get position, scroll div to current topic's rectangle
     let textObj = document.getElementById(topic).getElementsByTagName("text")[0];
     let x = textObj.getAttribute("x");
     let y = textObj.getAttribute("y");
+    let transform = document.getElementById("graph0").getAttribute("transform");
+    let translate = transform.match(/(?:translate)(.*)/i)[1].replace(/[\(\)]/g, "").split(" ").map(Number);
+    let translateX = translate[0];
+    let translateY = translate[1];
     let xOffset = document.getElementById("graph_frame").clientWidth / 2
     let yOffset = document.getElementById("graph_frame").clientHeight / 2
     console.log(x, y);
     document.getElementById("graph_frame").scrollTo({
-        left: 1 * x + 4 - xOffset,
-        top: 1 * y + 423 - yOffset,
+        left: 1 * x + translateX - xOffset,
+        top: 1 * y + translateY - yOffset,
         behavior: "smooth"
     });
-    console.log(1 * x + 4, 1 * y + 423)
+    console.log(1 * x + translateX, 1 * y + translateY);
+}
+//refresh table of client statement
+function refresh_client_statement(client_statement) { //take list of rdf triples and add them to table
+    table = document.getElementById("table_client_statement")
+    while (table.firstChild) {
+        table.removeChild(table.firstChild);
+    }
+    let cell = function(row, text) {
+        let rdfEl = document.createElement("td");
+        rdfEl.innerText = text;
+        rdfEl.style.align
+        row.appendChild(rdfEl);
+    }
+    for (let triple of client_statement) {
+        let row = document.createElement("tr");
+        for (let t of triple) cell(row, t.toLowerCase());
+        table.appendChild(row)
+    }
+
 }
 
 button.addEventListener("click", sendAnswer);
@@ -164,10 +187,11 @@ window.addEventListener('keyup', function (event) {
 
 socket.onmessage = function (event) {
     let data = JSON.parse(event.data);
-    console.log(data);
+    //console.log(data);
     if (data.type === 'dialog_answer_ready') {
         try {
             highLight(data.topic);
+            refresh_client_statement(data.client_statement)
         }
         catch {
 
@@ -180,7 +204,7 @@ socket.onmessage = function (event) {
     if (data.type === 'sync_clock') {
         let serverNow = Math.round(data.timestamp * 1000);
         timeShift = + new Date() - serverNow;
-        console.log('sync clock, shift = ' + timeShift/1000 + ' seconds');
+        //console.log('sync clock, shift = ' + timeShift/1000 + ' seconds');
         return;
     }
     if (data.type === 'dialog_faces_ready') {

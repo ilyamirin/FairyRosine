@@ -68,9 +68,11 @@ class DialogConsumer(SyncConsumer):
             self.asking_name = "меня зовут" in answer.lower()
             conversation = self.clients[uid].bot.get_conversation(self.clients[uid])
             topic = conversation.property("topic")
+            client_statement = self.clients[uid].brain.rdf.matched_as_tuples("КЛИЕНТ", None, None)
             # topic = self.bot.client_context.bot.ask_question(self.bot.client_context, "topic", responselogger=self.bot)[:-1].lower()
             print(f"answer = {answer}")
             print(f"topic = {topic}")
+            print(f"client_statement = {client_statement}")
             async_to_sync(server_channel_layer.group_send)(
                 "dialog",
                 {
@@ -78,6 +80,7 @@ class DialogConsumer(SyncConsumer):
                     "text": answer,
                     "topic": topic,
                     "uid": uid,
+                    "client_statement": client_statement,
                 },
             )
         except Exception as e:
