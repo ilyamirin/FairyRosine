@@ -18,7 +18,8 @@ from coinCatalog.models import DialogUser
 from datetime import datetime
 import base64
 from vef.settings import SERVANT_DIR
-
+from string import ascii_letters
+import random
 
 server_channel_layer = get_channel_layer("server")
 
@@ -60,6 +61,35 @@ class TimeShifter:
             print(e)
 
 
+class SqliteDialoguser:
+    UNKNOWN = "Unknown"
+
+    def __init__(self):
+        self.type = "sqlite3"
+        self.dialog_uids = self._get_all_uids()
+
+    def __iter__(self):
+        """итерация for возвращает dialog_uid"""
+        return iter(self._get_all_uids())
+
+    def get(self, dialog_uid):
+        """Возвращает embed вектор юзера"""
+        return np.frombuffer(DialogUser.objects.get(uid=dialog_uid).vector, dtype=np.float32)
+
+    def checkOutgoingName(self, dialog_uid):
+        if dialog_uid == self.UNKNOWN:
+            return dialog_uid
+        return dialog_uid
+
+    @staticmethod
+    def randomString(length=10, pool=ascii_letters):
+        return "".join(random.choice(pool) for _ in range(length))
+
+    def _get_all_uids(self):
+        return [user.uid for user in DialogUser.objects.all()]
+
+
+
 class FaceRecognitionConsumer(SyncConsumer, TimeShifter):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -70,15 +100,8 @@ class FaceRecognitionConsumer(SyncConsumer, TimeShifter):
         from FaceRecognition.InsightFaceRecognition import FaceRecognizer, RecognizerConfig
         from FaceDetection.RetinaFaceDetector import RetinaFace
         from FaceDetection.Config import DetectorConfig
-        from DataBaseKit.DataBaseHDF import DataBase as DBHDF
-        # from DataBaseKit.DjangoAPIWrapper import DataBase as DBDjango
 
-        self.dataBase = DBHDF(
-            filepath=RecognizerConfig.DATA_BASE_PATH
-        )
-
-        # os.environ["DJANGO_SETTINGS_MODULE"] = "DataBaseKit.DataBase.settings"
-        # dataBase = DBDjango(password="bs420")
+        self.dataBase = SqliteDialoguser()
 
         sys.path.pop()
 
@@ -104,7 +127,6 @@ class FaceRecognitionConsumer(SyncConsumer, TimeShifter):
 
     def recognize(self, message):
         try:
-            known_prefix = "Known"
             uid = message["uid"]
             timestamp, img_data = get_image_data_from_bytes_data(message["bytes_data"])
             age = self.get_age(timestamp)
@@ -127,22 +149,23 @@ class FaceRecognitionConsumer(SyncConsumer, TimeShifter):
                 users = []
                 for i, embed in enumerate(embeddings):
                     result, scores = self.recognizer.identify(embed)
-                    display_name = ""
                     # Самое большое лицо
                     if i == 0:
                         # Если мы его не знаем
-                        if result == "Unknown":
-                            result = self.recognizer.dataBase.checkIncomingName(known_prefix, addIndex=True)
+                        if result == SqliteDialoguser.UNKNOWN:
+                            result = SqliteDialoguser.randomString()
                             print(f"Это новый персонаж: {result}")
-                            self.recognizer.enroll(embed, result)
-                            cv2.imwrite(f"{result.replace('/', ' ')}.png", photo_slice)
-                            user = DialogUser(uid=result, time_enrolled=datetime.now(), photo=photo_slice.tobytes(), name="")
+                            cv2.imwrite(f"photo_{result.replace('/', ' ')}.png", photo_slice)
+                            user = DialogUser(
+                                uid=result,
+                                time_enrolled=datetime.now(),
+                                photo=photo_slice.tobytes(),
+                                name="",
+                                vector=embed.tobytes(),
+                            )
                             user.save()
-                        current_user_uid = result
-                    try:
-                        display_name = DialogUser.objects.get(uid=result).name
-                    except:
-                        pass
+                        current_user_uid = result or None
+                    display_name = DialogUser.objects.get(uid=result).name
                     users.append(display_name)
             boxes = boxes.tolist()
             response = [b + [users[idx]] for idx, b in enumerate(boxes)]
@@ -161,14 +184,7 @@ class FaceRecognitionConsumer(SyncConsumer, TimeShifter):
                 },
             )
 
-            name = ""
-            if current_user_uid is not None:
-                try:
-                    name = DialogUser.objects.get(uid=current_user_uid).name
-                except:
-                    name = current_user_uid if not current_user_uid.startswith(known_prefix) else ""
-                    user = DialogUser(uid=current_user_uid, time_enrolled=datetime.now(), photo=photo_slice.tobytes(), name=name)
-                    user.save()
+            display_name = DialogUser.objects.get(uid=current_user_uid).name if current_user_uid else ""
             async_to_sync(server_channel_layer.group_send)(
                 "dialog-recognize-faces",
                 {
@@ -176,7 +192,7 @@ class FaceRecognitionConsumer(SyncConsumer, TimeShifter):
                     "uid": uid,
                     "dialog_uid": current_user_uid,
                     "dialog_photo": photo_slice_b64,
-                    "display_name": name
+                    "display_name": display_name
                 },
             )
 
