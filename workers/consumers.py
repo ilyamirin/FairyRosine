@@ -66,19 +66,23 @@ class SqliteDialoguser:
 
     def __init__(self):
         self.type = "sqlite3"
-        self.dialog_uids = self._get_all_uids()
+        self.dialog_uids = set(user.uid for user in DialogUser.objects.all())
+        self.cached_vectors = {}
 
     def __iter__(self):
         """итерация for возвращает dialog_uid"""
-        return iter(self._get_all_uids())
+        return iter(copy.deepcopy(self.dialog_uids))
 
     def get(self, dialog_uid):
         """Возвращает embed вектор юзера"""
-        return np.frombuffer(DialogUser.objects.get(uid=dialog_uid).vector, dtype=np.float32)
+        if dialog_uid not in self.cached_vectors:
+            self.cached_vectors[dialog_uid] = np.frombuffer(DialogUser.objects.get(uid=dialog_uid).vector, dtype=np.float32)
+        return self.cached_vectors[dialog_uid]
 
     def checkOutgoingName(self, dialog_uid):
         if dialog_uid == self.UNKNOWN:
             return dialog_uid
+        self.add_dialog_uid(dialog_uid)
         return dialog_uid
 
     @staticmethod
@@ -86,7 +90,13 @@ class SqliteDialoguser:
         return "".join(random.choice(pool) for _ in range(length))
 
     def _get_all_uids(self):
-        return [user.uid for user in DialogUser.objects.all()]
+        return self.dialog_uids
+
+    def recache_all_uids(self):
+        self.dialog_uids = set(user.uid for user in DialogUser.objects.all())
+
+    def add_dialog_uid(self, dialog_uid):
+        self.dialog_uids.add(dialog_uid)
 
 
 
@@ -164,8 +174,9 @@ class FaceRecognitionConsumer(SyncConsumer, TimeShifter):
                                 vector=embed.tobytes(),
                             )
                             user.save()
+                            self.dataBase.add_dialog_uid(result)
                         current_user_uid = result or None
-                    display_name = DialogUser.objects.get(uid=result).name
+                    display_name = DialogUser.objects.get(uid=result).name if result != SqliteDialoguser.UNKNOWN else ""
                     users.append(display_name)
             boxes = boxes.tolist()
             response = [b + [users[idx]] for idx, b in enumerate(boxes)]
@@ -195,8 +206,11 @@ class FaceRecognitionConsumer(SyncConsumer, TimeShifter):
                     "display_name": display_name
                 },
             )
-
+        except KeyboardInterrupt as e:
+            raise e
         except Exception as e:
+            self.dataBase.recache_all_uids()
+            print("uids recached", flush=True)
             print(e)
 
     def register(self):
