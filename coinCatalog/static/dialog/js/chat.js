@@ -111,6 +111,13 @@ function sendAnswer() {
     socket.send(input);
 }
 
+function decorateDiagram() {
+    let textObjs = document.getElementById("graph_frame").getElementsByTagName("text");
+    for (let t of textObjs)
+        t.setAttribute("font-family", "Arial");
+}
+decorateDiagram();
+
 let previousRect = null;
 
 function highLight(topic) {
