@@ -79,8 +79,8 @@
         "thickness": "3.0",
         "copies": "8000",
         "imgs": [
-            "mon_files/image016.gif",
             "mon_files/image018.gif",
+            "mon_files/image016.gif",
             "mon_files/image020.gif",
             "mon_files/image022.gif",
             "mon_files/image024.gif"
@@ -103,9 +103,9 @@
         "thickness": "4.00 max",
         "copies": "7500",
         "imgs": [
+            "mon_files/image030.gif",
             "mon_files/image026.gif",
             "mon_files/image028.gif",
-            "mon_files/image030.gif",
             "mon_files/image032.gif"
         ]
     },
@@ -126,8 +126,8 @@
         "thickness": "2.60 \u00b10.20",
         "copies": "5000",
         "imgs": [
-            "mon_files/image034.gif",
-            "mon_files/image036.gif"
+            "mon_files/image036.gif",
+            "mon_files/image034.gif"
         ]
     },
     {
@@ -147,8 +147,8 @@
         "thickness": "3.20 \u20130.50 (without insertion), 4,40+0,10 (with insertion)",
         "copies": "7000",
         "imgs": [
-            "mon_files/image038.gif",
-            "mon_files/image040.gif"
+            "mon_files/image040.gif",
+            "mon_files/image038.gif"
         ]
     },
     {
@@ -168,8 +168,8 @@
         "thickness": "2.4 0.25",
         "copies": "5000",
         "imgs": [
-            "mon_files/image042.gif",
             "mon_files/image044.gif",
+            "mon_files/image042.gif",
             "mon_files/image046.gif"
         ]
     },
@@ -190,8 +190,8 @@
         "thickness": "2.60 0.20",
         "copies": "4000",
         "imgs": [
-            "mon_files/image048.gif",
-            "mon_files/image050.gif"
+            "mon_files/image050.gif",
+            "mon_files/image048.gif"
         ]
     },
     {
@@ -211,11 +211,11 @@
         "thickness": "2.25 \u20130.50",
         "copies": "4999",
         "imgs": [
+            "mon_files/image060.gif",
             "mon_files/image052.gif",
             "mon_files/image054.gif",
             "mon_files/image056.gif",
             "mon_files/image058.gif",
-            "mon_files/image060.gif",
             "mon_files/image062.gif",
             "mon_files/image064.gif",
             "mon_files/image066.gif"
@@ -238,8 +238,8 @@
         "thickness": "2.40 \u00b10.10",
         "copies": "10000",
         "imgs": [
-            "mon_files/image068.gif",
-            "mon_files/image070.gif"
+            "mon_files/image070.gif",
+            "mon_files/image068.gif"
         ]
     },
     {
@@ -259,8 +259,8 @@
         "thickness": "3.0 \u00b10.2",
         "copies": "13000",
         "imgs": [
-            "mon_files/image072.gif",
-            "mon_files/image074.gif"
+            "mon_files/image074.gif",
+            "mon_files/image072.gif"
         ]
     },
     {
@@ -301,8 +301,8 @@
         "thickness": "3.10 \u00b10.50",
         "copies": "5000",
         "imgs": [
-            "mon_files/image080.gif",
-            "mon_files/image082.gif"
+            "mon_files/image082.gif",
+            "mon_files/image080.gif"
         ]
     },
     {
@@ -322,8 +322,8 @@
         "thickness": "2.30",
         "copies": "10000",
         "imgs": [
-            "mon_files/image084.gif",
-            "mon_files/image086.gif"
+            "mon_files/image086.gif",
+            "mon_files/image084.gif"
         ]
     },
     {
@@ -343,9 +343,9 @@
         "thickness": "1.70 0.25",
         "copies": "5000",
         "imgs": [
+            "mon_files/image092.gif",
             "mon_files/image088.gif",
-            "mon_files/image090.gif",
-            "mon_files/image092.gif"
+            "mon_files/image090.gif"
         ]
     },
     {
@@ -365,8 +365,8 @@
         "thickness": "3.00",
         "copies": "5000",
         "imgs": [
-            "mon_files/image094.gif",
             "mon_files/image096.gif",
+            "mon_files/image094.gif",
             "mon_files/image098.gif"
         ]
     },
@@ -430,9 +430,9 @@
         "thickness": "2.60 \u00b10.2",
         "copies": "10000",
         "imgs": [
+            "mon_files/image114.gif",
             "mon_files/image110.gif",
-            "mon_files/image112.gif",
-            "mon_files/image114.gif"
+            "mon_files/image112.gif"
         ]
     },
     {
@@ -496,8 +496,8 @@
         "thickness": "2.60 \u00b10.50",
         "copies": "4000",
         "imgs": [
-            "mon_files/image128.gif",
-            "mon_files/image130.gif"
+            "mon_files/image130.gif",
+            "mon_files/image128.gif"
         ]
     },
     {
@@ -517,8 +517,8 @@
         "thickness": "3.00\u00b1 0,1",
         "copies": "5000",
         "imgs": [
-            "mon_files/image132.gif",
             "mon_files/image134.gif",
+            "mon_files/image132.gif",
             "mon_files/image136.gif",
             "mon_files/image138.gif"
         ]
@@ -540,8 +540,8 @@
         "thickness": "3.10 \u00b10.50",
         "copies": "12000",
         "imgs": [
-            "mon_files/image140.gif",
             "mon_files/image142.gif",
+            "mon_files/image140.gif",
             "mon_files/image144.gif"
         ]
     },
@@ -562,8 +562,8 @@
         "thickness": "3.10 \u00b10.50",
         "copies": "200000 (\u043f\u0435\u0440\u0432\u043e\u0439 \u043c\u043e\u043d\u0435\u0442\u044b) \u0438 50000 (\u0432\u0442\u043e\u0440\u043e\u0439)",
         "imgs": [
-            "mon_files/image146.gif",
             "mon_files/image148.gif",
+            "mon_files/image146.gif",
             "mon_files/image150.gif"
         ]
     },
@@ -604,8 +604,8 @@
         "thickness": "2.4 + 0.25",
         "copies": "5000",
         "imgs": [
-            "mon_files/image154.gif",
-            "mon_files/image156.gif"
+            "mon_files/image156.gif",
+            "mon_files/image154.gif"
         ]
     },
     {
@@ -625,8 +625,8 @@
         "thickness": "1.70 0.25",
         "copies": "8000",
         "imgs": [
-            "mon_files/image158.gif",
-            "mon_files/image160.gif"
+            "mon_files/image160.gif",
+            "mon_files/image158.gif"
         ]
     },
     {
@@ -646,8 +646,8 @@
         "thickness": "2.60 \u20130.50",
         "copies": "9000",
         "imgs": [
-            "mon_files/image162.gif",
-            "mon_files/image164.gif"
+            "mon_files/image164.gif",
+            "mon_files/image162.gif"
         ]
     },
     {
@@ -667,8 +667,8 @@
         "thickness": "3.00",
         "copies": "6000",
         "imgs": [
-            "mon_files/image166.gif",
             "mon_files/image168.gif",
+            "mon_files/image166.gif",
             "mon_files/image170.gif"
         ]
     },
@@ -689,8 +689,8 @@
         "thickness": "2.70 0,30",
         "copies": "7000",
         "imgs": [
-            "mon_files/image172.gif",
-            "mon_files/image174.gif"
+            "mon_files/image174.gif",
+            "mon_files/image172.gif"
         ]
     },
     {
@@ -799,8 +799,8 @@
         "thickness": "",
         "copies": "1500",
         "imgs": [
-            "mon_files/image202.gif",
-            "mon_files/image204.gif"
+            "mon_files/image204.gif",
+            "mon_files/image202.gif"
         ]
     },
     {
@@ -820,8 +820,8 @@
         "thickness": "1.70 0.25",
         "copies": "15000",
         "imgs": [
-            "mon_files/image206.gif",
-            "mon_files/image208.gif"
+            "mon_files/image208.gif",
+            "mon_files/image206.gif"
         ]
     },
     {
@@ -862,9 +862,9 @@
         "thickness": "3.00",
         "copies": "15000",
         "imgs": [
+            "mon_files/image215.gif",
             "mon_files/image213.gif",
             "mon_files/image214.gif",
-            "mon_files/image215.gif",
             "mon_files/image217.gif",
             "mon_files/image219.gif",
             "mon_files/image221.gif"
@@ -887,8 +887,8 @@
         "thickness": "2.75 0.10",
         "copies": "20000",
         "imgs": [
-            "mon_files/image223.gif",
-            "mon_files/image225.gif"
+            "mon_files/image225.gif",
+            "mon_files/image223.gif"
         ]
     },
     {
@@ -973,8 +973,8 @@
         "thickness": "3.10 \u00b10.50",
         "copies": "6000",
         "imgs": [
-            "mon_files/image243.gif",
-            "mon_files/image245.gif"
+            "mon_files/image245.gif",
+            "mon_files/image243.gif"
         ]
     },
     {
@@ -994,9 +994,9 @@
         "thickness": "2.60\u00b1 0,2",
         "copies": "7000",
         "imgs": [
+            "mon_files/image251.gif",
             "mon_files/image247.gif",
-            "mon_files/image249.gif",
-            "mon_files/image251.gif"
+            "mon_files/image249.gif"
         ]
     },
     {
@@ -1016,8 +1016,8 @@
         "thickness": "3.00",
         "copies": "20000 &ndash; \u043d\u0430\u0431\u043e\u0440\u044b, 10000 &ndash; \u043e\u0442\u0434. \u043c\u043e\u043d\u0435\u0442\u0430",
         "imgs": [
-            "mon_files/image253.gif",
             "mon_files/image255.gif",
+            "mon_files/image253.gif",
             "mon_files/image257.gif",
             "mon_files/image259.gif",
             "mon_files/image261.gif",
@@ -1041,8 +1041,8 @@
         "thickness": "2.20 \u00b10.20",
         "copies": "20000",
         "imgs": [
-            "mon_files/image265.gif",
-            "mon_files/image267.gif"
+            "mon_files/image267.gif",
+            "mon_files/image265.gif"
         ]
     },
     {
@@ -1062,8 +1062,8 @@
         "thickness": "2.60 0.20",
         "copies": "4000",
         "imgs": [
-            "mon_files/image269.gif",
-            "mon_files/image271.gif"
+            "mon_files/image271.gif",
+            "mon_files/image269.gif"
         ]
     },
     {
@@ -1104,8 +1104,8 @@
         "thickness": "4.00 max",
         "copies": "7500",
         "imgs": [
-            "mon_files/image277.gif",
-            "mon_files/image279.gif"
+            "mon_files/image279.gif",
+            "mon_files/image277.gif"
         ]
     },
     {
@@ -1125,8 +1125,8 @@
         "thickness": "3.20 0.20",
         "copies": "3000",
         "imgs": [
-            "mon_files/image281.gif",
             "mon_files/image283.gif",
+            "mon_files/image281.gif",
             "mon_files/image285.gif"
         ]
     },
@@ -1147,8 +1147,8 @@
         "thickness": "3.10 \u00b10.50",
         "copies": "7000",
         "imgs": [
-            "mon_files/image287.gif",
-            "mon_files/image289.gif"
+            "mon_files/image289.gif",
+            "mon_files/image287.gif"
         ]
     },
     {
@@ -1168,8 +1168,8 @@
         "thickness": "2.00",
         "copies": "5000",
         "imgs": [
-            "mon_files/image291.gif",
-            "mon_files/image293.gif"
+            "mon_files/image293.gif",
+            "mon_files/image291.gif"
         ]
     },
     {
@@ -1189,9 +1189,9 @@
         "thickness": "1.70 0.25",
         "copies": "5000",
         "imgs": [
+            "mon_files/image299.gif",
             "mon_files/image295.gif",
-            "mon_files/image297.gif",
-            "mon_files/image299.gif"
+            "mon_files/image297.gif"
         ]
     },
     {
@@ -1211,9 +1211,9 @@
         "thickness": "2.60 0.20",
         "copies": "5000",
         "imgs": [
+            "mon_files/image305.gif",
             "mon_files/image301.gif",
             "mon_files/image303.gif",
-            "mon_files/image305.gif",
             "mon_files/image307.gif"
         ]
     },
@@ -1234,10 +1234,10 @@
         "thickness": "3.00",
         "copies": "8000",
         "imgs": [
+            "mon_files/image315.gif",
             "mon_files/image309.gif",
             "mon_files/image311.gif",
             "mon_files/image313.gif",
-            "mon_files/image315.gif",
             "mon_files/image317.gif"
         ]
     },
@@ -1258,8 +1258,8 @@
         "thickness": "",
         "copies": "10000",
         "imgs": [
-            "mon_files/image319.gif",
-            "mon_files/image321.gif"
+            "mon_files/image321.gif",
+            "mon_files/image319.gif"
         ]
     },
     {
@@ -1279,10 +1279,10 @@
         "thickness": "4.00 max",
         "copies": "7500",
         "imgs": [
+            "mon_files/image329.gif",
             "mon_files/image323.gif",
             "mon_files/image325.gif",
             "mon_files/image327.gif",
-            "mon_files/image329.gif",
             "mon_files/image331.gif"
         ]
     },
@@ -1368,8 +1368,8 @@
         "thickness": "4.50",
         "copies": "8000",
         "imgs": [
-            "mon_files/image348.gif",
-            "mon_files/image350.gif"
+            "mon_files/image350.gif",
+            "mon_files/image348.gif"
         ]
     },
     {
@@ -1410,8 +1410,8 @@
         "thickness": "2.60 0.20",
         "copies": "5000",
         "imgs": [
-            "mon_files/image356.gif",
             "mon_files/image358.gif",
+            "mon_files/image356.gif",
             "mon_files/image360.gif",
             "mon_files/image362.gif",
             "mon_files/image364.gif"
@@ -1496,9 +1496,9 @@
         "thickness": "3.00",
         "copies": "8000",
         "imgs": [
+            "mon_files/image380.gif",
             "mon_files/image376.gif",
-            "mon_files/image378.gif",
-            "mon_files/image380.gif"
+            "mon_files/image378.gif"
         ]
     },
     {
@@ -1539,9 +1539,9 @@
         "thickness": "1.70 0.25",
         "copies": "5000",
         "imgs": [
+            "mon_files/image387.gif",
             "mon_files/image385.gif",
-            "mon_files/image386.gif",
-            "mon_files/image387.gif"
+            "mon_files/image386.gif"
         ]
     },
     {
@@ -1561,8 +1561,8 @@
         "thickness": "2.4",
         "copies": "4000",
         "imgs": [
-            "mon_files/image376.gif",
             "mon_files/image389.gif",
+            "mon_files/image376.gif",
             "mon_files/image391.gif"
         ]
     },
@@ -1627,8 +1627,8 @@
         "thickness": "2.60 0,20",
         "copies": "5000",
         "imgs": [
-            "mon_files/image405.gif",
-            "mon_files/image407.gif"
+            "mon_files/image407.gif",
+            "mon_files/image405.gif"
         ]
     },
     {
@@ -1691,8 +1691,8 @@
         "thickness": "1.70 0.25",
         "copies": "5000",
         "imgs": [
-            "mon_files/image418.gif",
-            "mon_files/image420.gif"
+            "mon_files/image420.gif",
+            "mon_files/image418.gif"
         ]
     },
     {
@@ -1777,8 +1777,8 @@
         "thickness": "3.05 \u00b10.20",
         "copies": "7000",
         "imgs": [
-            "mon_files/image438.gif",
             "mon_files/image440.gif",
+            "mon_files/image438.gif",
             "mon_files/image442.gif"
         ]
     },
@@ -1799,8 +1799,8 @@
         "thickness": "2.65 \u00b10.10",
         "copies": "5000",
         "imgs": [
-            "mon_files/image444.gif",
             "mon_files/image446.gif",
+            "mon_files/image444.gif",
             "mon_files/image448.gif",
             "mon_files/image450.gif"
         ]
@@ -1843,8 +1843,8 @@
         "thickness": "2.70 0,30",
         "copies": "7000",
         "imgs": [
-            "mon_files/image459.gif",
-            "mon_files/image461.gif"
+            "mon_files/image461.gif",
+            "mon_files/image459.gif"
         ]
     },
     {
@@ -1864,8 +1864,8 @@
         "thickness": "3.20 0.20",
         "copies": "\u041c\u0430\u043a\u0441. \u0442\u0438\u0440\u0430\u0436 \u043a\u0430\u0436\u0434. \u043d\u0430\u0438\u043c-\u043d\u0438\u044f, \u0448\u0442.",
         "imgs": [
-            "mon_files/image463.gif",
-            "mon_files/image465.gif"
+            "mon_files/image465.gif",
+            "mon_files/image463.gif"
         ]
     },
     {
@@ -1906,9 +1906,9 @@
         "thickness": "2.60 0.20",
         "copies": "7000",
         "imgs": [
+            "mon_files/image475.gif",
             "mon_files/image471.gif",
             "mon_files/image473.gif",
-            "mon_files/image475.gif",
             "mon_files/image477.gif",
             "mon_files/image479.gif",
             "mon_files/image481.gif",
@@ -1953,8 +1953,8 @@
         "thickness": "4.00",
         "copies": "2000",
         "imgs": [
-            "mon_files/image488.gif",
-            "mon_files/image490.gif"
+            "mon_files/image490.gif",
+            "mon_files/image488.gif"
         ]
     },
     {
@@ -1974,8 +1974,8 @@
         "thickness": "3.10 \u00b10.50",
         "copies": "4000",
         "imgs": [
-            "mon_files/image492.gif",
-            "mon_files/image494.gif"
+            "mon_files/image494.gif",
+            "mon_files/image492.gif"
         ]
     },
     {
@@ -1995,8 +1995,8 @@
         "thickness": "3.00 0.20",
         "copies": "15000",
         "imgs": [
-            "mon_files/image496.gif",
             "mon_files/image498.gif",
+            "mon_files/image496.gif",
             "mon_files/image500.gif"
         ]
     },
@@ -2038,8 +2038,8 @@
         "thickness": "4.00",
         "copies": "2000",
         "imgs": [
-            "mon_files/image488.gif",
-            "mon_files/image506.gif"
+            "mon_files/image506.gif",
+            "mon_files/image488.gif"
         ]
     },
     {
@@ -2059,8 +2059,8 @@
         "thickness": "3.10 \u00b10.50",
         "copies": "200000",
         "imgs": [
-            "mon_files/image508.gif",
             "mon_files/image510.gif",
+            "mon_files/image508.gif",
             "mon_files/image512.gif"
         ]
     },
@@ -2081,8 +2081,8 @@
         "thickness": "3.10 \u00b10.50",
         "copies": "6000",
         "imgs": [
-            "mon_files/image514.gif",
-            "mon_files/image516.gif"
+            "mon_files/image516.gif",
+            "mon_files/image514.gif"
         ]
     },
     {
@@ -2102,8 +2102,8 @@
         "thickness": "2.60 \u00b10.50",
         "copies": "4000",
         "imgs": [
-            "mon_files/image517.gif",
-            "mon_files/image519.gif"
+            "mon_files/image519.gif",
+            "mon_files/image517.gif"
         ]
     },
     {
@@ -2123,8 +2123,8 @@
         "thickness": "3,40 \u00b1 0.20",
         "copies": "8000",
         "imgs": [
-            "mon_files/image521.gif",
             "mon_files/image523.gif",
+            "mon_files/image521.gif",
             "mon_files/image525.gif",
             "mon_files/image527.gif",
             "mon_files/image529.gif"
@@ -2230,8 +2230,8 @@
         "thickness": "2.60 0.20",
         "copies": "5000",
         "imgs": [
-            "mon_files/image545.gif",
-            "mon_files/image547.gif"
+            "mon_files/image547.gif",
+            "mon_files/image545.gif"
         ]
     },
     {
@@ -2251,8 +2251,8 @@
         "thickness": "2.70 0,30",
         "copies": "7000",
         "imgs": [
-            "mon_files/image459.gif",
-            "mon_files/image549.gif"
+            "mon_files/image549.gif",
+            "mon_files/image459.gif"
         ]
     },
     {
@@ -2314,8 +2314,8 @@
         "thickness": "4.00",
         "copies": "5000",
         "imgs": [
-            "mon_files/image559.gif",
-            "mon_files/image561.gif"
+            "mon_files/image561.gif",
+            "mon_files/image559.gif"
         ]
     },
     {
@@ -2335,8 +2335,8 @@
         "thickness": "1.70 0.25",
         "copies": "5000",
         "imgs": [
-            "mon_files/image563.gif",
             "mon_files/image565.gif",
+            "mon_files/image563.gif",
             "mon_files/image567.gif"
         ]
     },
@@ -2357,8 +2357,8 @@
         "thickness": "1.70 0.25",
         "copies": "5000",
         "imgs": [
-            "mon_files/image569.gif",
             "mon_files/image571.gif",
+            "mon_files/image569.gif",
             "mon_files/image573.gif"
         ]
     },
@@ -2379,8 +2379,8 @@
         "thickness": "3.80 0,10",
         "copies": "5000",
         "imgs": [
-            "mon_files/image575.gif",
-            "mon_files/image577.gif"
+            "mon_files/image577.gif",
+            "mon_files/image575.gif"
         ]
     },
     {
@@ -2506,8 +2506,8 @@
         "thickness": "1.50 0.20",
         "copies": "15000",
         "imgs": [
-            "mon_files/image597.gif",
-            "mon_files/image599.gif"
+            "mon_files/image599.gif",
+            "mon_files/image597.gif"
         ]
     },
     {
@@ -2590,8 +2590,8 @@
         "thickness": "2.00 \u2013 0.5",
         "copies": "15000",
         "imgs": [
-            "mon_files/image612.gif",
-            "mon_files/image614.gif"
+            "mon_files/image614.gif",
+            "mon_files/image612.gif"
         ]
     },
     {
@@ -2632,8 +2632,8 @@
         "thickness": "1.70 0.25",
         "copies": "10000",
         "imgs": [
-            "mon_files/image618.gif",
-            "mon_files/image620.gif"
+            "mon_files/image620.gif",
+            "mon_files/image618.gif"
         ]
     },
     {
@@ -2653,8 +2653,8 @@
         "thickness": "12.0 \u00b10.3",
         "copies": "700",
         "imgs": [
-            "mon_files/image622.gif",
-            "mon_files/image624.gif"
+            "mon_files/image624.gif",
+            "mon_files/image622.gif"
         ]
     },
     {
@@ -2716,8 +2716,8 @@
         "thickness": "3.00",
         "copies": "15000",
         "imgs": [
-            "mon_files/image634.gif",
             "mon_files/image636.gif",
+            "mon_files/image634.gif",
             "mon_files/image638.gif",
             "mon_files/image640.gif",
             "mon_files/image642.gif",
@@ -2741,8 +2741,8 @@
         "thickness": "2.00",
         "copies": "5000",
         "imgs": [
-            "mon_files/image646.gif",
-            "mon_files/image648.gif"
+            "mon_files/image648.gif",
+            "mon_files/image646.gif"
         ]
     },
     {
@@ -2762,8 +2762,8 @@
         "thickness": "3.10 \u00b10.50",
         "copies": "6000",
         "imgs": [
-            "mon_files/image649.gif",
-            "mon_files/image651.gif"
+            "mon_files/image651.gif",
+            "mon_files/image649.gif"
         ]
     },
     {
@@ -2850,8 +2850,8 @@
         "thickness": "4.00",
         "copies": "4000",
         "imgs": [
-            "mon_files/image673.gif",
-            "mon_files/image675.gif"
+            "mon_files/image675.gif",
+            "mon_files/image673.gif"
         ]
     },
     {
@@ -2913,8 +2913,8 @@
         "thickness": "6,90 -0,5",
         "copies": "35",
         "imgs": [
-            "mon_files/image685.gif",
             "mon_files/image687.gif",
+            "mon_files/image685.gif",
             "mon_files/image689.gif",
             "mon_files/image691.gif"
         ]
@@ -2980,8 +2980,8 @@
         "thickness": "4.70\u00b1 0.20",
         "copies": "5000",
         "imgs": [
-            "mon_files/image705.gif",
             "mon_files/image707.gif",
+            "mon_files/image705.gif",
             "mon_files/image709.gif",
             "mon_files/image711.gif",
             "mon_files/image713.gif",
@@ -3047,8 +3047,8 @@
         "thickness": "3.75 \u20130.50",
         "copies": "7000",
         "imgs": [
-            "mon_files/image725.gif",
-            "mon_files/image727.gif"
+            "mon_files/image727.gif",
+            "mon_files/image725.gif"
         ]
     },
     {
@@ -3110,8 +3110,8 @@
         "thickness": "2.65 \u00b10.06",
         "copies": "10 000",
         "imgs": [
-            "mon_files/image737.gif",
             "mon_files/image739.gif",
+            "mon_files/image737.gif",
             "mon_files/image741.gif",
             "mon_files/image743.gif"
         ]
@@ -3158,8 +3158,8 @@
         "thickness": "3,10 \u00b10,50",
         "copies": "5000",
         "imgs": [
-            "mon_files/image757.gif",
             "mon_files/image759.gif",
+            "mon_files/image757.gif",
             "mon_files/image761.gif"
         ]
     },
@@ -3243,8 +3243,8 @@
         "thickness": "3.20 0.20",
         "copies": "\u041c\u0430\u043a\u0441. \u0442\u0438\u0440\u0430\u0436 \u043a\u0430\u0436\u0434. \u043d\u0430\u0438\u043c-\u043d\u0438\u044f, \u0448\u0442.",
         "imgs": [
-            "mon_files/image774.gif",
-            "mon_files/image776.gif"
+            "mon_files/image776.gif",
+            "mon_files/image774.gif"
         ]
     },
     {
@@ -3264,8 +3264,8 @@
         "thickness": "2.70 0.30",
         "copies": "7000",
         "imgs": [
-            "mon_files/image777.gif",
-            "mon_files/image779.gif"
+            "mon_files/image779.gif",
+            "mon_files/image777.gif"
         ]
     },
     {
@@ -3407,8 +3407,8 @@
         "thickness": "2.60 0.20",
         "copies": "4000",
         "imgs": [
-            "mon_files/image796.gif",
-            "mon_files/image798.gif"
+            "mon_files/image798.gif",
+            "mon_files/image796.gif"
         ]
     },
     {
