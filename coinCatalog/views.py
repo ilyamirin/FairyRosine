@@ -7,9 +7,12 @@ import json
 from django.forms.models import model_to_dict
 from django.http import HttpResponse
 
-def index(req, lang='en'):
+from django.contrib.sessions.backends.db import SessionStore
+
+def index(req, lang='ru'):
   if lang == None:
-    lang = 'en'
+    lang = 'ru'
+
   categories = Category.objects.filter(lang=lang)
 
   cats = {

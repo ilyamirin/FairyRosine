@@ -101,6 +101,13 @@ function renderChat(){
     parent.scrollTop = parent.scrollHeight;
 }
 
+function askDuckDuckGo(t) {
+    fetch('https://api.duckduckgo.com/?q=' + encodeURI(t), { method: 'GET', mode: 'no-cors' }).
+        then(function(response) {
+            console.log(response.json());
+        });
+}
+
 function sendAnswer() {
     let input = document.getElementById("question").value;
     document.getElementById("question").value = "";

@@ -4,22 +4,22 @@
 {% block addition_links %}
 <style>
     #video {
-        width: 640px;
-        height: 480px;
+        width: 900px;
+        height: 675px;
         margin-left: auto;
         margin-right: auto;
     }
     #video2 {
-        width: 640px;
-        height: 480px;
+        width: 480px;
+        height: 360px;
         margin-left: auto;
         margin-right: auto;
         padding-top: 20px;
         margin-bottom: 20px;
     }
     #canvas {
-        max-width: 640px;
-        max-height: 480px;
+        width: 900px;
+        height: 675px;
         position: absolute;
         left: 0;
         right: 0;
@@ -27,8 +27,8 @@
         margin-right: auto;
     }
     #canvas2 {
-        max-width: 640px;
-        max-height: 480px;
+        max-width: 480px;
+        max-height: 360px;
         position: absolute;
         left: 0;
         right: 0;
@@ -39,12 +39,11 @@
 
 </style>
 <meta name="apple-mobile-web-app-capable" content="yes" />
-<!--<link rel="manifest" href="{% static '/coinCatalog/manifest.json' %}">-->
-<!--<meta name="mobile-web-app-capable" content="yes">-->
+<meta http-equiv="Content-Security-Policy" content="default-src * gap: data: blob: 'unsafe-inline' 'unsafe-eval' ws: wss:;">
 {% endblock %}
 
 {% block content %}
-
+<div style="position: fixed; top: 10px; left: 10px; font-size: 12px;" id="iLog"></div>
 <div class="modal fade" id="coinModal" tabindex="-1" style="padding-top: 50px;" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
@@ -83,29 +82,28 @@
     </div>
 </div>
 
-<div class="container" style="padding-top: 20px; height: 100%; min-height: 1020px;">
+<!--<div class="container" style="padding-top: 0; height: 100%;">-->
     <div class="container">
         <div class="row">
             <div class="col-md-12" style="text-align: center;">
                 <video autoplay id="video"></video>
-                <canvas id="canvas" width="640" height="480"></canvas>
+                <canvas id="canvas" width="900" height="675"></canvas>
             </div>
         </div>
     </div>
-    <div class="container" style="margin-top: 20px;">
-        <div class="row" style="min-height: 200px; height: auto;" id="rec-coins"></div>
+    <div class="container-fluid" style="background-color: rgb(68,119,34, 0.6); height: 200px; position: absolute; bottom: 0;">
+<!--        rgb(155, 184, 92, 0.6);-->
+        <div class="row" style="min-height: 200px; height: auto; padding: 10px; opacity: 1;" id="rec-coins"></div>
     </div>
-    <div class="container">
-        <div class="row">
-            <div class="col-md-12" style="text-align: center;">
-                <video autoplay id="video2"></video>
-                <canvas id="canvas2" width="640" height="480"></canvas>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="myVideo" style="height: 500px; width: 500px;"></div>
+<!--    <div class="container" style="border: 1px solid #000;">-->
+<!--        <div class="row">-->
+<!--            <div class="col-md-12" style="text-align: center;">-->
+<!--                <video autoplay id="video2"></video>-->
+<!--                <canvas id="canvas2"></canvas>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--</div>-->
 <script src="{% static '/coinCatalog/js/canvas.js' %}"></script>
 <script src="{% static '/coinCatalog/js/coinBrowser.js' %}"></script>
 <script src="{% static '/coinCatalog/js/websocket.js' %}"></script>
