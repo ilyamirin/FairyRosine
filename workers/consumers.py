@@ -217,6 +217,10 @@ class FaceRecognitionConsumer(SyncConsumer, TimeShifter):
         pass
 
 
+from coinCatalog.models import Coin, CoinDescription, ImgCoin
+from vef.settings import BASE_DIR
+import html
+
 class CoinRecognitionConsumer(SyncConsumer, TimeShifter):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -246,6 +250,7 @@ class CoinRecognitionConsumer(SyncConsumer, TimeShifter):
 
         print(f"({self.dn.network_width(self.net_main)} {self.dn.network_height(self.net_main)}")
         self.darknet_image = darknet.make_image(darknet.network_width(self.net_main), darknet.network_height(self.net_main), 3)
+        self.category_to_id = json.loads(open(os.path.join(BASE_DIR, "category_tO_id.json"), "r").read())
 
     def recognize(self, message):
         try:
@@ -281,9 +286,18 @@ class CoinRecognitionConsumer(SyncConsumer, TimeShifter):
                     int(y1 - height*ky/2), int(x1 - width*kx/2),
                     int(y1 + height*ky/2), int(x1 + width*kx/2)
                 ]
-
-                response_item = coords + [label] + [confidence]
-                response.append(response_item)
+                label = self.category_to_id[label]
+                coin = Coin.objects.get(catalog_id=label)
+                description = CoinDescription.objects.get(coin_id=coin, lang="ru")
+                href_img = ImgCoin.objects.filter(coin_id=coin).values()[0]['href']
+                coin_info = {
+                    "coords": coords,
+                    "id": coin.id,
+                    "confidence": confidence,
+                    "href": href_img,
+                    "short_name": description.short_name,
+                }
+                response.append(coin_info)
             end_recog = time.time()
             print(f"coin recog time = {end_recog - start_recog}")
             async_to_sync(server_channel_layer.group_send)(

@@ -2,6 +2,7 @@ from django.shortcuts import render
 from .models import Category
 from .models import Coin
 from .models import ImgCoin
+from .models import CoinDescription
 
 import json
 from django.forms.models import model_to_dict
@@ -45,11 +46,12 @@ def dialog(req):
   return render(req, 'coinCatalog/dialog.html')
 
 def coin(req, id=-1):
-  coin = Coin.objects.get(id=id)
-  imgs = ImgCoin.objects.filter(coin=id)
+  # coin = Coin.objects.get(id=id)
+  desc = CoinDescription.objects.get(coin_id=id, lang='ru')
+  imgs = ImgCoin.objects.filter(coin_id=id)
 
   coin = {
-    "coin": coin,
+    "coin": desc,
     "imgs": imgs
   }
 

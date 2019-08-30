@@ -60,9 +60,9 @@ function clickCoin() {
 let coinBlocks = {};
 let activeBlocks = [];
 
-function makeCoinBlock(name) {
+function makeCoinBlock(obj) {
     let a = document.createElement("a");
-    a.href = location.protocol + "//" + location.host + "/coin/" + dicts[name];
+    a.href = location.protocol + "//" + location.host + "/coin/" + obj['id'];
     a.setAttribute('style', 'color: black; text-decoration: underline;');
 
     let wrapper = document.createElement('div');
@@ -70,20 +70,21 @@ function makeCoinBlock(name) {
     wrapper.setAttribute('style', 'padding: 10px;');
     // wrapper.setAttribute('data-toggle', 'modal');
     wrapper.setAttribute('data-target', '#coinModal');
-    wrapper.setAttribute('modal-title', name);
+    wrapper.setAttribute('modal-title', obj['short_name']);
     wrapper.addEventListener("click", clickCoin);
 
     let div = document.createElement('div');
     div.setAttribute('style', 'background-color: white; border-radius: 8px; padding: 6px; text-align: center;');
 
     let img = document.createElement('img');
-    img.src = location.protocol + "//" + location.host + '/static/coinCatalog/coins/' + imgs[name];
+    img.src = location.protocol + "//" + location.host + '/static/coinCatalog/coins/' + obj['href'];
     img.setAttribute('style', 'max-width: 100%; max-height: 100px; background-color: #ccc; margin-top: 10px;');
     div.appendChild(img);
 
     let txt = document.createElement('p');
     txt.setAttribute('style', 'font-size: 12px;');
-    txt.innerText = name.replace(/_/g, ' ').replace(/avers/g, ' ').replace(/reverse/g, ' ');
+    txt.innerText = obj['short_name'];
+    // txt.innerText = name.replace(/_/g, ' ').replace(/avers/g, ' ').replace(/reverse/g, ' ');
     div.appendChild(txt);
 
     a.appendChild(div);
@@ -94,18 +95,17 @@ function makeCoinBlock(name) {
 
 function drawCoins(coins){
     let row = document.getElementById('rec-coins');
+    coins = coins.slice(0, 4);
 
-    coins = coins.slice(0, 4).map(v => v[0]);
-
-    let remove = activeBlocks.filter(v => coins.indexOf(v) === -1);
-    remove.forEach(v => row.removeChild(coinBlocks[v]));
-    activeBlocks = activeBlocks.filter(v => coins.indexOf(v) !== -1);
-    let addBlocks = coins.filter(v => activeBlocks.indexOf(v) === -1);
+    let remove = activeBlocks.filter(v => coins.indexOf(v['short_name']) === -1);
+    remove.forEach(v => row.removeChild(coinBlocks[v['short_name']]));
+    activeBlocks = activeBlocks.filter(v => coins.indexOf(v['short_name']) !== -1);
+    let addBlocks = coins.filter(v => activeBlocks.indexOf(v['short_name']) === -1);
     addBlocks.forEach(v => {
-        if (!coinBlocks[v]){
-            coinBlocks[v] = makeCoinBlock(v);
+        if (!coinBlocks[v['short_name']]){
+            coinBlocks[v['short_name']] = makeCoinBlock(v);
         }
-        row.appendChild(coinBlocks[v]);
+        row.appendChild(coinBlocks[v['short_name']]);
     });
 
     activeBlocks.push(...addBlocks);
