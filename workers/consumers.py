@@ -134,10 +134,21 @@ class FaceRecognitionConsumer(SyncConsumer, TimeShifter):
         self.fps_start = time.time()
         self.actual_fps = 0
         self.language = {}
+        self.last_filtered = 0
         print("face worker created", flush=True)
+
+    def filter_users(self):
+        try:
+            DialogUser.objects.filter(name="").delete()
+        except:
+            pass
+        print("users filtered", flush=True)
 
     def recognize(self, message):
         try:
+            if time.time() - self.last_filtered > 5*60:
+                self.filter_users()
+                self.last_filtered = time.time()
             uid = message["uid"]
             timestamp, img_data = get_image_data_from_bytes_data(message["bytes_data"])
             age = self.get_age(timestamp)
