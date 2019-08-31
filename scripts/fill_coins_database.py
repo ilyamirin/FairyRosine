@@ -69,6 +69,28 @@ def import_catalog(catalog):
                 img_coin.save()
 
 
-for catalog_name in "catalog_eng.json", "catalog_rus.json":
-    catalog = json.loads(open(os.path.join(BASE_DIR, catalog_name), "r").read())
-    import_catalog(catalog)
+def validate(*catalog_paths):
+    catalogs = [json.loads(open(os.path.join(BASE_DIR, catalog_name), "r").read()) for catalog_name in catalog_paths]
+    all_ids = set()
+    ids = [set() for _ in catalog_paths]
+    for i, catalog in enumerate(catalogs):
+        for coin in catalog:
+            ids[i].add(coin["id"])
+            all_ids.add(coin["id"])
+    print(f"total {len(all_ids)} coins")
+    for i, catalog_ids in enumerate(ids):
+        print(f"missed in {catalog_paths[i]}:", *all_ids - catalog_ids, sep='\n')
+    for i, catalog_ids in enumerate(ids):
+        idds = [coin["id"] for coin in catalogs[i]]
+        duplicates = [x for x in idds if idds.count(x) > 1]
+        print(f"duplicates in {catalog_paths[i]}:", *sorted(duplicates), sep='\n')
+    for i, catalog in enumerate(catalogs):
+        no_imgs = [coin["id"] for coin in catalog if len(coin["imgs"]) == 0]
+        print(f"no images in {catalog_paths[i]}:", *no_imgs, sep='\n')
+
+
+validate("catalog_eng.json", "catalog_rus.json")
+
+# for catalog_name in "catalog_eng.json", "catalog_rus.json":
+#     catalog = json.loads(open(os.path.join(BASE_DIR, catalog_name), "r").read())
+#     import_catalog(catalog)
