@@ -60,7 +60,7 @@ def import_catalog(catalog):
         coin_descr.save()
         for img in imgs:
             try:
-                ImgCoin.objects.get(coin_id=coin_db)
+                ImgCoin.objects.get(href=html.unescape(img))
             except:
                 img_coin = ImgCoin(
                     coin_id=coin_db,
@@ -91,6 +91,6 @@ def validate(*catalog_paths):
 
 validate("catalog_eng.json", "catalog_rus.json")
 
-# for catalog_name in "catalog_eng.json", "catalog_rus.json":
-#     catalog = json.loads(open(os.path.join(BASE_DIR, catalog_name), "r").read())
-#     import_catalog(catalog)
+for catalog_name in "catalog_eng.json", "catalog_rus.json":
+    catalog = json.loads(open(os.path.join(BASE_DIR, catalog_name), "r").read())
+    import_catalog(catalog)
