@@ -1,5 +1,6 @@
 from django.db import models
 
+
 class Category(models.Model):
     lang = models.CharField(max_length=255, null=True)
     name = models.CharField(max_length=60, null=True)
@@ -8,10 +9,18 @@ class Category(models.Model):
     def __str__(self):
         return self.name
 
+
 class Coin(models.Model):
-    category = models.ForeignKey(Category, on_delete=models.CASCADE)
+    catalog_id = models.CharField(max_length=255, null=True, db_index=True)
+
+    def __str__(self):
+        return self.catalog_id
+
+
+class CoinDescription(models.Model):
+    coin_id = models.ForeignKey(Coin, on_delete=models.CASCADE)
     lang = models.CharField(max_length=255, null=True)
-    name = models.CharField(max_length=255, null=True)
+    name = models.CharField(max_length=255, null=True, default="")
     short_name = models.CharField(max_length=150, null=True)
     nominal = models.CharField(max_length=150, null=True)
     quality = models.CharField(max_length=50, null=True)
@@ -23,18 +32,12 @@ class Coin(models.Model):
     thickness = models.CharField(max_length=50, null=True)
     copies = models.CharField(max_length=50, null=True)
     manufacturer = models.CharField(max_length=255, null=True)
-    notes = models.TextField(null=True)
     description = models.TextField(null=True)
-    
-    def __str__(self):
-        return self.name
+
 
 class ImgCoin(models.Model):
-    coin = models.ForeignKey(Coin, on_delete=models.CASCADE)
+    coin_id = models.ForeignKey(Coin, on_delete=models.CASCADE)
     href = models.CharField(max_length=255)
-
-    def __str__(self):
-        return self.coin.name + " " + self.href
 
 
 class DialogUser(models.Model):

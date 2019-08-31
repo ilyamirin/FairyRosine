@@ -24,40 +24,41 @@ if (isMobile && !iOS){
 
 navigator.mediaDevices.enumerateDevices().then(devices => {
     let cameras = devices.filter(function(device){ return device.kind === "videoinput"; });
-    let loadedVideos = Math.min(cameras.length, 2);
+    let loadedVideos = Math.min(cameras.length, 1);
     if (cameras.length > 0) {
-        let constraints = (!cameras[0].deviceId.length)
-        ? { video: { facingMode: 'user', width: 640, height: 480} }
-        : { video: { deviceId: { exact: cameras[0].deviceId } } };
+        let constraints = (!isMobile)
+        ? { video: { deviceId: { exact: cameras[0].deviceId } } }
+        : (iOS) ? { video: { facingMode: { exact: "environment" }, width: 900, height: 675 } }
+        : { video: { facingMode: { exact: "environment" }, width: 640, height: 480 } };
         navigator.mediaDevices.getUserMedia(constraints).then(stream => {
             video.srcObject = stream;
-            if (cameras.length < 2)
-                video2.srcObject = video.srcObject;
+            // if (cameras.length < 2)
+            //     video2.srcObject = video.srcObject;
             loadedVideos--;
             if (!loadedVideos)
                 startWebSocketInteraction();
         })
         .catch(e => {
-            alert("Не удалось получить доступ к видео 1. Подключите камеру и обновите страницу");
+            alert("Не удалось получить доступ к видео 1. Подключите камеру и обновите страницу " + e);
             console.log(e);
         })
     }
-    if (cameras.length === 2) {
-        let constraints = (!cameras[1].deviceId.length)
-        ? { video: { facingMode: { exact: "environment" }, width: 640, height: 480 } }
-        : { video: { deviceId: { exact: cameras[1].deviceId } } };
-
-        navigator.mediaDevices.getUserMedia(constraints).then(stream => {
-            video2.srcObject = stream;
-            loadedVideos--;
-            if (!loadedVideos)
-                startWebSocketInteraction();
-        })
-        .catch(e => {
-            alert("Не удалось получить доступ к видео 2. Подключите камеру и обновите страницу");
-            console.log(e);
-        })
-    }
+    // if (cameras.length === 2) {
+    //     let constraints = (!cameras[1].deviceId.length)
+    //     ? { video: { facingMode: { exact: "environment" }, width: 640, height: 480 } }
+    //     : { video: { deviceId: { exact: cameras[1].deviceId } } };
+    //
+    //     navigator.mediaDevices.getUserMedia(constraints).then(stream => {
+    //         video2.srcObject = stream;
+    //         loadedVideos--;
+    //         if (!loadedVideos)
+    //             startWebSocketInteraction();
+    //     })
+    //     .catch(e => {
+    //         alert("Не удалось получить доступ к видео 2. Подключите камеру и обновите страницу " + e);
+    //         console.log(e);
+    //     })
+    // }
 })
 .catch(e => {
     alert("Не удалось получить доступ к видео. Подключите камеру и обновите страницу");
@@ -99,9 +100,11 @@ function startWebSocketInteraction(){
             return;
         }
         if (data.type === 'recognized_coins'){
+            // document.getElementById("iLog").innerHTML += "<br>" + data.text;
+            console.log(data.text);
             drawCoins(data.text);
         }
-        canvasData[data.type] = data.text;
+        canvasData[data.type] = data.text.map(v => [...v['coords'], v['short_name']]);
     };
 
     socket.onopen = function (event) {
@@ -110,6 +113,12 @@ function startWebSocketInteraction(){
     };
 
     socket.onclose = function (event) {
+        if (event.wasClean) {
+            alert('Соединение закрыто чисто');
+        } else {
+            alert('Обрыв соединения'); // например, "убит" процесс сервера
+        }
+        alert('Код: ' + event.code + ' причина: ' + event.reason);
         console.log('socket closed');
         if (frameLoop)
             clearInterval(frameLoop);
@@ -118,10 +127,10 @@ function startWebSocketInteraction(){
     };
 
     socket.onerror = function (event) {
+        let keys = event.keys().map(v => [v, event[v]]).flat();
+        alert("Сокет вернул ошибку!" + JSON.stringify(keys));
         console.log('socket errors');
         if (frameLoop)
             clearInterval(frameLoop);
-        let keys = event.keys().map(v => [v, event[v]]).flat();
-        alert("Сокет вернул ошибку!" + JSON.stringify(keys));
     };
 }

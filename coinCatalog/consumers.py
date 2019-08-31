@@ -24,6 +24,7 @@ class StreamConsumer(AsyncWebsocketConsumer):
         self.cnt_rec_coins = 0
         self.coins_queue = []
         print("consumer created", flush=True)
+        self.coin_info = {}
 
     async def sync_clock(self):
         while True:
@@ -56,12 +57,14 @@ class StreamConsumer(AsyncWebsocketConsumer):
             res['type'] = 'coin'
             print(f'{self.uid}: coins ready')
             for coin_descr in message["text"]:
-                coin_id = coin_descr[4]
+                coin_id = coin_descr["id"]
+                if coin_id not in self.coin_info:
+                    self.coin_info[coin_id] = coin_descr
                 self.coins_queue.append((time.time(), coin_id))
             now, window = time.time(), 5
             self.coins_queue = [(t, coin_id) for t, coin_id in self.coins_queue if now - t <= window]
             cnt = collections.Counter(coin_id for t, coin_id in self.coins_queue)
-            coins = [(coin, counts) for coin, counts in cnt.items()]
+            coins = [self.coin_info[coin_id] for coin_id, counts in cnt.items()]
             resp = {
                 "type": "recognized_coins",
                 "text": coins

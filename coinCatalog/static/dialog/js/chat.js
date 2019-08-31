@@ -101,6 +101,13 @@ function renderChat(){
     parent.scrollTop = parent.scrollHeight;
 }
 
+function askDuckDuckGo(t) {
+    fetch('https://api.duckduckgo.com/?q=' + encodeURI(t), { method: 'GET', mode: 'no-cors' }).
+        then(function(response) {
+            console.log(response.json());
+        });
+}
+
 function sendAnswer() {
     let input = document.getElementById("question").value;
     document.getElementById("question").value = "";
@@ -110,6 +117,13 @@ function sendAnswer() {
     renderChat(message_history.push(["user", input, currentAvatar, currentName]));
     socket.send(input);
 }
+
+function decorateDiagram() {
+    let textObjs = document.getElementById("graph_frame").getElementsByTagName("text");
+    for (let t of textObjs)
+        t.setAttribute("font-family", "Arial");
+}
+decorateDiagram();
 
 let previousRect = null;
 
