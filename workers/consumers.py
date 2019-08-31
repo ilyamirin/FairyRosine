@@ -260,7 +260,37 @@ class CoinRecognitionConsumer(SyncConsumer, TimeShifter):
         print(f"({self.dn.network_width(self.net_main)} {self.dn.network_height(self.net_main)}")
         self.darknet_image = darknet.make_image(darknet.network_width(self.net_main), darknet.network_height(self.net_main), 3)
         self.category_to_id = json.loads(open(os.path.join(BASE_DIR, "category_tO_id.json"), "r").read())
+        self.ids = list(self.category_to_id.values())
         self.language = {}
+        self.response_min_cnt = 4
+        self.featured_coins = random.sample(self.ids, 5*self.response_min_cnt)
+        self.featured_last_updated = time.time()
+        self.featured_short_name = {
+            "en": "[Random]\n",
+            "ru": "[Случайное из каталога]\n",
+        }
+
+    def extend_by_featured(self, response, uid):
+        if time.time() - self.featured_last_updated >= 10:
+            self.featured_coins = self.featured_coins[1:] + [random.choice(self.ids)]
+            self.featured_last_updated = time.time()
+        current_featured = -1
+        while len(set(coin["id"] for coin in response)) < self.response_min_cnt:
+            current_featured += 1
+            coin = Coin.objects.get(catalog_id=self.featured_coins[current_featured])
+            if coin.id in [coin["id"] for coin in response]:
+                continue
+            description = CoinDescription.objects.get(coin_id=coin, lang=self.language[uid])
+            href_img = ImgCoin.objects.filter(coin_id=coin).values()[0]['href']
+            coin_info = {
+                "coords": [10000]*4,
+                "id": coin.id,
+                "confidence": 0,
+                "href": href_img,
+                "short_name": self.featured_short_name[self.language[uid]] + description.short_name,
+                "featured": True,
+            }
+            response.append(coin_info)
 
     def recognize(self, message):
         try:
@@ -288,15 +318,16 @@ class CoinRecognitionConsumer(SyncConsumer, TimeShifter):
             kx = frame_rgb.shape[1] / self.dn.network_width(self.net_main)
             ky = frame_rgb.shape[0] / self.dn.network_height(self.net_main)
 
+            for i, detection in enumerate(detections):
+                detections[i] = (self.category_to_id[detections[i][0].decode()], *detections[i][1:])
+
             for label, confidence, (x1, y1, width, height) in detections:
-                label = label.decode()
                 x1 = x1*kx
                 y1 = y1*ky
                 coords = [
                     int(y1 - height*ky/2), int(x1 - width*kx/2),
                     int(y1 + height*ky/2), int(x1 + width*kx/2)
                 ]
-                label = self.category_to_id[label]
                 coin = Coin.objects.get(catalog_id=label)
                 description = CoinDescription.objects.get(coin_id=coin, lang=self.language[uid])
                 href_img = ImgCoin.objects.filter(coin_id=coin).values()[0]['href']
@@ -306,8 +337,12 @@ class CoinRecognitionConsumer(SyncConsumer, TimeShifter):
                     "confidence": confidence,
                     "href": href_img,
                     "short_name": description.short_name,
+                    "featured": False,
                 }
                 response.append(coin_info)
+
+            self.extend_by_featured(response, uid)
+
             end_recog = time.time()
             print(f"coin recog time = {end_recog - start_recog}")
             async_to_sync(server_channel_layer.group_send)(

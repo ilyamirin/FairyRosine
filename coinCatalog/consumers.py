@@ -24,6 +24,7 @@ class StreamConsumer(AsyncWebsocketConsumer):
         self.cnt_rec_coins = 0
         self.coins_queue = []
         print("consumer created", flush=True)
+        self.response_min_cnt = 4
         self.coin_info = {}
 
     async def sync_clock(self):
@@ -51,6 +52,16 @@ class StreamConsumer(AsyncWebsocketConsumer):
             res['type'] = 'face'
             await self.send(json.dumps(res))
 
+    def extend_by_featured(self, coins, response):
+        try:
+            for coin_descr in response:
+                if len(set(coin["id"] for coin in coins)) >= self.response_min_cnt:
+                    return
+                if coin_descr.get("featured", False):
+                    coins.append(coin_descr)
+        except:
+            pass
+
     async def coins_ready(self, message):
         if message["uid"] == self.uid:
             res = copy.deepcopy(message)
@@ -58,13 +69,14 @@ class StreamConsumer(AsyncWebsocketConsumer):
             print(f'{self.uid}: coins ready')
             for coin_descr in message["text"]:
                 coin_id = coin_descr["id"]
-                if coin_id not in self.coin_info:
-                    self.coin_info[coin_id] = coin_descr
-                self.coins_queue.append((time.time(), coin_id))
+                self.coin_info[coin_id] = coin_descr
+                if not coin_descr.get("featured", False):
+                    self.coins_queue.append((time.time(), coin_id))
             now, window = time.time(), 5
             self.coins_queue = [(t, coin_id) for t, coin_id in self.coins_queue if now - t <= window]
             cnt = collections.Counter(coin_id for t, coin_id in self.coins_queue)
             coins = [self.coin_info[coin_id] for coin_id, counts in cnt.items()]
+            self.extend_by_featured(coins, response=message["text"])
             resp = {
                 "type": "recognized_coins",
                 "text": coins
