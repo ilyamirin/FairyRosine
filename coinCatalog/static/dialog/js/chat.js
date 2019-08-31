@@ -129,7 +129,7 @@ let previousRect = null;
 
 function highLight(topic) {
     if (previousRect != null) {
-        previousRect.setAttribute("fill", "none");
+        previousRect.setAttribute("fill", "#CCCCCC");
     }
 
     //get current topic's rectangle, color it
