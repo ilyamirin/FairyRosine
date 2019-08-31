@@ -157,21 +157,22 @@ function highLight(topic) {
 }
 //refresh table of client statement
 function refresh_client_statement(client_statement) { //take list of rdf triples and add them to table
-    table = document.getElementById("table_client_statement")
-    while (table.firstChild) {
-        table.removeChild(table.firstChild);
+    let table = document.getElementById("table_client_statement");
+    while (table.childNodes.length > 1) {
+        table.removeChild(table.lastChild);
     }
-    let cell = function(row, text) {
+    console.log("table.firstChild");
+    console.log(table.firstChild);
+    let cell = text => {
         let rdfEl = document.createElement("td");
         rdfEl.innerText = text;
-        rdfEl.style.align
-        row.appendChild(rdfEl);
-    }
-    for (let triple of client_statement) {
+        return rdfEl;
+    };
+    client_statement.forEach(v => {
         let row = document.createElement("tr");
-        for (let t of triple) cell(row, t.toLowerCase());
-        table.appendChild(row)
-    }
+        v.forEach(t => row.appendChild(cell(t.toLowerCase())));
+        table.appendChild(row);
+    });
 
 }
 

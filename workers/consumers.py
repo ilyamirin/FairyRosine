@@ -133,6 +133,7 @@ class FaceRecognitionConsumer(SyncConsumer, TimeShifter):
         self.fps_counter = 0
         self.fps_start = time.time()
         self.actual_fps = 0
+        self.language = {}
         print("face worker created", flush=True)
 
     def recognize(self, message):
@@ -216,6 +217,14 @@ class FaceRecognitionConsumer(SyncConsumer, TimeShifter):
     def register(self):
         pass
 
+    def set_language(self, message):
+        try:
+            lang = message["lang"]
+            uid = message["uid"]
+            self.language[uid] = lang
+        except Exception as e:
+            print(e)
+
 
 from coinCatalog.models import Coin, CoinDescription, ImgCoin
 from vef.settings import BASE_DIR
@@ -251,6 +260,7 @@ class CoinRecognitionConsumer(SyncConsumer, TimeShifter):
         print(f"({self.dn.network_width(self.net_main)} {self.dn.network_height(self.net_main)}")
         self.darknet_image = darknet.make_image(darknet.network_width(self.net_main), darknet.network_height(self.net_main), 3)
         self.category_to_id = json.loads(open(os.path.join(BASE_DIR, "category_tO_id.json"), "r").read())
+        self.language = {}
 
     def recognize(self, message):
         try:
@@ -288,7 +298,7 @@ class CoinRecognitionConsumer(SyncConsumer, TimeShifter):
                 ]
                 label = self.category_to_id[label]
                 coin = Coin.objects.get(catalog_id=label)
-                description = CoinDescription.objects.get(coin_id=coin, lang="ru")
+                description = CoinDescription.objects.get(coin_id=coin, lang=self.language[uid])
                 href_img = ImgCoin.objects.filter(coin_id=coin).values()[0]['href']
                 coin_info = {
                     "coords": coords,
@@ -311,6 +321,13 @@ class CoinRecognitionConsumer(SyncConsumer, TimeShifter):
         except Exception as e:
             print(e)
 
+    def set_language(self, message):
+        try:
+            lang = message["lang"]
+            uid = message["uid"]
+            self.language[uid] = lang
+        except Exception as e:
+            print(e)
 
 
 

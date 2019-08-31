@@ -82,8 +82,9 @@ function makeCoinBlock(obj) {
     div.appendChild(img);
 
     let txt = document.createElement('p');
-    txt.setAttribute('style', 'font-size: 12px;');
-    txt.innerText = obj['short_name'];
+    txt.setAttribute('style', 'font-size: 16px;');
+    let index = obj['short_name'].indexOf('(');
+    txt.innerText = (index + 1) ? obj['short_name'].slice(0, index) : obj['short_name'];
     // txt.innerText = name.replace(/_/g, ' ').replace(/avers/g, ' ').replace(/reverse/g, ' ');
     div.appendChild(txt);
 
@@ -113,12 +114,7 @@ function drawCoins(coins){
     console.log("begin");
     console.log(row.childNodes.length);
     let remove = activeBlocks.filter(v => coins.map(k => k['short_name']).indexOf(v['short_name']) === -1);
-    // remove.forEach(v => row.removeChild(coinBlocks[v['short_name']]));
     remove.forEach(v => row.replaceChild(makeEmptyBlock(), coinBlocks[v['short_name']]));
-    // remove.forEach(v => {
-    //     coinBlocks[v['short_name']].classList.add('widthToZero');
-    //     setTimeout(() => row.removeChild(coinBlocks[v['short_name']]), 1000);
-    // });
     activeBlocks = activeBlocks.filter(v => coins.map(k => k['short_name']).indexOf(v['short_name']) !== -1);
     console.log("active after clearing");
     console.log(activeBlocks);

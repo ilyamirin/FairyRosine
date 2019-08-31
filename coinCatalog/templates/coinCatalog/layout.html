@@ -17,7 +17,7 @@
     {% block addition_links %}{% endblock %}
 </head>
 <!-- fixed-top-->
-<body id="page-top" style="background: url({% static '/coinCatalog/img/bg-pattern.png' %}), linear-gradient(to left, #447722, #009900); min-height: 100%; height:auto !important; display: grid; grid-template-rows: auto 71px;">
+<body id="page-top" style="background: url({% static '/coinCatalog/img/bg-pattern.png' %}), linear-gradient(to left, #447722, #009900); min-height: 100%; height:auto !important; display: grid; grid-template-rows: auto 91px;" data-lang="{{ request.session.lang }}">
 <div style="display: none;">
     <nav class="navbar navbar-light navbar-expand-md d-none d-sm-none d-md-flex" id="mainNav" style="background-color: #ffffff;opacity: 0.85; z-index: 10000;">
         <div class="container">
@@ -54,7 +54,7 @@
 
     <footer style="background-color: rgb(255,255,255);">
         <div class="container">
-            <p style="color: #00ac00;font-size: 14px;font-weight: bold;">© <span id="footer-text"></span> &#8195; ( <a href="{% url 'index' %}ru/" style="color:#00ac00;">RU</a> | <a href="{% url 'index' %}en/" style="color:#00ac00;">EN</a> )</p>
+            <p style="color: #00ac00;font-size: 14px;font-weight: bold; margin-top: -7px;">© <span id="footer-text">СБЕРБАНК и Школа Цифровой Экономики ДВФУ, 2019</span> <span id="languages">&#8195; ( <a href="#" style="color:#00ac00; font-size: 30px;" id="langRu">RU</a> | <a href="#" style="color:#00ac00; font-size: 30px;" id="langEn">EN</a> )</span></p>
         </div>
     </footer>
     <script src="{% static '/coinCatalog/bootstrap/js/bootstrap.min.js' %}"></script>
