@@ -109,6 +109,8 @@ function startWebSocketInteraction(){
 
     socket.onopen = function (event) {
         console.log('socket opened');
+        let lang = document.getElementsByTagName("body")[0].getAttribute("data-lang");
+        socket.send(lang);
         frameLoop = setInterval(() => getFrame(0), 1000 / FPS);
     };
 

@@ -82,8 +82,9 @@ function makeCoinBlock(obj) {
     div.appendChild(img);
 
     let txt = document.createElement('p');
-    txt.setAttribute('style', 'font-size: 12px;');
-    txt.innerText = obj['short_name'];
+    txt.setAttribute('style', 'font-size: 16px;');
+    let index = obj['short_name'].indexOf('(');
+    txt.innerText = (index + 1) ? obj['short_name'].slice(0, index) : obj['short_name'];
     // txt.innerText = name.replace(/_/g, ' ').replace(/avers/g, ' ').replace(/reverse/g, ' ');
     div.appendChild(txt);
 
@@ -93,20 +94,65 @@ function makeCoinBlock(obj) {
     return wrapper;
 }
 
-function drawCoins(coins){
-    let row = document.getElementById('rec-coins');
-    coins = coins.slice(0, 4);
+function makeEmptyBlock() {
+    let wrapper = document.createElement('div');
+    wrapper.classList.add("col-md-3");
+    return wrapper;
+}
 
-    let remove = activeBlocks.filter(v => coins.indexOf(v['short_name']) === -1);
-    remove.forEach(v => row.removeChild(coinBlocks[v['short_name']]));
-    activeBlocks = activeBlocks.filter(v => coins.indexOf(v['short_name']) !== -1);
-    let addBlocks = coins.filter(v => activeBlocks.indexOf(v['short_name']) === -1);
+let emptyBlock = makeEmptyBlock();
+let row = document.getElementById('rec-coins');
+row.appendChild(makeEmptyBlock());
+row.appendChild(makeEmptyBlock());
+row.appendChild(makeEmptyBlock());
+row.appendChild(makeEmptyBlock());
+
+
+function drawCoins(coins){
+    let cnt = 4;
+    coins = coins.slice(0, cnt);
+    console.log("begin");
+    console.log(row.childNodes.length);
+    let remove = activeBlocks.filter(v => coins.map(k => k['short_name']).indexOf(v['short_name']) === -1);
+    remove.forEach(v => row.replaceChild(makeEmptyBlock(), coinBlocks[v['short_name']]));
+    activeBlocks = activeBlocks.filter(v => coins.map(k => k['short_name']).indexOf(v['short_name']) !== -1);
+    console.log("active after clearing");
+    console.log(activeBlocks);
+    let addBlocks = coins.filter(v => activeBlocks.map(k => k['short_name']).indexOf(v['short_name']) === -1);
+
+    console.log('before add');
+    console.log(addBlocks);
+
     addBlocks.forEach(v => {
         if (!coinBlocks[v['short_name']]){
             coinBlocks[v['short_name']] = makeCoinBlock(v);
         }
-        row.appendChild(coinBlocks[v['short_name']]);
+        let flagExists = false;
+        let flagEmptyBlock = false;
+        for (let i = 0; i < row.childNodes.length; i++) {
+            if (row.childNodes[i].innerHTML === coinBlocks[v['short_name']].innerHTML) {
+                console.log('exists!!!!!!!');
+                flagExists = true;
+            }
+        }
+        if (!flagExists) {
+            for (let i = 0; i < row.childNodes.length; i++) {
+                if (row.childNodes[i].innerHTML === emptyBlock.innerHTML) {
+                    console.log('emptyBlock!!!!!!!');
+                    flagEmptyBlock = true;
+                    row.replaceChild(coinBlocks[v['short_name']], row.childNodes[i]);
+                    break;
+                }
+            }
+        }
+        if (!flagExists && !flagEmptyBlock) {
+            console.log('add right!!!!!!!');
+            row.appendChild(coinBlocks[v['short_name']]);
+        }
     });
 
+    console.log(row.childNodes.length);
+    console.log(row);
+    console.log("end");
     activeBlocks.push(...addBlocks);
 }

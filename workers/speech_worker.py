@@ -9,6 +9,8 @@ import io
 import requests
 import json
 import sys
+import time
+import jwt
 from vef.settings import SERVANT_DIR
 
 from channels.layers import get_channel_layer
@@ -47,11 +49,43 @@ class GoogleSpeechConsumer(AsyncConsumer):
 
 class YdxSpeechConsumer(SyncConsumer):
     YDX_FOLDER_ID = "b1gb0dbhis374v3uqm6e"
+    PROXY = {'http': 'http://proxy.dvfu.ru:3128', 'https': 'http://proxy.dvfu.ru:3128'}
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        print("running speech worker...", flush=True)
+        self.ydx_yam_token = self.create_token()
         print("speech worker created", flush=True)
-        self.ydx_yam_token = open("token.txt", "r").read().strip()
+
+    @staticmethod
+    def create_token():
+        service_account_info = json.loads(open("person-key.json", "r").read())
+        service_account_id = service_account_info["service_account_id"]
+        key_id = service_account_info["id"]
+        private_key = service_account_info["private_key"]
+        now = int(time.time())
+        payload = {
+            'aud': 'https://iam.api.cloud.yandex.net/iam/v1/tokens',
+            'iss': service_account_id,
+            'iat': now,
+            'exp': now + 360
+        }
+        encoded_token = jwt.encode(
+            payload,
+            private_key,
+            algorithm='PS256',
+            headers={'kid': key_id}
+        )
+        headers = {
+            'Content-Type': 'application/json',
+        }
+        data = '{"jwt": "%s"}' % encoded_token.decode()
+        response = requests.post('https://iam.api.cloud.yandex.net/iam/v1/tokens', headers=headers, data=data)
+        if response.status_code == 200:
+            content = json.loads(response.content.decode())
+            token = content["iamToken"]
+            return token
+        raise RuntimeWarning(response.status_code, response.reason)
 
     def recognize_speech(self, message):
         try:
@@ -68,15 +102,14 @@ class YdxSpeechConsumer(SyncConsumer):
             headers = {
                 'Authorization': f'Bearer {self.ydx_yam_token}',
             }
-            proxies = {'http': 'http://proxy.dvfu.ru:3128', 'https': 'http://proxy.dvfu.ru:3128'}
             response_data = requests.post(
                 "https://stt.api.cloud.yandex.net/speech/v1/stt:recognize?%s" % params,
-                headers=headers, data=f.getbuffer(), proxies=proxies)
+                headers=headers, data=f.getbuffer(), proxies=YdxSpeechConsumer.PROXY)
             decoded_data = json.loads(response_data.text)
             print(decoded_data)
             text = decoded_data.get("result") if decoded_data.get("error_code") is None else ""
             if not decoded_data.get("error_code") is None:
-                self.ydx_yam_token = open("token.txt", "r").read().strip()
+                self.ydx_yam_token = self.create_token()
             print(text, flush=True)
             async_to_sync(server_channel_layer.group_send)(
                 "speech",
@@ -89,7 +122,7 @@ class YdxSpeechConsumer(SyncConsumer):
         except Exception as e:
             print(e)
             try:
-                self.ydx_yam_token = open("token.txt", "r").read().strip()
+                self.ydx_yam_token = self.create_token()
             except Exception as e:
                 print(e)
 

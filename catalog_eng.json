@@ -327,28 +327,6 @@
         ]
     },
     {
-        "id": "7125-0030",
-        "name": "Coins of the Republic of Benin, Benin series &quot;Romantic Places of the World&quot;",
-        "short_name": "London (Benin) \u2013 14; Barcelona (Benin) \u2013 14 ",
-        "description": "\nThe obverse depicts the national emblem of the Republic of Benin and the face value. \nOn the reverse of each coin, landscapes of romantic places with silhouettes of couples in love are shown in color: the first coin depicts the landscape of London, the second \u2013 Barcelona. At the top of each coin, there is an inscription in French \u201cLES PLACES ROMANTIQUES\u201d (ROMANTIC PLACES) and an inscription of a romantic place name (in English), which the coin is dedicated to. \nThe obverse depicts the national emblem of the Republic of Benin and the face value.",
-        "lang": "en",
-        "nominal": "1000 West African CFA francs",
-        "quality": "proof",
-        "probe": "silver, 999",
-        "original_equipment": "blister combined with an authenticity certificate",
-        "manufacturer": "\u00abHelveticMint\u00bb (Switzerland)",
-        "mass": "20.00 0.20",
-        "pure_metal": "19.98",
-        "diameter": "40.00 0.30",
-        "thickness": "1.70 0.25",
-        "copies": "5000",
-        "imgs": [
-            "mon_files/image092.gif",
-            "mon_files/image088.gif",
-            "mon_files/image090.gif"
-        ]
-    },
-    {
         "id": "7105-0435",
         "name": "Coins of Niue Island dedicated to St. Petersburg",
         "short_name": "Duma Tower (Niue) - 13; White Nights (Niue) \u2013 13",
@@ -1910,9 +1888,7 @@
             "mon_files/image471.gif",
             "mon_files/image473.gif",
             "mon_files/image477.gif",
-            "mon_files/image479.gif",
-            "mon_files/image481.gif",
-            "mon_files/image483.gif"
+            "mon_files/image479.gif"
         ]
     },
     {
@@ -3451,6 +3427,48 @@
         "imgs": [
             "mon_files/image804.gif",
             "mon_files/image806.gif"
+        ]
+    },
+    {
+        "id": "7125-0009",
+        "name": "Coins of Singapore featuring the orchids",
+        "short_name": "Spathoglotis orchid (Singapore) – 09",
+        "description": "\nThe obverse of the coins depicts the emblem of Singapore. \nOn the reverse of the coins, there are color images of orchids of two hybrid varieties;they are the first of more than four hundred new varieties that were received by Singapore breeders as part of the state program for hybridization of orchids since 1928. The first coin depicts vanda amy, the second– spathoglotis primrose(the Latin name for the variety is also indicated on the reverse).",
+        "lang": "en",
+        "nominal": "5 Singapore dollars",
+        "quality": "proof",
+        "probe": "silver, 999",
+        "original_equipment": "certificate of authenticity",
+        "manufacturer": "Singapore Mint",
+        "mass": "20.00 \u00b10.20",
+        "pure_metal": "19.98",
+        "diameter": "38.70 0.015",
+        "thickness": "2.50 0.30",
+        "copies": "8000",
+        "imgs": [
+            "mon_files/image481.gif",
+            "mon_files/image483.gif"
+        ]
+    },
+    {
+        "id": "7162-0015",
+        "name": "Niue coin dedicated to the year of the Monkey of the lunar calendar",
+        "short_name": "Monkey on elephant (Niue) – 16",
+        "description": "\nThe obverse of the coin depicts a portrait of Queen Elizabeth II of Great Britain, Face value and year of issue. \nOn a reverse in the center against a background of relief, the image of the monkey on an elephant is represented. At the top – there is the inscription in English “Year of the Monkey”.",
+        "lang": "en",
+        "nominal": "1 New Zealand dollar",
+        "quality": "proof",
+        "probe": "silver, 999",
+        "original_equipment": "case, capsule, certificate",
+        "manufacturer": "Polish Mint",
+        "mass": "16.81 \u00b10.42",
+        "pure_metal": "16.79",
+        "diameter": "41.00 \u00b10.10",
+        "thickness": "2.20 \u00b10.50",
+        "copies": "6000",
+        "imgs": [
+            "mon_files/image458.gif",
+            "mon_files/image456.gif"
         ]
     }
 ]
