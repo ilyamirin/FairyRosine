@@ -26,6 +26,15 @@
   font-size: 36px;
   color: white;
   position: absolute;
-  left: 40;
-  top: 40;
+  left: 40px;
+  top: 40px;
+}
+
+.widthToZero {
+  -webkit-transition: width 1s ease-in-out;
+  -moz-transition: width 1s ease-in-out;
+  -o-transition: width 1s ease-in-out;
+  transition: width 1s ease-in-out;
+
+  width:100%;
 }
