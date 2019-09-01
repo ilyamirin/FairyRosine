@@ -63,7 +63,7 @@ let activeBlocks = [];
 function makeCoinBlock(obj) {
     let a = document.createElement("a");
     a.href = location.protocol + "//" + location.host + "/coin/" + obj['id'];
-    a.setAttribute('style', 'color: black; text-decoration: underline;');
+    a.setAttribute('style', 'color: black; text-decoration: none;');
 
     let wrapper = document.createElement('div');
     wrapper.classList.add("col-md-3");
@@ -82,7 +82,7 @@ function makeCoinBlock(obj) {
     div.appendChild(img);
 
     let txt = document.createElement('p');
-    txt.setAttribute('style', 'font-size: 16px;');
+    txt.setAttribute('style', 'font-size: 18px;');
     let index = obj['short_name'].indexOf('(');
     txt.innerText = (index + 1) ? obj['short_name'].slice(0, index) : obj['short_name'];
     // txt.innerText = name.replace(/_/g, ' ').replace(/avers/g, ' ').replace(/reverse/g, ' ');
@@ -131,14 +131,12 @@ function drawCoins(coins){
         let flagEmptyBlock = false;
         for (let i = 0; i < row.childNodes.length; i++) {
             if (row.childNodes[i].innerHTML === coinBlocks[v['short_name']].innerHTML) {
-                console.log('exists!!!!!!!');
                 flagExists = true;
             }
         }
         if (!flagExists) {
             for (let i = 0; i < row.childNodes.length; i++) {
                 if (row.childNodes[i].innerHTML === emptyBlock.innerHTML) {
-                    console.log('emptyBlock!!!!!!!');
                     flagEmptyBlock = true;
                     row.replaceChild(coinBlocks[v['short_name']], row.childNodes[i]);
                     break;
@@ -146,7 +144,6 @@ function drawCoins(coins){
             }
         }
         if (!flagExists && !flagEmptyBlock) {
-            console.log('add right!!!!!!!');
             row.appendChild(coinBlocks[v['short_name']]);
         }
     });
