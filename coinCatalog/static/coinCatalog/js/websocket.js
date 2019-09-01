@@ -71,7 +71,7 @@ function startWebSocketInteraction(){
     let timeShift = 0;
 
     const getFrame = i => {
-        console.log("send frame");
+        //console.log("send frame");
         const canvas = document.createElement('canvas');
         canvas.width = videos[i].videoWidth;
         canvas.height = videos[i].videoHeight;
@@ -100,7 +100,8 @@ function startWebSocketInteraction(){
         }
         if (data.type === 'recognized_coins'){
             // document.getElementById("iLog").innerHTML += "<br>" + data.text;
-            console.log(data.text);
+            if (data.text.length)
+                console.log(data.text);
             drawCoins(data.text);
         }
         canvasData[data.type] = data.text.map(v => [...v['coords'], v['short_name']]);

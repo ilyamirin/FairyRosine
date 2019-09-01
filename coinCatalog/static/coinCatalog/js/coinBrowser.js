@@ -63,12 +63,12 @@ let activeBlocks = [];
 function makeCoinBlock(obj) {
     let a = document.createElement("a");
     a.href = location.protocol + "//" + location.host + "/coin/" + obj['id'];
-    a.setAttribute('style', 'color: black; text-decoration: none;');
+    a.setAttribute('style', 'color: ' + (obj.short_name.indexOf('[') >= 0 ? 'black' : 'blue') + '; text-decoration: none;');
 
     let wrapper = document.createElement('div');
     wrapper.classList.add("col-md-3");
     wrapper.setAttribute('style', 'padding: 10px;');
-    // wrapper.setAttribute('data-toggle', 'modal');
+    //wrapper.setAttribute('data-toggle', 'modal');
     wrapper.setAttribute('data-target', '#coinModal');
     wrapper.setAttribute('modal-title', obj['short_name']);
     wrapper.addEventListener("click", clickCoin);
@@ -107,21 +107,20 @@ row.appendChild(makeEmptyBlock());
 row.appendChild(makeEmptyBlock());
 row.appendChild(makeEmptyBlock());
 
-
 function drawCoins(coins){
     let cnt = 4;
     coins = coins.slice(0, cnt);
-    console.log("begin");
-    console.log(row.childNodes.length);
+    //console.log("begin");
+    //console.log(row.childNodes.length);
     let remove = activeBlocks.filter(v => coins.map(k => k['short_name']).indexOf(v['short_name']) === -1);
     remove.forEach(v => row.replaceChild(makeEmptyBlock(), coinBlocks[v['short_name']]));
     activeBlocks = activeBlocks.filter(v => coins.map(k => k['short_name']).indexOf(v['short_name']) !== -1);
-    console.log("active after clearing");
-    console.log(activeBlocks);
+    //console.log("active after clearing");
+    //console.log(activeBlocks);
     let addBlocks = coins.filter(v => activeBlocks.map(k => k['short_name']).indexOf(v['short_name']) === -1);
 
-    console.log('before add');
-    console.log(addBlocks);
+    //console.log('before add');
+    //console.log(addBlocks);
 
     addBlocks.forEach(v => {
         if (!coinBlocks[v['short_name']]){
@@ -148,8 +147,8 @@ function drawCoins(coins){
         }
     });
 
-    console.log(row.childNodes.length);
-    console.log(row);
-    console.log("end");
+    //console.log(row.childNodes.length);
+    //console.log(row);
+    //console.log("end");
     activeBlocks.push(...addBlocks);
 }
