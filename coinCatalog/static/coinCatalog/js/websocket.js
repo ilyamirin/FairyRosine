@@ -114,15 +114,17 @@ function startWebSocketInteraction(){
     };
 
     const wsOnClose = event => {
-        if (event.wasClean) {
+        /*if (event.wasClean) {
             alert('Соединение закрыто чисто');
         } else {
             alert('Обрыв соединения'); // например, "убит" процесс сервера
-        }
-        alert('Код: ' + event.code + ' причина: ' + event.reason);
+        }*/
+        //alert('Код: ' + event.code + ' причина: ' + event.reason);
         //console.log('socket closed');
-        if (frameLoop)
+        if (frameLoop) {
             clearInterval(frameLoop);
+            frameLoop = null;
+        }
         let keys = event.keys().map(v => [v, event[v]]).flat();
         alert("Соединение было разорвано!" + JSON.stringify(keys));
     };
@@ -135,7 +137,10 @@ function startWebSocketInteraction(){
             clearInterval(frameLoop);
     };
 
+    const isSocketReady = () => socket && socket.readyState !== WebSocket.CLOSED;
+
     connectWS = () => {
+        if (isSocketReady()) return;
         let ws_scheme = window.location.protocol === "https:" ? "wss" : "ws";
         let socketUrl = ws_scheme + "://" + window.location.host + window.location.pathname.slice(0, -1) + "1/";
         socket = new WebSocket(socketUrl);
@@ -144,5 +149,9 @@ function startWebSocketInteraction(){
         socket.onclose = wsOnClose;
         socket.onerror = wsOnError;
     };
+
+    setInterval(() => {
+        if (!isSocketReady()) connectWS();
+    }, 5000);
     connectWS();
 }
