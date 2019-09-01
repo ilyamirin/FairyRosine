@@ -7,7 +7,7 @@ if(/(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine
     isMobile = true;
 }
 
-let iOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+let iOS = /iPad|iPhone|iPod|Safari/.test(navigator.userAgent) && !window.MSStream;
 
 if (isMobile && !iOS){
     document.documentElement.requestFullscreen().then(() => {
@@ -26,10 +26,10 @@ navigator.mediaDevices.enumerateDevices().then(devices => {
     let cameras = devices.filter(function(device){ return device.kind === "videoinput"; });
     let loadedVideos = Math.min(cameras.length, 1);
     if (cameras.length > 0) {
-        let constraints = (!isMobile)
-        ? { video: { deviceId: { exact: cameras[0].deviceId } } }
-        : (iOS) ? { video: { facingMode: { exact: "environment" }, width: 900, height: 675 } }
-        : { video: { facingMode: { exact: "environment" }, width: 640, height: 480 } };
+        let constraints =
+        (iOS) ? { video: { facingMode: { exact: "environment" }, width: 900, height: 675 } } :
+        (!isMobile) ? { video: { deviceId: { exact: cameras[1].deviceId }, width: 900, height: 675 } } :
+        { video: { facingMode: { exact: "environment" }, width: 640, height: 480 } };
         navigator.mediaDevices.getUserMedia(constraints).then(stream => {
             video.srcObject = stream;
             // if (cameras.length < 2)
