@@ -87,11 +87,10 @@ function startWebSocketInteraction(){
     };
     const FPS = 3;
 
-    let ws_scheme = window.location.protocol === "https:" ? "wss" : "ws";
-    let socketUrl = ws_scheme + "://" + window.location.host + window.location.pathname.slice(0, -1) + "1/";
-    let socket = new WebSocket(socketUrl);
+    let socket = null;
+    let connectWS = null;
 
-    socket.onmessage = function (event) {
+    const wsOnMessage = event => {
         let data = JSON.parse(event.data);
         if (data.type === 'sync_clock') {
             let serverNow = Math.round(data.timestamp * 1000);
@@ -107,32 +106,43 @@ function startWebSocketInteraction(){
         canvasData[data.type] = data.text.map(v => [...v['coords'], v['short_name']]);
     };
 
-    socket.onopen = function (event) {
+    const wsOnOpen = event => {
         console.log('socket opened');
         let lang = document.getElementsByTagName("body")[0].getAttribute("data-lang");
         socket.send(lang);
         frameLoop = setInterval(() => getFrame(0), 1000 / FPS);
     };
 
-    socket.onclose = function (event) {
+    const wsOnClose = event => {
         if (event.wasClean) {
             alert('Соединение закрыто чисто');
         } else {
             alert('Обрыв соединения'); // например, "убит" процесс сервера
         }
         alert('Код: ' + event.code + ' причина: ' + event.reason);
-        console.log('socket closed');
+        //console.log('socket closed');
         if (frameLoop)
             clearInterval(frameLoop);
         let keys = event.keys().map(v => [v, event[v]]).flat();
         alert("Соединение было разорвано!" + JSON.stringify(keys));
     };
 
-    socket.onerror = function (event) {
+    const wsOnError = event => {
         let keys = event.keys().map(v => [v, event[v]]).flat();
         alert("Сокет вернул ошибку!" + JSON.stringify(keys));
         console.log('socket errors');
         if (frameLoop)
             clearInterval(frameLoop);
     };
+
+    connectWS = () => {
+        let ws_scheme = window.location.protocol === "https:" ? "wss" : "ws";
+        let socketUrl = ws_scheme + "://" + window.location.host + window.location.pathname.slice(0, -1) + "1/";
+        socket = new WebSocket(socketUrl);
+        socket.onmessage = wsOnMessage;
+        socket.onopen = wsOnOpen;
+        socket.onclose = wsOnClose;
+        socket.onerror = wsOnError;
+    };
+    connectWS();
 }
