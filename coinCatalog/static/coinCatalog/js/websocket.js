@@ -71,6 +71,8 @@ function startWebSocketInteraction(){
     let timeShift = 0;
 
     const getFrame = i => {
+        if (!videos[i].videoWidth || !videos[i].videoHeight)
+            return;
         //console.log("send frame");
         const canvas = document.createElement('canvas');
         canvas.width = videos[i].videoWidth;
