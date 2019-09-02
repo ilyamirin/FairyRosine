@@ -52,9 +52,16 @@ function getCoinFromServer(id) {
     });
 }
 
-function clickCoin() {
-    getCoinFromServer(1);
-    document.getElementById('modal-coin-title').innerHTML = this.getAttribute('modal-title');
+function clickCoin(obj) {
+    //getCoinFromServer(1);
+        $.ajax({
+        type: 'GET',
+        url: location.protocol + "//" + location.host + "/coin/" + obj.id,
+        success: function(data){
+            document.getElementById('coinModal2').innerHTML = data;
+        }
+    });
+    document.getElementById('modal-coin-title').innerHTML = obj.short_name;
 }
 
 let coinBlocks = {};
@@ -62,16 +69,16 @@ let activeBlocks = [];
 
 function makeCoinBlock(obj) {
     let a = document.createElement("a");
-    a.href = location.protocol + "//" + location.host + "/coin/" + obj['id'];
+    //a.href = location.protocol + "//" + location.host + "/coin/" + obj['id'];
     a.setAttribute('style', 'color: ' + (obj.featured ? 'black' : 'blue') + '; text-decoration: none;');
 
     let wrapper = document.createElement('div');
     wrapper.classList.add("col-md-3");
     wrapper.setAttribute('style', 'padding: 10px;');
-    //wrapper.setAttribute('data-toggle', 'modal');
-    wrapper.setAttribute('data-target', '#coinModal');
+    wrapper.setAttribute('data-toggle', 'modal');
+    wrapper.setAttribute('data-target', '#coinModal1');
     wrapper.setAttribute('modal-title', obj['short_name']);
-    wrapper.addEventListener("click", clickCoin);
+    wrapper.addEventListener("click", () => clickCoin(obj));
 
     let div = document.createElement('div');
     div.setAttribute('style', 'background-color: white; border-radius: 8px; padding: 6px; text-align: center;');

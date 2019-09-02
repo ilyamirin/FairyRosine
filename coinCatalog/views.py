@@ -100,7 +100,7 @@ def coin(req, id=-1):
         "cell_title": cell_titles.get(lang, "en"),
     }
 
-    return render(req, 'coinCatalog/coin.html', coin)
+    return render(req, 'coinCatalog/coin_modal.html', coin)
 
 
 def production(req):
