@@ -63,7 +63,7 @@ let activeBlocks = [];
 function makeCoinBlock(obj) {
     let a = document.createElement("a");
     a.href = location.protocol + "//" + location.host + "/coin/" + obj['id'];
-    a.setAttribute('style', 'color: ' + (obj.short_name.indexOf('[') >= 0 ? 'black' : 'blue') + '; text-decoration: none;');
+    a.setAttribute('style', 'color: ' + (obj.featured ? 'black' : 'blue') + '; text-decoration: none;');
 
     let wrapper = document.createElement('div');
     wrapper.classList.add("col-md-3");

@@ -276,10 +276,6 @@ class CoinRecognitionConsumer(SyncConsumer, TimeShifter):
         self.response_min_cnt = 4
         self.featured_coins = random.sample(self.ids, 5*self.response_min_cnt)
         self.featured_last_updated = time.time()
-        self.featured_short_name = {
-            "en": "[Random]\n",
-            "ru": "[Случайное из каталога]\n",
-        }
 
     def extend_by_featured(self, response, uid):
         if time.time() - self.featured_last_updated >= 10:
@@ -298,7 +294,7 @@ class CoinRecognitionConsumer(SyncConsumer, TimeShifter):
                 "id": coin.id,
                 "confidence": 0,
                 "href": href_img,
-                "short_name": self.featured_short_name[self.language[uid]] + description.short_name,
+                "short_name": description.short_name,
                 "featured": True,
             }
             response.append(coin_info)
