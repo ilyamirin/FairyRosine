@@ -272,7 +272,7 @@ class CoinRecognitionConsumer(SyncConsumer, TimeShifter):
         self.darknet_image = darknet.make_image(darknet.network_width(self.net_main), darknet.network_height(self.net_main), 3)
         self.category_to_id = json.loads(open(os.path.join(BASE_DIR, "category_tO_id.json"), "r").read())
         self.ids = list(self.category_to_id.values())
-        self.language = {}
+        self.language = defaultdict(lambda: "en")
         self.response_min_cnt = 4
         self.featured_coins = random.sample(self.ids, 5*self.response_min_cnt)
         self.featured_last_updated = time.time()
