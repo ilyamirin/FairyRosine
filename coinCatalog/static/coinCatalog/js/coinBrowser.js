@@ -1,29 +1,3 @@
-let dicts = {
-    "BELYY_MEDVED_2012_avers": 19,
-    "BELYY_MEDVED_2012_reverse": 19,
-    "Dinozavry_morskiye_2013_avers": 47,
-    "Dinozavry_morskiye_2013_reverse": 47,
-    "Pervyy_samolet_2011_avers": 97,
-    "Pervyy_samolet_2011_reverse": 97,
-    "Polet_k_zvezdam_2012_avers": 104,
-    "Polet_k_zvezdam_2012_reverse": 104,
-    "Tigrenok_2010_avers": 129,
-    "Tigrenok_2010_reverse": 129,
-};
-
-let imgs = {
-    "BELYY_MEDVED_2012_avers": 'mon_files/image104.gif',
-    "BELYY_MEDVED_2012_reverse": 'mon_files/image102.gif',
-    "Dinozavry_morskiye_2013_avers": 'mon_files/image251.gif',
-    "Dinozavry_morskiye_2013_reverse": 'mon_files/image247.gif',
-    "Pervyy_samolet_2011_avers": 'mon_files/image516.gif',
-    "Pervyy_samolet_2011_reverse": 'mon_files/image514.gif',
-    "Polet_k_zvezdam_2012_avers": 'mon_files/image547.gif',
-    "Polet_k_zvezdam_2012_reverse": 'mon_files/image545.gif',
-    "Tigrenok_2010_avers": 'mon_files/image651.gif',
-    "Tigrenok_2010_reverse": 'mon_files/image649.gif',
-};
-
 function getCoinFromServer(id) {
     $.ajax({
         type: 'GET',
@@ -54,7 +28,7 @@ function getCoinFromServer(id) {
 
 function clickCoin(obj) {
     //getCoinFromServer(1);
-        $.ajax({
+     $.ajax({
         type: 'GET',
         url: location.protocol + "//" + location.host + "/coin/" + obj.id,
         success: function(data){
