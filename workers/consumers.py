@@ -251,10 +251,10 @@ class Darknet:
             sys.path.pop()
         self.dn = darknet
 
-        cfg = r"C:\Projects\coins\config"
+        cfg = r"C:\Projects\coins\config\47"
         config_path = os.path.join(cfg, "yolov3.cfg")
         meta_path = os.path.join(cfg, "coins.data")
-        weight_path = os.path.join(cfg, "yolov3_best.weights")
+        weight_path = os.path.join(cfg, "yolov3_14000.weights")
 
         self.net_main = darknet.load_net_custom(config_path.encode("ascii"), weight_path.encode("ascii"), 0, 1)
         self.meta_main = darknet.load_meta(meta_path.encode("ascii"))
