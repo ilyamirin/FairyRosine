@@ -352,10 +352,14 @@ class CoinRecognitionConsumer(SyncConsumer, TimeShifter):
             for label, confidence, (x1, y1, width, height) in detections:
                 x1 = x1*kx
                 y1 = y1*ky
+
                 coords = [
                     int(y1 - height*ky/2), int(x1 - width*kx/2),
                     int(y1 + height*ky/2), int(x1 + width*kx/2)
                 ]
+
+                #print(f"y: {coords[0]}\tx:  {coords[1]}\th: {coords[2] - coords[0]}\tw: {coords[3] - coords[1]}")
+
                 coin = Coin.objects.get(catalog_id=label)
                 description = CoinDescription.objects.get(coin_id=coin, lang=self.language[uid])
                 href_img = ImgCoin.objects.filter(coin_id=coin).values()[0]['href']
