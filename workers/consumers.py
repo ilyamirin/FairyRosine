@@ -20,6 +20,7 @@ import base64
 from vef.settings import SERVANT_DIR
 from string import ascii_letters
 import random
+from collections import defaultdict
 
 server_channel_layer = get_channel_layer("server")
 
@@ -43,20 +44,20 @@ def get_image_data_from_bytes_data(bytes_data):
 
 
 class TimeShifter:
-    def get_age(self, timestamp):
+    def get_age(self, timestamp, uid=None):
         if not hasattr(self, "shift"):
-            self.set_shift(timestamp)
+            self.set_shift(timestamp, uid)
         return time.time() - timestamp + self.shift
 
-    def set_shift(self, timestamp):
+    def set_shift(self, timestamp, uid=None):
         now = time.time()
         self.shift = now - timestamp
-        print(f"sync clock, shift = {self.shift} seconds")
+        print(f"{uid or '?'} sync clock, shift = {self.shift} seconds")
 
     def sync_clock(self, message):
         try:
             timestamp = message["timestamp"]
-            self.set_shift(timestamp)
+            self.set_shift(timestamp, message["uid"])
         except Exception as e:
             print(e)
 
@@ -151,7 +152,7 @@ class FaceRecognitionConsumer(SyncConsumer, TimeShifter):
                 self.last_filtered = time.time()
             uid = message["uid"]
             timestamp, img_data = get_image_data_from_bytes_data(message["bytes_data"])
-            age = self.get_age(timestamp)
+            age = self.get_age(timestamp, uid)
             print(f"face {'pass: ' if age >= 1 else 'go: '} {age}")
             if age >= 1:
                 return
@@ -352,7 +353,7 @@ class CoinRecognitionConsumer(SyncConsumer, TimeShifter):
             self.extend_by_featured(response, uid)
 
             end_recog = time.time()
-            print(f"coin recog time = {end_recog - start_recog:.2f}")
+            print(f"coin recog time = {end_recog - start_recog:.3f}")
             async_to_sync(server_channel_layer.group_send)(
                 "recognize-coins",
                 {
