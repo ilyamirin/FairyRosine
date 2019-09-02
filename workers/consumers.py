@@ -320,73 +320,71 @@ class CoinRecognitionConsumer(SyncConsumer, TimeShifter):
             response.append(coin_info)
 
     def recognize(self, message):
-        try:
-            uid = message["uid"]
-            timestamp, frame_read = get_image_data_from_bytes_data(message["bytes_data"])
-            age = self.get_age(timestamp)
-            print(f"coin {'pass: ' if age >= 1 else 'go: '} {age}")
-            if age >= 1:
-                return
-            start_recog = time.time()
-            frame_rgb = frame_read
-            # frame_rgb = cv2.cvtColor(frame_read, cv2.COLOR_BGR2RGB)
-            frame_resized = cv2.resize(frame_rgb,
-                                       (self.dn.network_width(self.net_main),
-                                        self.dn.network_height(self.net_main)),
-                                       interpolation=cv2.INTER_LINEAR)
+        uid = message["uid"]
 
-            print((self.dn.network_width(self.net_main),
-                                        self.dn.network_height(self.net_main)))
+        timestamp, frame_read = get_image_data_from_bytes_data(message["bytes_data"])
+        age = self.get_age(timestamp)
+        print(f"coin {'pass: ' if age >= 1 else 'go: '} {age}")
+        if age >= 1:
+            return
+        start_recog = time.time()
+        frame_rgb = frame_read
+        # frame_rgb = cv2.cvtColor(frame_read, cv2.COLOR_BGR2RGB)
+        frame_resized = cv2.resize(frame_rgb,
+                                   (self.dn.network_width(self.net_main),
+                                    self.dn.network_height(self.net_main)),
+                                   interpolation=cv2.INTER_LINEAR)
 
-            self.dn.copy_image_from_bytes(self.darknet_image, frame_resized.tobytes())
+        print((self.dn.network_width(self.net_main),
+                                    self.dn.network_height(self.net_main)))
 
-            detections = self.dn.detect_image(self.net_main, self.meta_main, self.darknet_image, thresh=0.3)
-            response = []
-            kx = frame_rgb.shape[1] / self.dn.network_width(self.net_main)
-            ky = frame_rgb.shape[0] / self.dn.network_height(self.net_main)
+        self.dn.copy_image_from_bytes(self.darknet_image, frame_resized.tobytes())
 
-            print(*(d[0].decode() for d in detections))
-            for i, detection in enumerate(detections):
-                detections[i] = (self.category_to_id[detections[i][0].decode()], *detections[i][1:])
+        detections = self.dn.detect_image(self.net_main, self.meta_main, self.darknet_image, thresh=0.3)
+        response = []
+        kx = frame_rgb.shape[1] / self.dn.network_width(self.net_main)
+        ky = frame_rgb.shape[0] / self.dn.network_height(self.net_main)
 
-            for label, confidence, (x1, y1, width, height) in detections:
-                x1 = x1*kx
-                y1 = y1*ky
+        print(*(d[0].decode() for d in detections))
+        for i, detection in enumerate(detections):
+            detections[i] = (self.category_to_id[detections[i][0].decode()], *detections[i][1:])
 
-                coords = [
-                    int(y1 - height*ky/2), int(x1 - width*kx/2),
-                    int(y1 + height*ky/2), int(x1 + width*kx/2)
-                ]
+        for label, confidence, (x1, y1, width, height) in detections:
+            x1 = x1*kx
+            y1 = y1*ky
 
-                #print(f"y: {coords[0]}\tx:  {coords[1]}\th: {coords[2] - coords[0]}\tw: {coords[3] - coords[1]}")
+            coords = [
+                int(y1 - height*ky/2), int(x1 - width*kx/2),
+                int(y1 + height*ky/2), int(x1 + width*kx/2)
+            ]
 
-                coin = Coin.objects.get(catalog_id=label)
-                description = CoinDescription.objects.get(coin_id=coin, lang=self.language[uid])
-                href_img = ImgCoin.objects.filter(coin_id=coin).values()[0]['href']
-                coin_info = {
-                    "coords": coords,
-                    "id": coin.id,
-                    "confidence": confidence,
-                    "href": href_img,
-                    "short_name": description.short_name,
-                    "featured": False,
-                }
-                response.append(coin_info)
+            #print(f"y: {coords[0]}\tx:  {coords[1]}\th: {coords[2] - coords[0]}\tw: {coords[3] - coords[1]}")
 
-            self.extend_by_featured(response, uid)
+            coin = Coin.objects.get(catalog_id=label)
+            description = CoinDescription.objects.get(coin_id=coin, lang=self.language[uid])
+            href_img = ImgCoin.objects.filter(coin_id=coin).values()[0]['href']
+            coin_info = {
+                "coords": coords,
+                "id": coin.id,
+                "confidence": confidence,
+                "href": href_img,
+                "short_name": description.short_name,
+                "featured": False,
+            }
+            response.append(coin_info)
 
-            end_recog = time.time()
-            print(f"coin recog time = {end_recog - start_recog:.3f}")
-            async_to_sync(server_channel_layer.group_send)(
-                "recognize-coins",
-                {
-                    "type": "coins_ready",
-                    "text": response,
-                    "uid": uid,
-                },
-            )
-        except Exception as e:
-            print(e)
+        self.extend_by_featured(response, uid)
+
+        end_recog = time.time()
+        print(f"coin recog time = {end_recog - start_recog:.3f}")
+        async_to_sync(server_channel_layer.group_send)(
+            "recognize-coins",
+            {
+                "type": "coins_ready",
+                "text": response,
+                "uid": uid,
+            },
+        )
 
     def set_language(self, message):
         try:
