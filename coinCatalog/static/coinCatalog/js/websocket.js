@@ -104,7 +104,7 @@ function startWebSocketInteraction(){
                 console.log(data.text);
             drawCoins(data.text);
         }
-        canvasData[data.type] = data.text.map(v => [...v['coords'], v['short_name']]);
+        canvasData[data.type] = data.text;
     };
 
     const wsOnOpen = event => {
