@@ -94,7 +94,7 @@ function drawCoins(coins){
     //console.log("begin");
     //console.log(row.childNodes.length);
     let remove = activeBlocks.filter(v => coins.map(k => k['short_name']).indexOf(v['short_name']) === -1);
-    remove.forEach(v => row.replaceChild(makeEmptyBlock(), coinBlocks[v['short_name']]));
+    remove.forEach(v => row.replaceChild(makeEmptyBlock(), coinBlocks[v.short_name + v.featured]));
     activeBlocks = activeBlocks.filter(v => coins.map(k => k['short_name']).indexOf(v['short_name']) !== -1);
     //console.log("active after clearing");
     //console.log(activeBlocks);
@@ -104,13 +104,14 @@ function drawCoins(coins){
     //console.log(addBlocks);
 
     addBlocks.forEach(v => {
-        if (!coinBlocks[v['short_name']]){
-            coinBlocks[v['short_name']] = makeCoinBlock(v);
+        var name = v.short_name + v.featured;
+        if (!coinBlocks[name]){
+            coinBlocks[name] = makeCoinBlock(v);
         }
         let flagExists = false;
         let flagEmptyBlock = false;
         for (let i = 0; i < row.childNodes.length; i++) {
-            if (row.childNodes[i].innerHTML === coinBlocks[v['short_name']].innerHTML) {
+            if (row.childNodes[i].innerHTML === coinBlocks[name].innerHTML) {
                 flagExists = true;
             }
         }
@@ -118,13 +119,13 @@ function drawCoins(coins){
             for (let i = 0; i < row.childNodes.length; i++) {
                 if (row.childNodes[i].innerHTML === emptyBlock.innerHTML) {
                     flagEmptyBlock = true;
-                    row.replaceChild(coinBlocks[v['short_name']], row.childNodes[i]);
+                    row.replaceChild(coinBlocks[name], row.childNodes[i]);
                     break;
                 }
             }
         }
         if (!flagExists && !flagEmptyBlock) {
-            row.appendChild(coinBlocks[v['short_name']]);
+            row.appendChild(coinBlocks[name]);
         }
     });
 
