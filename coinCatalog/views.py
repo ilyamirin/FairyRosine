@@ -67,10 +67,37 @@ def coin(req, id=-1):
     # coin = Coin.objects.get(id=id)
     desc = CoinDescription.objects.get(coin_id=id, lang=get_lang(req))
     imgs = ImgCoin.objects.filter(coin_id=id)
-
+    lang = get_lang(req)
+    cell_titles = {
+        "ru": {
+            "nominal": "Номинал",
+            "quality": "Качество чеканки",
+            "probe": "Металл, проба",
+            "pure_metal": "Содержание хим. чистого металла, г",
+            "mass": "Масса общая, г",
+            "diameter": "Диаметр, мм",
+            "thickness": "Толщина, мм",
+            "copies": "Макс. тираж, шт",
+            "spec": "Оригинальная комплектация",
+            "mint": "Изготовитель",
+        },
+        "en": {
+            "nominal": "Face value",
+            "quality": "Mintage quality",
+            "probe": "Metal, purity",
+            "pure_metal": "Chemical content of the metal, g",
+            "mass": "Weight, g",
+            "diameter": "Size, mm",
+            "thickness": "Thickness, mm",
+            "copies": "Max mintage, pcs",
+            "spec": "Original specifications",
+            "mint": "Mint",
+        }
+    }
     coin = {
         "coin": desc,
-        "imgs": imgs
+        "imgs": imgs,
+        "cell_title": cell_titles.get(lang, "en"),
     }
 
     return render(req, 'coinCatalog/coin.html', coin)

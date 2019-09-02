@@ -12,14 +12,14 @@
                     <table class="table table-sm table-responsive-sm" style="text-align: center;">
                       <thead>
                           <tr class="table-success">
-                              <th style="vertical-align: middle;">Номинал</th>
-                              <th style="vertical-align: middle;" scope="col">Качество чеканки</th>
-                              <th style="vertical-align: middle;" scope="col">Металл, проба</th>
-                              <th style="vertical-align: middle;" scope="col">Содержание хим. чистого металла, г.</th>
-                              <th style="vertical-align: middle;" scope="col">Масса общая, г.</th>
-                              <th style="vertical-align: middle;" scope="col">Диаметр, мм.</th>
-                              <th style="vertical-align: middle;" scope="col">Толщина, мм.</th>
-                              <th style="vertical-align: middle;" scope="col">Макс. тираж, шт.</th>
+                              <th style="vertical-align: middle;">{{ cell_title.nominal }}</th>
+                              <th style="vertical-align: middle;" scope="col">{{ cell_title.quality }}</th>
+                              <th style="vertical-align: middle;" scope="col">{{ cell_title.probe }}</th>
+                              <th style="vertical-align: middle;" scope="col">{{ cell_title.pure_metal }}</th>
+                              <th style="vertical-align: middle;" scope="col">{{ cell_title.mass }}</th>
+                              <th style="vertical-align: middle;" scope="col">{{ cell_title.diameter }}</th>
+                              <th style="vertical-align: middle;" scope="col">{{ cell_title.thickness }}</th>
+                              <th style="vertical-align: middle;" scope="col">{{ cell_title.copies }}</th>
                           </tr>
                       </thead>
                       <tbody>
@@ -36,8 +36,8 @@
                       </tbody>
                       <thead>
                           <tr class="table-success">
-                              <th scope="col" colspan="4">Оригинальная комплектация монеты</th>
-                              <th scope="col" colspan="4">Изготовитель</th>
+                              <th scope="col" colspan="4">{{ cell_title.spec }}</th>
+                              <th scope="col" colspan="4">{{ cell_title.mint }}</th>
                           </tr>
                       </thead>
                       <tbody>
