@@ -38,7 +38,7 @@ class StreamConsumer(AsyncWebsocketConsumer):
                 )
                 print("sync clock", flush=True)
             except Exception as e:
-                print('sync clock exception: ' + str(e))
+                print(f'sync clock exception: {e}')
             await asyncio.sleep(4)
 
     async def connect(self):

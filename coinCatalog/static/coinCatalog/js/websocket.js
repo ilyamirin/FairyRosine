@@ -7,7 +7,7 @@ if(/(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine
     isMobile = true;
 }
 
-let iOS = /iPad|iPhone|iPod|Safari/.test(navigator.userAgent) && !window.MSStream;
+let iOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
 
 if (isMobile && !iOS){
     document.documentElement.requestFullscreen().then(() => {
@@ -126,8 +126,8 @@ function startWebSocketInteraction(){
             clearInterval(frameLoop);
             frameLoop = null;
         }
-        let keys = event.keys().map(v => [v, event[v]]).flat();
-        alert("Соединение было разорвано!" + JSON.stringify(keys));
+        //let keys = event.keys().map(v => [v, event[v]]).flat();
+        //alert("Соединение было разорвано!" + JSON.stringify(keys));
     };
 
     const wsOnError = event => {

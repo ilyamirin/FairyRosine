@@ -329,6 +329,7 @@ class CoinRecognitionConsumer(SyncConsumer, TimeShifter):
             kx = frame_rgb.shape[1] / self.dn.network_width(self.net_main)
             ky = frame_rgb.shape[0] / self.dn.network_height(self.net_main)
 
+            print(*(d[0].decode() for d in detections))
             for i, detection in enumerate(detections):
                 detections[i] = (self.category_to_id[detections[i][0].decode()], *detections[i][1:])
 
@@ -355,7 +356,7 @@ class CoinRecognitionConsumer(SyncConsumer, TimeShifter):
             self.extend_by_featured(response, uid)
 
             end_recog = time.time()
-            print(f"coin recog time = {end_recog - start_recog}")
+            print(f"coin recog time = {end_recog - start_recog:.2f}")
             async_to_sync(server_channel_layer.group_send)(
                 "recognize-coins",
                 {
