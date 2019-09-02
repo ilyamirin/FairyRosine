@@ -1,13 +1,14 @@
 from channels.generic.websocket import WebsocketConsumer, AsyncWebsocketConsumer
 import json
 import asyncio
-from channels.layers import get_channel_layer
+from channels.layers import get_channel_layer, ChannelFull
 from string import ascii_letters
 import random
 import operator
 import time
 import copy
 import collections
+
 
 face_channel_layer = get_channel_layer("face")
 coin_channel_layer = get_channel_layer("coin")
@@ -26,9 +27,10 @@ class StreamConsumer(AsyncWebsocketConsumer):
         print("consumer created", flush=True)
         self.response_min_cnt = 4
         self.coin_info = {}
+        self.connected = False
 
     async def sync_clock(self):
-        while True:
+        while self.connected:
             message = {"type": "sync_clock", "timestamp": time.time(), "uid": self.uid}
             try:
                 await asyncio.gather(
@@ -37,13 +39,14 @@ class StreamConsumer(AsyncWebsocketConsumer):
                     self.send(json.dumps(message)),
                 )
                 print("sync clock", flush=True)
-            except Exception as e:
-                print(f'sync clock exception: {e}')
+            except ChannelFull:
+                print(f'sync clock exception: channel full')
             await asyncio.sleep(4)
 
     async def connect(self):
         print('connection successful!!')
         await self.accept()
+        self.connected = True
         asyncio.get_event_loop().create_task(self.sync_clock())
 
     async def faces_ready(self, message):
@@ -127,8 +130,11 @@ class StreamConsumer(AsyncWebsocketConsumer):
                     coin_channel_layer.send("recognizecoins",
                                             {"type": "recognize", "bytes_data": bytes_data, "uid": self.uid}),
                 )
+        except ChannelFull:
+            print(f"{self.uid}: channe lfull")
         except Exception as e:
-            print(e)
+            print(f"{self.uid}: unknown exception: {e}: {type(e)}")
 
     async def disconnect(self, close_code):
-        print("disconnect ", close_code)
+        self.connected = False
+        print("disconnect ", close_code, flush=True)
