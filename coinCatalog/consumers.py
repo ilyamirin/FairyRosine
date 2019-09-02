@@ -55,9 +55,10 @@ class StreamConsumer(AsyncWebsocketConsumer):
     def extend_by_featured(self, coins, response):
         try:
             for coin_descr in response:
-                if len(set(coin["id"] for coin in coins)) >= self.response_min_cnt:
+                s = set(coin["id"] for coin in coins)
+                if len(s) >= self.response_min_cnt:
                     return
-                if coin_descr.get("featured", False):
+                if coin_descr.get("featured", False) and coin_descr["id"] not in s:
                     coins.append(coin_descr)
         except:
             pass
