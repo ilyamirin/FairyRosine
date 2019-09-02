@@ -242,14 +242,13 @@ from coinCatalog.models import Coin, CoinDescription, ImgCoin
 from vef.settings import BASE_DIR
 import html
 
-class CoinRecognitionConsumer(SyncConsumer, TimeShifter):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        print("coin worker created", flush=True)
-        path = "C:/Projects/darknet_win"
-        sys.path.append(path)
-        import darknet
-        sys.path.pop()
+class Darknet:
+    def __init__(self):
+        if 'darknet' not in sys.modules:
+            path = "C:/Projects/darknet_win"
+            sys.path.append(path)
+            import darknet
+            sys.path.pop()
         self.dn = darknet
 
         cfg = r"C:\Projects\coins\config"
@@ -270,8 +269,28 @@ class CoinRecognitionConsumer(SyncConsumer, TimeShifter):
                     self.alt_names = [x.strip() for x in names_list]
 
         print(f"({self.dn.network_width(self.net_main)} {self.dn.network_height(self.net_main)}")
-        self.darknet_image = darknet.make_image(darknet.network_width(self.net_main), darknet.network_height(self.net_main), 3)
+        self.darknet_image = darknet.make_image(darknet.network_width(self.net_main), darknet.network_height(self.net_main),                                3)
         self.category_to_id = json.loads(open(os.path.join(BASE_DIR, "category_tO_id.json"), "r").read())
+
+
+dnn = None
+
+
+class CoinRecognitionConsumer(SyncConsumer, TimeShifter):
+    def __init__(self, *args, **kwargs):
+        global dnn
+        super().__init__(*args, **kwargs)
+        print("coin worker created", flush=True)
+
+        if not dnn:
+            dnn = Darknet()
+
+        self.dn = dnn.dn
+        self.net_main = dnn.net_main
+        self.meta_main = dnn.meta_main
+        self.alt_names = dnn.alt_names
+        self.darknet_image = dnn.darknet_image
+        self.category_to_id = dnn.category_to_id
         self.ids = list(self.category_to_id.values())
         self.language = defaultdict(lambda: "en")
         self.response_min_cnt = 4
