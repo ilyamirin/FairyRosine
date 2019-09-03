@@ -66,11 +66,13 @@
               </tbody>
             </table>
         </div>
+        <div style="display: flex; flex-direction: row; align-items: flex-start; justify-content: center; width: 100%;">
             {% for img in imgs %}
             <div class="col-md-3 col-sm-6 col-xs-12" style="text-align: center;">
-                <img src="{% static '/coinCatalog/coins/' %}{{ img.href }}" style="min-width: 150px; max-width: 200px;">
+                <img src="{% static '/coinCatalog/coins/' %}{{ img.href }}" style="min-width: 150px; max-width: 100%;">
             </div>
             {% endfor %}
+        </div>
         <div class="row" style="padding: 30px;">
             <div class="col-md-12">
                 {{ coin.description|linebreaks }}
