@@ -28,7 +28,7 @@ navigator.mediaDevices.enumerateDevices().then(devices => {
     if (cameras.length > 0) {
         let constraints =
         (iOS) ? { video: { facingMode: { exact: "environment" }, width: 900, height: 675 } } :
-        (!isMobile) ? { video: { deviceId: { exact: cameras[1].deviceId }, width: 900, height: 675 } } :
+        (!isMobile) ? { video: { deviceId: { exact: cameras[0].deviceId }, width: 900, height: 675 } } :
         { video: { facingMode: { exact: "environment" }, width: 640, height: 480 } };
         navigator.mediaDevices.getUserMedia(constraints).then(stream => {
             video.srcObject = stream;

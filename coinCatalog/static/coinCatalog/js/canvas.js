@@ -10,6 +10,10 @@ let canvasData = {
 };
 
 function drawRect(rect, text, colorStroke, fillStyle){
+    if ((rect[3] - rect[1]) * (rect[2] - rect[0]) > 900 * 675 / 3){
+        return;
+    }
+    if (rect[2] > 400) rect[2] = 400;
     context.beginPath();
     context.rect(rect[1], rect[0], rect[3] - rect[1], rect[2] - rect[0]);
     context.strokeStyle = colorStroke;

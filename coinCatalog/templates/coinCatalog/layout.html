@@ -13,7 +13,7 @@
     <link rel="stylesheet" href="{% static '/coinCatalog/fonts/font-awesome.min.css' %}">
     <link rel="stylesheet" href="{% static '/coinCatalog/css/untitled.css' %}">
     <link rel="stylesheet" href="{% static '/coinCatalog/css/style.css' %}">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="{% static '/coinCatalog/js/jquery.min.js' %}"></script>
     {% block addition_links %}{% endblock %}
 </head>
 <!-- fixed-top-->
@@ -58,7 +58,7 @@
         </div>
     </footer>
     <script src="{% static '/coinCatalog/bootstrap/js/bootstrap.min.js' %}"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.4.1/jquery.easing.min.js"></script>
+    <script src="{% static '/coinCatalog/bootstrap/js/jquery.easing.min.js' %}"></script>
     <script src="{% static '/coinCatalog/js/new-age.js' %}"></script>
     <script src="{% static '/coinCatalog/js/local.js' %}"></script>
 </body>

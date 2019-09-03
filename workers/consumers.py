@@ -296,6 +296,10 @@ class CoinRecognitionConsumer(SyncConsumer, TimeShifter):
         self.response_min_cnt = 4
         self.featured_coins = random.sample(self.ids, 5*self.response_min_cnt)
         self.featured_last_updated = time.time()
+        self.coin_description_href_dict = {
+            "ru": {},
+            "en": {},
+        }
 
     def extend_by_featured(self, response, uid):
         if time.time() - self.featured_last_updated >= 10:
@@ -304,11 +308,12 @@ class CoinRecognitionConsumer(SyncConsumer, TimeShifter):
         current_featured = -1
         while len(set(coin["id"] for coin in response)) < self.response_min_cnt:
             current_featured += 1
-            coin = Coin.objects.get(catalog_id=self.featured_coins[current_featured])
+            coin, description, href_img = self.get_coin_description_href(
+                label=self.featured_coins[current_featured],
+                lang=self.language[uid]
+            )
             if coin.id in [coin["id"] for coin in response]:
                 continue
-            description = CoinDescription.objects.get(coin_id=coin, lang=self.language[uid])
-            href_img = ImgCoin.objects.filter(coin_id=coin).values()[0]['href']
             coin_info = {
                 "coords": [10000]*4,
                 "id": coin.id,
@@ -319,14 +324,22 @@ class CoinRecognitionConsumer(SyncConsumer, TimeShifter):
             }
             response.append(coin_info)
 
+    def get_coin_description_href(self, label, lang):
+        if label not in self.coin_description_href_dict[lang]:
+            coin = Coin.objects.get(catalog_id=label)
+            description = CoinDescription.objects.get(coin_id=coin, lang=lang)
+            href_img = ImgCoin.objects.filter(coin_id=coin).values()[0]['href']
+            self.coin_description_href_dict[lang][label] = (coin, description, href_img)
+        return self.coin_description_href_dict[lang][label]
+
     def recognize(self, message):
         uid = message["uid"]
 
         timestamp, frame_read = get_image_data_from_bytes_data(message["bytes_data"])
         age = self.get_age(timestamp)
         print(f"coin {'pass: ' if age >= 1 else 'go: '} {age}")
-        if age >= 1:
-            return
+        # if age >= 1:
+        #     return
         start_recog = time.time()
         frame_rgb = frame_read
         # frame_rgb = cv2.cvtColor(frame_read, cv2.COLOR_BGR2RGB)

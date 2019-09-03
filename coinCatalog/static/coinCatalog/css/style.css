@@ -38,3 +38,19 @@
 
   width:100%;
 }
+
+.outline-none:hover {
+  outline: none !important;
+  background-color: white !important;
+  border: none;
+}
+.outline-none:active {
+  outline: none !important;
+  background-color: white !important;
+  border: none;
+}
+.outline-none {
+  outline: none !important;
+  background-color: white !important;
+  border: none;
+}

@@ -26,17 +26,38 @@ function getCoinFromServer(id) {
     });
 }
 
+let globalObj;
+
 function clickCoin(obj) {
+    globalObj = obj;
     //getCoinFromServer(1);
      $.ajax({
         type: 'GET',
         url: location.protocol + "//" + location.host + "/coin/" + obj.id,
         success: function(data){
             document.getElementById('coinModal2').innerHTML = data;
+            document.getElementById("modalLanguageRu").onclick = () => changeModalLanguage('ru');
+            document.getElementById("modalLanguageEn").onclick = () => changeModalLanguage('en');
         }
     });
     document.getElementById('modal-coin-title').innerHTML = obj.short_name;
 }
+
+function changeModalLanguage(lang) {
+    $.ajax({
+        type: 'GET',
+        url: location.protocol + "//" + location.host + "/changeLang/" + lang,
+        success: function(data){
+            data = JSON.parse(data);
+            if (data['lang'] === lang){
+                clickCoin(globalObj);
+            }
+        },
+        error: function(data){
+            console.log(data);
+        }
+    });
+};
 
 let coinBlocks = {};
 let activeBlocks = [];
