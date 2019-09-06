@@ -97,17 +97,19 @@ class YdxSpeechConsumer(SyncConsumer):
             params = "&".join([
                 "topic=general",
                 "folderId=%s" % self.YDX_FOLDER_ID,
-                "lang=ru-RU"
+                "lang=ru-RU",
+                "profanityFilter=true"
             ])
             headers = {
                 'Authorization': f'Bearer {self.ydx_yam_token}',
             }
             response_data = requests.post(
                 "https://stt.api.cloud.yandex.net/speech/v1/stt:recognize?%s" % params,
-                headers=headers, data=f.getbuffer(), proxies=YdxSpeechConsumer.PROXY)
+                headers=headers, data=f.getbuffer(), proxies=[])
             decoded_data = json.loads(response_data.text)
             print(decoded_data)
             text = decoded_data.get("result") if decoded_data.get("error_code") is None else ""
+            text = ' '.join([i for i in text.split() if '*' not in i])
             if not decoded_data.get("error_code") is None:
                 self.ydx_yam_token = self.create_token()
             print(text, flush=True)
@@ -115,7 +117,7 @@ class YdxSpeechConsumer(SyncConsumer):
                 "speech",
                 {
                     "type": "recognized_speech_ready",
-                    "text": text,
+                    "text": text ,
                     "uid": uid,
                 },
             )

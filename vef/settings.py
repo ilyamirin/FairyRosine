@@ -68,7 +68,9 @@ def configure_channel(ip='127.0.0.1', port=6379, backend='channels_redis.core.Re
     return {'CONFIG': {'hosts': hosts if hosts else [(ip, port)]}, 'BACKEND': backend}
 
 
-local_ip = '10.60.17.34'
+#local_ip = '10.60.17.34'
+#remote_ip_1 = '10.193.48.75'
+local_ip = '127.0.0.1'
 remote_ip_1 = '10.193.48.75'
 
 local = configure_channel(local_ip)
