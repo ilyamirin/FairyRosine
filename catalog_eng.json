@@ -1,4 +1,84 @@
 [{
+        "id": "0000-0010",
+        "name": "10 roubles",
+        "short_name": "10 roubles",
+        "description": "",
+        "lang": "en",
+        "nominal": "10 roubles",
+        "quality": "",
+        "probe": "",
+        "original_equipment": "",
+        "manufacturer": "",
+        "mass": "",
+        "pure_metal": "",
+        "diameter": "",
+        "thickness": "",
+        "copies": "",
+        "imgs": [
+            "mon_files/image10rub.gif"
+        ]
+    },
+    {
+        "id": "0000-0005",
+        "name": "5 roubles",
+        "short_name": "5 roubles",
+        "description": "",
+        "lang": "en",
+        "nominal": "",
+        "quality": "",
+        "probe": "",
+        "original_equipment": "",
+        "manufacturer": "",
+        "mass": "",
+        "pure_metal": "",
+        "diameter": "",
+        "thickness": "",
+        "copies": "",
+        "imgs": [
+            "mon_files/image05rub.gif"
+        ]
+    },
+    {
+        "id": "0000-0002",
+        "name": "2 rubles",
+        "short_name": "2 rubles",
+        "description": "",
+        "lang": "en",
+        "nominal": "",
+        "quality": "",
+        "probe": "",
+        "original_equipment": "",
+        "manufacturer": "",
+        "mass": "",
+        "pure_metal": "",
+        "diameter": "",
+        "thickness": "",
+        "copies": "",
+        "imgs": [
+            "mon_files/image02rub.gif"
+        ]
+    },
+    {
+        "id": "0000-0001",
+        "name": "1 rouble",
+        "short_name": "1 rouble",
+        "description": "",
+        "lang": "en",
+        "nominal": "",
+        "quality": "",
+        "probe": "",
+        "original_equipment": "",
+        "manufacturer": "",
+        "mass": "",
+        "pure_metal": "",
+        "diameter": "",
+        "thickness": "",
+        "copies": "",
+        "imgs": [
+            "mon_files/image01rub.gif"
+        ]
+    },
+    {
         "id": "7105-0249",
         "name": "Set of coins of Niue Island dedicated to the means of urban public transport of the Soviet era",
         "short_name": "City Transport (Niue) Set – 10",
