@@ -11,9 +11,12 @@ let canvasData = {
 
 function drawRect(rect, text, colorStroke, fillStyle){
     if ((rect[3] - rect[1]) * (rect[2] - rect[0]) > 900 * 675 / 3){
-        return;
+    // это на случай криво найденных рамок (горизонтальная полоса на весь экран)
+//        return;
     }
-    if (rect[2] > 400) rect[2] = 400;
+
+    // этот if для того, чтобы на ipad рамки не залезали на карусель монет
+//    if (rect[2] > 400) rect[2] = 400;
     context.beginPath();
     context.rect(rect[1], rect[0], rect[3] - rect[1], rect[2] - rect[0]);
     context.strokeStyle = colorStroke;
@@ -39,7 +42,7 @@ function drawCanvasData() {
     canvasData["face"].forEach((rect, i) =>
         drawRect(rect, rect[4],
             (!i && firstWhite) ? userColor: 'green', (!i && firstWhite) ? userColor : 'green'));
-    canvasData["coin"].forEach(d => drawRect(d.coords, d.short_name, 'blue', 'blue'));
+    canvasData["coin"].forEach(d => !d.featured ? drawRect(d.coords, d.short_name, 'blue', 'blue') : null);
 }
 
 drawInterval = setInterval(() => drawCanvasData(), 1000 / 24);
@@ -51,4 +54,32 @@ function resetCanvas() {
 
 function activateCanvas() {
     drawInterval = setInterval(() => drawCanvasData(), 1000 / 24);
+}
+
+let coins = null;
+
+function canvas_updateCoins(coins_){
+    coins = coins_;
+}
+
+function canvas_registerOnSquareClick(cb) {
+    canvas.addEventListener('click', (e) => {
+        if (!coins) {
+            return;
+        }
+        const pos = {
+            x: e.clientX,
+            y: e.clientY
+        };
+        for (let coin of coins) {
+            if (pos.y >= Math.min(coin.coords[0], coin.coords[2]) &&
+                pos.y <= Math.max(coin.coords[0], coin.coords[2]) &&
+                pos.x >= Math.min(coin.coords[1], coin.coords[3]) &&
+                pos.x >= Math.min(coin.coords[1], coin.coords[3])
+            ) {
+                cb(coin);
+                break;
+            }
+        }
+    });
 }

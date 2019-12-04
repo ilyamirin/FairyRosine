@@ -40,7 +40,7 @@ function clickCoin(obj) {
             document.getElementById("modalLanguageEn").onclick = () => changeModalLanguage('en');
         }
     });
-    document.getElementById('modal-coin-title').innerHTML = obj.short_name;
+//    document.getElementById('modal-coin-title').innerHTML = obj.short_name;
 }
 
 function changeModalLanguage(lang) {

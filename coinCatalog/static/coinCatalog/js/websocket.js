@@ -9,18 +9,18 @@ if(/(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine
 
 let iOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
 
-if (isMobile && !iOS){
-    document.documentElement.requestFullscreen().then(() => {
-        screen.orientation.lock("landscape")
-        .then(function() {
-        })
-        .catch(function(error) {
-            alert(error);
-        });
-    }).catch(err => {
-      alert(`Error attempting to enable full-screen mode: ${err.message} (${err.name})`);
-    });
-}
+//if (isMobile && !iOS){
+//    document.documentElement.requestFullscreen().then(() => {
+//        screen.orientation.lock("landscape")
+//        .then(function() {
+//        })
+//        .catch(function(error) {
+//            alert(error);
+//        });
+//    }).catch(err => {
+//      alert(`Error attempting to enable full-screen mode: ${err.message} (${err.name})`);
+//    });
+//}
 
 navigator.mediaDevices.enumerateDevices().then(devices => {
     let cameras = devices.filter(function(device){ return device.kind === "videoinput"; });
@@ -105,6 +105,7 @@ function startWebSocketInteraction(){
             if (data.text.length)
                 console.log(data.text);
             drawCoins(data.text);
+            canvas_updateCoins(data.text);
         }
         canvasData[data.type] = data.text;
     };
@@ -157,4 +158,9 @@ function startWebSocketInteraction(){
         if (!isSocketReady()) connectWS();
     }, 5000);
     connectWS();
+    canvas_registerOnSquareClick((obj) => {
+//        document.getElementById('coinModal2').modal('show');
+        $('#coinModal1').modal('toggle');
+        clickCoin(obj);
+    });
 }

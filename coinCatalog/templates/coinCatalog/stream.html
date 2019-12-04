@@ -4,8 +4,10 @@
 {% block addition_links %}
 <style>
     #video {
-        width: 900px;
-        height: 675px;
+<!--        width: 900px;-->
+<!--        height: 675px;-->
+        width: 100%;
+        height: auto;
         margin-left: auto;
         margin-right: auto;
     }
@@ -18,12 +20,14 @@
         margin-bottom: 20px;
     }
     #canvas {
-        width: 900px;
-        height: 675px;
+<!--        width: 900px;-->
+<!--        height: 675px;-->
+        width: 100%;
+        height: auto;
         position: absolute;
         left: 0;
         right: 0;
-        margin-left: auto;
+        margin-left: 0px;
         margin-right: auto;
     }
     #canvas2 {
@@ -55,17 +59,19 @@
     </div>
 </div>
 
-<div class="container">
-    <div class="row">
-        <div class="col-md-12" style="text-align: center;">
-            <video autoplay id="video" data-eng="{{ lang }}"></video>
+<div class="container" style="width: 100%; height: auto;">
+    <div class="row" style="width: 100%; height: auto;">
+        <div class="col-md-12" style="width: 100%; height: auto;">
             <canvas id="canvas" width="900" height="675"></canvas>
+<!--            <canvas id="canvas" width="100%" height="auto"></canvas>-->
+            <video autoplay id="video" data-eng="{{ lang }}"></video>
+        </div>
+        <div class="col-md-12" style="background-color: rgba(68,119,34, 0.6); height: auto; position: absolute; bottom: 5%;">
+            <div class="row" style="min-height: 100px; height: auto; padding: 10px; opacity: 1;" id="rec-coins"></div>
         </div>
     </div>
 </div>
-<div class="container-fluid" style="background-color: rgba(68,119,34, 0.6); height: auto; position: absolute; bottom: 5%;">
-    <div class="row" style="min-height: 200px; height: auto; padding: 10px; opacity: 1;" id="rec-coins"></div>
-</div>
+
 <script src="{% static '/coinCatalog/js/canvas.js' %}"></script>
 <script src="{% static '/coinCatalog/js/coinBrowser.js' %}"></script>
 <script src="{% static '/coinCatalog/js/websocket.js' %}"></script>
